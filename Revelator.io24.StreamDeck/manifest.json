@@ -1,0 +1,137 @@
+{
+  "$schema": "https://raw.githubusercontent.com/GeekyEggo/SharpDeck/master/src/SharpDeck.PropertyInspector/manifest-schema.json",
+  "Name": "Revelator io24",
+  "Version": "0.0.1",
+  "Author": "oddbear",
+  "Actions": [
+    {
+      "Name": "Route Change",
+      "UUID": "com.oddbear.revelator.io24.routechange",
+      "Icon": "Images/Icons/routing",
+      "Tooltip": "A route changing action",
+      "PropertyInspectorPath": "PropertyInspector/RouteChangeAction.html",
+      "States": [
+        {
+          "Image": "Images/Plugin/routing_on",
+          "Title": "Route On",
+          "TitleAlignment": "bottom"
+        },
+        {
+          "Image": "Images/Plugin/routing_off",
+          "Title": "Route Off",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Headphone source",
+      "UUID": "com.oddbear.revelator.io24.headphonesource",
+      "Icon": "Images/Icons/headphones",
+      "Tooltip": "A headphones source set action",
+      "PropertyInspectorPath": "PropertyInspector/HeadphonesSourceAction.html",
+      "States": [
+        {
+          "Image": "Images/Plugin/headphones_on",
+          "Title": "Headphones On",
+          "TitleAlignment": "bottom"
+        },
+        {
+          "Image": "Images/Plugin/headphones_off",
+          "Title": "Headphones Off",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Fat Channel Toggle",
+      "UUID": "com.oddbear.revelator.io24.fatchanneltoggle",
+      "Icon": "Images/Icons/fat",
+      "Tooltip": "A Fat Channel toggle action",
+      "PropertyInspectorPath": "PropertyInspector/FatChannelToggleAction.html",
+      "States": [
+        {
+          "Image": "Images/Plugin/fat_on",
+          "Title": "Fat On",
+          "TitleAlignment": "bottom"
+        },
+        {
+          "Image": "Images/Plugin/fat_off",
+          "Title": "Fat Off",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Preset change",
+      "UUID": "com.oddbear.revelator.io24.presetchange",
+      "Icon": "Images/Icons/presets",
+      "Tooltip": "A preset change action",
+      "PropertyInspectorPath": "PropertyInspector/PresetChangeAction.html",
+      "States": [
+        {
+          "Image": "Images/Plugin/preset_on",
+          "Title": "Preset On",
+          "TitleAlignment": "bottom"
+        },
+        {
+          "Image": "Images/Plugin/preset_off",
+          "Title": "Preset Off",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Volume change",
+      "UUID": "com.oddbear.revelator.io24.volumelevel",
+      "Icon": "Images/Icons/category",
+      "Tooltip": "A volume change action",
+      "PropertyInspectorPath": "PropertyInspector/VolumeLevelAction.html",
+      "States": [
+        {
+          "Image": "Images/Icons/Image",
+          "Title": "Volume",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    },
+    {
+      "Name": "Toggle monitor",
+      "UUID": "com.oddbear.revelator.io24.togglemonitor",
+      "Icon": "Images/Icons/category",
+      "Tooltip": "A toggle monitor out action",
+      "PropertyInspectorPath": "PropertyInspector/ToggleMonitorAction.html",
+      "States": [
+        {
+          "Image": "Images/Plugin/fat_on",
+          "Title": "Monitor On",
+          "TitleAlignment": "bottom"
+        },
+        {
+          "Image": "Images/Plugin/fat_off",
+          "Title": "Monitor Off",
+          "TitleAlignment": "bottom"
+        }
+      ]
+    }
+  ],
+  "Category": "Revelator io24",
+  "CategoryIcon": "Images/Icons/category",
+  "CodePath": "Revelator.io24.StreamDeck.exe",
+  "CodePathMac": "Revelator.io24.StreamDeck",
+  "Description": "A Revelator io24 plugin for the Stream Deck",
+  "Icon": "Images/Icons/category",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.1"
+  },
+  "OS": [
+    {
+      "MinimumVersion": "10.11",
+      "Platform": "mac"
+    },
+    {
+      "MinimumVersion": "10",
+      "Platform": "windows"
+    }
+  ]
+}

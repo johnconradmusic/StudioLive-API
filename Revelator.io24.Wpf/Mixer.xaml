@@ -1,0 +1,21 @@
+﻿<Window x:Class="Revelator.io24.Wpf.Mixer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revelator.io24.Wpf"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
+        Title="Mixer" Height="450" Width="800">
+    <WrapPanel>
+        <StackPanel>
+            <TextBlock Margin="5" Height="20" Text="{Binding Path=Device.Channel1.UserDefinedName}"/>
+            <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding Path=Device.Channel1.Trim, Mode=TwoWay}"/>
+            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Solo"  IsChecked="{Binding Path=Device.Channel1.Solo, Mode=TwoWay}">CH1 Solo</CheckBox>
+            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Mute" IsChecked="{Binding Path=Device.Channel1.Mute, Mode=TwoWay}">CH1 Mute</CheckBox>
+            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Phantom" IsChecked="{Binding Path=Device.Channel1.PhantomPower, Mode=TwoWay}">CH1 Phantom</CheckBox>
+            <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding Path=Device.Channel1.Volume, Mode=TwoWay}"/>
+            <Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>
+        </StackPanel>
+    </WrapPanel>
+</Window>
