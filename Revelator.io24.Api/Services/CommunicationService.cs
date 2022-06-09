@@ -134,42 +134,46 @@ namespace Revelator.io24.Api.Services
                     foreach (var chunck in chunks)
                     {
                         var messageType = PackageHelper.GetMessageType(chunck);
+                        Log.Information(messageType);
                         switch (messageType)
                         {
+                            case "BO":
+                                BO(chunck);
+                                break;
+                            case "CK":
+                                var chks = PackageHelper.ChuncksByIndicator(chunck).ToArray();
+                                foreach (var c in chks)
+                                {
+                                    var mt = PackageHelper.GetMessageType(c);
+                                    Log.Information("CK? :" + mt);
+                                    //CK(c);
+                                }
+                                break;
                             case "PL":
                                 //PL List:
                                 PL(chunck);
                                 break;
                             case "PR":
-                                //Happens when lining and unlinking mic channels.
-                                //If linked, volume and gain reduction (bug in UC Control?) is bound to Right Channel.
-                                //Fatchannel is bound to "both"
-                                //Fatchannel is bound to "both", ex. toggle toggles both to same state.
+
                                 break;
                             case "PV":
                                 //PV Settings packet
                                 PV(chunck);
-                                Log.Debug("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                             case "JM":
                                 var jm = JM.GetJsonMessage(chunck);
                                 Json(jm);
-                                Log.Debug("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                             case "ZM":
                                 var zm = ZM.GetJsonMessage(chunck);
                                 Json(zm);
-                                Log.Debug("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                             case "PS":
                                 PS(chunck);
-                                Log.Debug("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                             case "MS":
-                                Log.Debug("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                             default:
-                                Log.Warning("[{className}] {messageType}", nameof(CommunicationService), messageType);
                                 break;
                         }
                     }
@@ -180,9 +184,21 @@ namespace Revelator.io24.Api.Services
                 }
             }
         }
+        void CK(byte[] data)
+        {
+            var header = data.Range(0, 4);
+            var messageLength = data.Range(4, 6);
+            var messageType = data.Range(6, 8);
+            var from = data.Range(8, 10);
+            var to = data.Range(10, 12);
 
+            var str = Encoding.ASCII.GetString(data.Range(12));
+            Log.Information("CK: " + str);
+        }
         private void Json(string json)
         {
+
+            Log.Information("JSON: " + json);
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(json);
             if (!jsonElement.TryGetProperty("id", out var idProperty))
                 return;
@@ -205,10 +221,25 @@ namespace Revelator.io24.Api.Services
                 case "SubscriptionLost":
                     RequestCommunicationMessage();
                     return;
+                case "UserLoggedIn":
+                    //logged in
+                    return;
                 default:
                     Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
                     return;
             }
+        }
+
+        private void BO(byte[] data)
+        {
+            var header = data.Range(0, 4);
+            var messageLength = data.Range(4, 6);
+            var messageType = data.Range(6, 8);
+            var from = data.Range(8, 10);
+            var to = data.Range(10, 12);
+
+            var str = Encoding.ASCII.GetString(data.Range(12));
+            //Log.Information("BO: " + str);
         }
 
         /// <summary>
@@ -231,11 +262,11 @@ namespace Revelator.io24.Api.Services
             //0x0A (\n): List delimiter
             //Last char is a 0x00 (\0)
             var list = Encoding.ASCII.GetString(data.Range((i + 7), -1)).Split('\n');
-            if (!route.EndsWith("/presets/preset"))
-            {
-                Log.Warning("[{className}] PL unknown list on route {route}", nameof(CommunicationService), route);
-                return;
-            }
+            //if (!route.EndsWith("/presets/preset"))
+            //{
+            //    Log.Warning("[{className}] PL unknown list on route {route}", nameof(CommunicationService), route);
+            //    return;
+            //}
             _rawService.UpdateStringsState(route, list);
         }
 

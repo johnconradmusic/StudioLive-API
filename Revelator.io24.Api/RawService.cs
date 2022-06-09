@@ -65,14 +65,14 @@ namespace Revelator.io24.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            //Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }
 
         internal void UpdateStringState(string route, string value)
         {
-            Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
+            //Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
             _string[route] = value;
             StringStateUpdated?.Invoke(route, value);
         }
@@ -86,6 +86,7 @@ namespace Revelator.io24.Api
 
         internal void Syncronize(string json)
         {
+            Serilog.Log.Information("Synchronize");
             //Serilog.Log.Warning(json);
             var doc = JsonSerializer.Deserialize<JsonDocument>(json);
             if (doc is null)

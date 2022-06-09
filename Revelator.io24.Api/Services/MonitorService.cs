@@ -64,10 +64,6 @@ namespace Revelator.io24.Api.Services
                         Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
                         continue;
                     }
-                    else
-                    {
-                        Log.Information("THIS IS MS");
-                    }
 
                     Analyze(data);
                 }
@@ -269,7 +265,7 @@ namespace Revelator.io24.Api.Services
             }
             else
             {
-                Log.Warning("Unknown data length: {val1}", data.Length);
+                //Log.Warning("Unknown data length: {val1}", data.Length);
             }
         }
 

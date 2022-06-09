@@ -21,13 +21,13 @@ namespace Revelator.io24.Api.Messages
             var json = JsonSerializer.Serialize(new
             {
                 id = "Subscribe",
-                clientName = "UC-Surface",
+                clientName = "Universal Control",
                 clientInternalName = "ucremoteapp",
                 clientType = "CustomAPI",
-                clientDescription = "CustomAPI for Revelator io24",
-                clientIdentifier = "661b1ece-b4d3-44b3-913c-d12964456f0b",
-                clientOptions = "perm users",
-                clientEncoding = 23117
+                clientDescription = "",
+                clientIdentifier = "",
+                clientOptions = "levl",
+                clientEncoding = 23106
             });
 
             //JsonLength [12..16]:
