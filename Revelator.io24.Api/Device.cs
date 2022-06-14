@@ -51,5 +51,6 @@ namespace Revelator.io24.Api
 			StreamMixA = new StreamMixA(rawService);
 			StreamMixB = new StreamMixB(rawService);
 		}
+
 	}
 }

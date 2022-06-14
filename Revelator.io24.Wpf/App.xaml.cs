@@ -1,7 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Revelator.io24.Api;
 using Revelator.io24.Api.Configuration;
+using Revelator.io24.Api.Scene;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.IO;
 using System.Windows;
 
 namespace Revelator.io24.Wpf
@@ -19,7 +23,7 @@ namespace Revelator.io24.Wpf
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(theme: ConsoleTheme.None)
                 .CreateLogger();
-            
+
             AllocConsole();
 #endif
 
@@ -30,7 +34,7 @@ namespace Revelator.io24.Wpf
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
             serviceProvider.StartRevelatorAPI();
-
+            
             //Run application:
             var mainWindow = serviceProvider.GetRequiredService<Mixer>();
             mainWindow.Show();
@@ -39,5 +43,8 @@ namespace Revelator.io24.Wpf
 
         [System.Runtime.InteropServices.DllImport("kernel32.dll")]
         internal static extern bool AllocConsole();
+
+
+
     }
 }

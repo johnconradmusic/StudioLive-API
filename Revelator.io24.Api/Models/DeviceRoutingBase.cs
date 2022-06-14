@@ -133,14 +133,17 @@ namespace Revelator.io24.Api.Models
 
         protected void SetString(string value, [CallerMemberName] string propertyName = "")
         {
-
+            Serilog.Log.Information("set string " + propertyName + " - " + value );
             if (value is null)
                 return;
 
             if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
                 return;
 
-            _rawService.SetString(value, value);
+            Serilog.Log.Information("route? " + route);
+
+
+            _rawService.SetString(route, value);
         }
 
         protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")

@@ -30,7 +30,7 @@ namespace Revelator.io24.Wpf
             RoutingMap = new RoutingMapper(routingTable);
             VolumeMap = new VolumeMapper(routingTable);
             VolumeDbMap = new VolumeDbMapper(routingTable);
-
+              
             valuesMonitorModel.ValuesUpdated += (sender, args) => OnPropertyChanged(nameof(MonitorValues));
             fatChannelMonitorModel.FatChannelUpdated += (sender, args) => OnPropertyChanged(nameof(FatChannelValues));
 
@@ -41,7 +41,7 @@ namespace Revelator.io24.Wpf
             };
         }
 
-        protected void OnPropertyChanged(string? name = null)
+        public void OnPropertyChanged(string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

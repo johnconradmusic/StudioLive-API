@@ -2,9 +2,11 @@
 using Revelator.io24.Api.Helpers;
 using Revelator.io24.Api.Messages;
 using Revelator.io24.Api.Messages.Readers;
+using Revelator.io24.Api.Scene;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -195,6 +197,8 @@ namespace Revelator.io24.Api.Services
             var str = Encoding.ASCII.GetString(data.Range(12));
             Log.Information("CK: " + str);
         }
+
+
         private void Json(string json)
         {
 

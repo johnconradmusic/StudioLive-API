@@ -156,7 +156,7 @@
                 </WrapPanel>
                 <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Main, Mode=TwoWay}">Send To Mains</CheckBox>
 
-                <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+                <Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>
             </StackPanel>
         </GroupBox>
     </WrapPanel>

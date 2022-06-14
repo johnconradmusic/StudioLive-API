@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Revelator.io24.Api.Scene;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 
@@ -65,14 +67,14 @@ namespace Revelator.io24.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            //Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }
 
         internal void UpdateStringState(string route, string value)
         {
-            //Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
+            Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
             _string[route] = value;
             StringStateUpdated?.Invoke(route, value);
         }
@@ -108,7 +110,22 @@ namespace Revelator.io24.Api
             Syncronized?.Invoke();
         }
 
+        private Root _scene;
 
+        public Root Scene
+        {
+            get
+            {
+                if (_scene == null) JSON();
+                return _scene;
+            }
+        }
+
+        void JSON()
+        {
+            var sceneFile = File.ReadAllText("C:\\Dev\\StudioLive-API\\Scene.scn");
+            _scene = JsonSerializer.Deserialize<Root>(sceneFile);
+        }
         private void Traverse(JsonElement element, string path)
         {
             switch (element.ValueKind)

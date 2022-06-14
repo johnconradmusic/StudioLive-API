@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,8 +39,13 @@ namespace Revelator.io24.Wpf
         private void testButton_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as MainViewModel;
-            var res = vm?.Device.RawService.GetString("line/ch1/username");
-            MessageBox.Show(res);
+            var scn = vm.Device.RawService.Scene;
+            foreach (var chan in vm.Device.Channels)
+            {
+                //return property.GetValue(this, null);
+                //chan.UserDefinedName = 
+            }
+            //vm.Device.Channels[0].UserDefinedName = vm.Device.RawService;
         }
     }
 }

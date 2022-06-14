@@ -36,10 +36,14 @@ namespace Revelator.io24.Api.Models
 				var res = GetString();
 				if (res == null || res == string.Empty)
 				{
-					return "Unkown";
+					return "Unknown";
 
 				}
 				return res;
+			}
+            set 
+			{
+				SetString(value);
 			}
 		}
 
