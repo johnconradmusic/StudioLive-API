@@ -5,17 +5,159 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revelator.io24.Wpf"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
-        Title="Mixer" Height="450" Width="800">
-    <WrapPanel>
-        <StackPanel>
-            <TextBlock Margin="5" Height="20" Text="{Binding Path=Device.Channel1.UserDefinedName}"/>
-            <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding Path=Device.Channel1.Trim, Mode=TwoWay}"/>
-            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Solo"  IsChecked="{Binding Path=Device.Channel1.Solo, Mode=TwoWay}">CH1 Solo</CheckBox>
-            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Mute" IsChecked="{Binding Path=Device.Channel1.Mute, Mode=TwoWay}">CH1 Mute</CheckBox>
-            <CheckBox Margin="5" AutomationProperties.Name="Channel 1 Phantom" IsChecked="{Binding Path=Device.Channel1.PhantomPower, Mode=TwoWay}">CH1 Phantom</CheckBox>
-            <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding Path=Device.Channel1.Volume, Mode=TwoWay}"/>
-            <Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>
-        </StackPanel>
+        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
+        Title="Mixer" Height="450" Width="1210">
+    <WrapPanel Height="400" HorizontalAlignment="Center">
+        <GroupBox Header="Channel Select">
+            <ListBox Margin="5" x:Name="ChannelList" Width="150" ItemsSource="{Binding Path=Device.Channels}" DisplayMemberPath="UserDefinedName" />
+        </GroupBox>
+        <GroupBox Header="Channel Controls">
+            <StackPanel Margin="5" Background="DarkGray">
+                <TextBlock Margin="5" Height="20" FontWeight="Bold" FontSize="16" Text="{Binding ElementName=ChannelList, Path=SelectedItem.UserDefinedName}" />
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Trim"/>
+                </WrapPanel>
+                <CheckBox Margin="5" AutomationProperties.Name="Solo"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Solo</CheckBox>
+                <CheckBox Margin="5" AutomationProperties.Name="Mute" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Mute, Mode=TwoWay}">Mute</CheckBox>
+                <CheckBox Margin="5" AutomationProperties.Name="Phantom Power" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.PhantomPower, Mode=TwoWay}">Phantom</CheckBox>
+                <WrapPanel>
+                    <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Volume, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Level"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.A, Mode=TwoWay}">A</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.B, Mode=TwoWay}">B</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.C, Mode=TwoWay}">C</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.D, Mode=TwoWay}">D</CheckBox>
+                </WrapPanel>
+                <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Main, Mode=TwoWay}">Send To Mains</CheckBox>
+
+                <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Compressor Controls">
+            <StackPanel Margin="5" Background="DarkGray">
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Ratio"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Makeup Gain"/>
+                </WrapPanel>
+                <CheckBox Margin="5"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Soft Knee</CheckBox>
+                <CheckBox Margin="5" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Mute, Mode=TwoWay}">Auto Time</CheckBox>
+
+                <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="EQ Controls">
+            <StackPanel Margin="5" Background="DarkGray">
+                <GroupBox Header="Band 4">                   
+                        <WrapPanel>
+                            <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                            <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                            <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                            <CheckBox Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Shelf</CheckBox>
+                        </WrapPanel>                    
+                </GroupBox>
+                <GroupBox Header="Band 3">
+                    <WrapPanel>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                    </WrapPanel>
+                </GroupBox>
+                <GroupBox Header="Band 2">
+                    <WrapPanel>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                    </WrapPanel>
+                </GroupBox>
+                <GroupBox Header="Band 1">
+                    <WrapPanel>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                        <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                        <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                        <CheckBox Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Shelf</CheckBox>
+                    </WrapPanel>
+                </GroupBox>
+                
+
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Gate Controls">
+            <StackPanel Margin="5" Background="DarkGray">
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Ratio"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Slider Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Makeup Gain"/>
+                </WrapPanel>
+                <CheckBox Margin="5"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Soft Knee</CheckBox>
+                <CheckBox Margin="5" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Mute, Mode=TwoWay}">Auto Time</CheckBox>
+
+                <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Limiter Controls">
+            <StackPanel Margin="5" Background="DarkGray">
+                <TextBlock Margin="5" Height="20" Text="{Binding ElementName=ChannelList, Path=SelectedItem.UserDefinedName}"/>
+                <Slider HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Trim, Mode=TwoWay}"/>
+                <CheckBox Margin="5" AutomationProperties.Name="Solo"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Solo, Mode=TwoWay}">Solo</CheckBox>
+                <CheckBox Margin="5" AutomationProperties.Name="Mute" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Mute, Mode=TwoWay}">Mute</CheckBox>
+                <CheckBox Margin="5" AutomationProperties.Name="Phantom Power" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.PhantomPower, Mode=TwoWay}">Phantom</CheckBox>
+                <Slider HorizontalAlignment="Center" Height="100" Orientation="Vertical" Maximum="100" Value="{Binding ElementName=ChannelList, Path=SelectedItem.Volume, Mode=TwoWay}"/>
+                <WrapPanel>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.A, Mode=TwoWay}">A</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.B, Mode=TwoWay}">B</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.C, Mode=TwoWay}">C</CheckBox>
+                    <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.D, Mode=TwoWay}">D</CheckBox>
+                </WrapPanel>
+                <CheckBox Margin="5" AutomationProperties.Name="Solo" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.Main, Mode=TwoWay}">Send To Mains</CheckBox>
+
+                <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+            </StackPanel>
+        </GroupBox>
     </WrapPanel>
 </Window>

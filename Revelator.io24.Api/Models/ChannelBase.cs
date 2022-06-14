@@ -3,49 +3,58 @@ using System.ComponentModel;
 
 namespace Revelator.io24.Api.Models
 {
-    public abstract class ChannelBase : DeviceRoutingBase, INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+	public abstract class ChannelBase : DeviceRoutingBase, INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
-            => PropertyChanged?.Invoke(this, eventArgs);
+		protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+			=> PropertyChanged?.Invoke(this, eventArgs);
 
-        protected ChannelBase(string routePrefix, RawService rawService)
-            : base(routePrefix, rawService)
-        {
-            //
-        }
+		protected ChannelBase(string routePrefix, RawService rawService)
+			: base(routePrefix, rawService)
+		{
+			//
+		}
 
-        /// <summary>
-        /// Real name, ex. Mic, Playback, Main, USB 1/2, USB 3/4
-        /// </summary>
-        [RouteString("chnum")]
-        public string ChannelName
-        {
-            get => GetString();
-        }
+		/// <summary>
+		/// Real name, ex. Mic, Playback, Main, USB 1/2, USB 3/4
+		/// </summary>
+		[RouteString("chnum")]
+		public string ChannelName
+		{
+			get => GetString();
+		}
 
-        /// <summary>
-        /// Name of channel, ex. Channel 1, Playback, Virtual A
-        /// </summary>
-        [RouteString("username")]
-        public string UserDefinedName
-        {
-            get => GetString();
-        }
+		/// <summary>
+		/// Name of channel, ex. Channel 1, Playback, Virtual A
+		/// </summary>
+		[RouteString("username")]
+		public string UserDefinedName
+		{
+			get
+			{
+				var res = GetString();
+				if (res == null || res == string.Empty)
+				{
+					return "Unkown";
 
-        [RouteValue("volume")]
-        public int Volume
-        {
-            get => GetVolume();
-            set => SetVolume(value);
-        }
+				}
+				return res;
+			}
+		}
 
-        [RouteValue("mute")]
-        public bool Mute
-        {
-            get => GetBoolean();
-            set => SetBoolean(value);
-        }
-    }
+		[RouteValue("volume")]
+		public int Volume
+		{
+			get => GetVolume();
+			set => SetVolume(value);
+		}
+
+		[RouteValue("mute")]
+		public bool Mute
+		{
+			get => GetBoolean();
+			set => SetBoolean(value);
+		}
+	}
 }
