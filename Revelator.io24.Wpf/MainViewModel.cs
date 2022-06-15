@@ -27,15 +27,18 @@ namespace Revelator.io24.Wpf
             MonitorValues = valuesMonitorModel;
             FatChannelValues = fatChannelMonitorModel;
 
+            Device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
+
             RoutingMap = new RoutingMapper(routingTable);
             VolumeMap = new VolumeMapper(routingTable);
             VolumeDbMap = new VolumeDbMapper(routingTable);
-              
+
             valuesMonitorModel.ValuesUpdated += (sender, args) => OnPropertyChanged(nameof(MonitorValues));
             fatChannelMonitorModel.FatChannelUpdated += (sender, args) => OnPropertyChanged(nameof(FatChannelValues));
 
             routingTable.RouteUpdated += (sender, args) => OnPropertyChanged(nameof(RoutingMap));
-            routingTable.VolumeUpdated += (sender, args) => {
+            routingTable.VolumeUpdated += (sender, args) =>
+            {
                 OnPropertyChanged(nameof(VolumeMap));
                 OnPropertyChanged(nameof(VolumeDbMap));
             };
@@ -43,6 +46,7 @@ namespace Revelator.io24.Wpf
 
         public void OnPropertyChanged(string? name = null)
         {
+            Serilog.Log.Information("on property changed: " + name);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }

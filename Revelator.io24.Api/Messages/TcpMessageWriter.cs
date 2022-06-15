@@ -22,11 +22,11 @@ namespace Revelator.io24.Api.Messages
             {
                 id = "Subscribe",
                 clientName = "Universal Control",
-                clientInternalName = "ucremoteapp",
+                clientInternalName = "ucapp",
                 clientType = "CustomAPI",
-                clientDescription = "",
-                clientIdentifier = "",
-                clientOptions = "levl",
+                clientDescription = "CustomAPI for StudioLive",
+                clientIdentifier = "661b1ece-b4d3-44b3-913c-d12964456f0b",
+                clientOptions = "perm users levl redu rtan",
                 clientEncoding = 23106
             });
 
@@ -72,7 +72,7 @@ namespace Revelator.io24.Api.Messages
             return Create(data, "PS");
         }
 
-        public byte[] CreateRouteValueUpdate(string route, double value)
+        public byte[] CreateRouteValueUpdate(string route, float value)
         {
             var data = CreateHeader(_deviceId);
 

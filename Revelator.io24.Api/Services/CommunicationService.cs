@@ -276,7 +276,7 @@ namespace Revelator.io24.Api.Services
 
         /// <summary>
         /// Updates float value.
-        /// Happens ex. on turning thing on and of, ex. EQ
+        /// Happens ex. on turning thing on and off, ex. EQ
         /// </summary>
         private void PV(byte[] data)
         {
@@ -322,10 +322,13 @@ namespace Revelator.io24.Api.Services
             SendMessage(data);
         }
 
-        public void SetRouteValue(string route, double value)
+        public void SetRouteValue(string route, float value)
         {
             var writer = new TcpMessageWriter(_deviceId);
             var data = writer.CreateRouteValueUpdate(route, value);
+
+            Serilog.Log.Information("set value: " + route + " - " + value.ToString());
+
 
             SendMessage(data);
         }
@@ -334,11 +337,24 @@ namespace Revelator.io24.Api.Services
         {
             try
             {
+                var header = message.Range(0, 4);
+                var messageLength = message.Range(4, 6);
+                var messageType = message.Range(6, 8);
+                var from = message.Range(8, 10);
+                var to = message.Range(10, 12);
+
+                var route = Encoding.ASCII.GetString(message.Range(12, -7));
+                var emptyBytes = message.Range(-7, -4);
+                var state = BitConverter.ToSingle(message.Range(-4), 0);
+
+                Log.Information(route + " - " + state.ToString());
                 var networkStream = GetNetworkStream();
                 if (networkStream is null)
                     return false;
 
                 networkStream.Write(message, 0, message.Length);
+                Log.Information("success");
+
                 return true;
             }
             catch

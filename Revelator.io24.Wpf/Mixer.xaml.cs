@@ -45,22 +45,13 @@ namespace Revelator.io24.Wpf
 
 		}
 
-		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			AccessLabel.Content = Math.Round(e.NewValue, 2);
+        private void testButton_Click_1(object sender, RoutedEventArgs e)
+        {
+			var vm = DataContext as MainViewModel;
+			vm.Device.RawService.SetValue("line/ch1/preampgain", .5f);
 		}
-
-		private void Slider_GotFocus(object sender, RoutedEventArgs e)
-		{
-			if (sender is Slider slider)
-				AccessLabel.Content = AutomationProperties.GetName(slider) + Math.Round(slider.Value).ToString();
-
-			if (sender is CheckBox checkBox)
-				AccessLabel.Content = AutomationProperties.GetName(checkBox) + checkBox.IsChecked.ToString();
-
-		}
-	}
-	public class MyList : ListView
+    }
+    public class MyList : ListView
 	{
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{

@@ -3,11 +3,13 @@ using Revelator.io24.Api.Models.Global;
 using Revelator.io24.Api.Models.Inputs;
 using Revelator.io24.Api.Models.Outputs;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Revelator.io24.Api
 {
-	public class Device
+	public class Device : INotifyPropertyChanged
 	{
+
 		private readonly RawService _rawService;
 		public RawService RawService => _rawService;
 		public Global Global { get; }
@@ -18,7 +20,9 @@ namespace Revelator.io24.Api
 
 		public readonly int ChannelCount = 32;
 
-		public Main Main { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Main Main { get; }
 		public Device(RawService rawService)
 		{
 			_rawService = rawService;
@@ -26,7 +30,9 @@ namespace Revelator.io24.Api
 			Global = new Global(rawService);
 			for (int i = 0; i < ChannelCount; i++)
 			{
-				Channels.Add(new LineChannel("line/ch" + (i + 1).ToString(), rawService));
+				var chan = new LineChannel("line/ch" + (i + 1).ToString(), rawService);
+				Channels.Add(chan);
+				chan.PropertyChanged += PropertyChanged;
 			}
 
 			Main = new Main(rawService);

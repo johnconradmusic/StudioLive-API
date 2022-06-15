@@ -24,7 +24,7 @@ namespace Revelator.io24.Api
         public event StringsStateEvent StringsStateUpdated;
 
         internal Action<string, string> SetStringMethod;
-        internal Action<string, double> SetValueMethod;
+        internal Action<string, float> SetValueMethod;
 
         public void SetString(string route, string value)
         {
@@ -34,10 +34,11 @@ namespace Revelator.io24.Api
             SetStringMethod?.Invoke(route, value);
         }
 
-        public void SetValue(string route, double value)
+        public void SetValue(string route, float value)
         {
             if (route is null)
                 return;
+
 
             //Check if value has actually changed:
             //if (_values.TryGetValue(route, out var oldValue) && oldValue == value)
@@ -111,7 +112,7 @@ namespace Revelator.io24.Api
         }
         internal void SyncronizeState(string json)
         {
-            Serilog.Log.Information("Synchronize");
+            Serilog.Log.Information("SynchronizeState");
             //Serilog.Log.Warning(json);
             var doc = JsonSerializer.Deserialize<JsonDocument>(json);
             if (doc is null)
