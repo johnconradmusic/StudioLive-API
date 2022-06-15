@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Revelator.io24.Api;
 using Revelator.io24.Api.Configuration;
-using Revelator.io24.Api.Scene;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.IO;

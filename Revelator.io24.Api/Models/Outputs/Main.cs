@@ -1,9 +1,14 @@
 ﻿using Revelator.io24.Api.Attributes;
+using System.ComponentModel;
 
 namespace Revelator.io24.Api.Models.Outputs
 {
-    public class Main : OutputChannel
+    public class Main : DeviceRoutingBase
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+            => PropertyChanged?.Invoke(this, eventArgs);
         public Main(RawService rawService)
             : base("main/ch1", rawService)
         {

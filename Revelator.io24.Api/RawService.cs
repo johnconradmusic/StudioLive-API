@@ -24,7 +24,7 @@ namespace Revelator.io24.Api
         public event StringsStateEvent StringsStateUpdated;
 
         internal Action<string, string> SetStringMethod;
-        internal Action<string, float> SetValueMethod;
+        internal Action<string, double> SetValueMethod;
 
         public void SetString(string route, string value)
         {
@@ -34,7 +34,7 @@ namespace Revelator.io24.Api
             SetStringMethod?.Invoke(route, value);
         }
 
-        public void SetValue(string route, float value)
+        public void SetValue(string route, double value)
         {
             if (route is null)
                 return;
@@ -109,22 +109,26 @@ namespace Revelator.io24.Api
 
             Syncronized?.Invoke();
         }
-
-        private Root _scene;
-
-        public Root Scene
+        internal void SyncronizeState(string json)
         {
-            get
-            {
-                if (_scene == null) JSON();
-                return _scene;
-            }
+            Serilog.Log.Information("Synchronize");
+            //Serilog.Log.Warning(json);
+            var doc = JsonSerializer.Deserialize<JsonDocument>(json);
+            if (doc is null)
+                return;
+
+            var root = doc.RootElement;
+
+
+            Traverse(root, string.Empty);
+
+            Syncronized?.Invoke();
         }
 
-        void JSON()
-        {
-            var sceneFile = File.ReadAllText("C:\\Dev\\StudioLive-API\\Scene.scn");
-            _scene = JsonSerializer.Deserialize<Root>(sceneFile);
+        public void JSON()
+        { 
+            var sceneFile = File.ReadAllText("C:\\Dev\\Scene.scn");
+            SyncronizeState(sceneFile);
         }
         private void Traverse(JsonElement element, string path)
         {
@@ -132,6 +136,8 @@ namespace Revelator.io24.Api
             {
                 case JsonValueKind.Number:
                     _values[path] = element.GetSingle();
+                    //Serilog.Log.Information(path + ": " + element.GetSingle().ToString());
+
                     return;
                 case JsonValueKind.String:
                     _string[path] = element.GetString() ?? string.Empty;
@@ -167,7 +173,8 @@ namespace Revelator.io24.Api
                         Traverse(property.Value, CreatePath(path));
                         continue;
                     default:
-                        Traverse(property.Value, CreatePath(path, property.Name));
+                        var pathName = CreatePath(path, property.Name);
+                        Traverse(property.Value, pathName);
                         continue;
                 }
             }

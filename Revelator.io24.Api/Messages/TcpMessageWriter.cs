@@ -72,7 +72,7 @@ namespace Revelator.io24.Api.Messages
             return Create(data, "PS");
         }
 
-        public byte[] CreateRouteValueUpdate(string route, float value)
+        public byte[] CreateRouteValueUpdate(string route, double value)
         {
             var data = CreateHeader(_deviceId);
 

@@ -322,7 +322,7 @@ namespace Revelator.io24.Api.Services
             SendMessage(data);
         }
 
-        public void SetRouteValue(string route, float value)
+        public void SetRouteValue(string route, double value)
         {
             var writer = new TcpMessageWriter(_deviceId);
             var data = writer.CreateRouteValueUpdate(route, value);

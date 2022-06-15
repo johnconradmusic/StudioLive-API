@@ -21,7 +21,7 @@ namespace Revelator.io24.Wpf.Converters
                 //Also the range seems different, 0dB to -80dB seems to be the most correct...
                 //However, I have no idea with the gain reduction meter
                 // (this is usually never higher reduction than -10dB, so hard to test in the other ranges).
-                return value;
+                return floatValue;
             }
             return value;
         }
