@@ -320,6 +320,7 @@ namespace Revelator.io24.Api.Services
             var data = writer.CreateRouteStringUpdate(route, value);
 
             SendMessage(data);
+            _rawService.UpdateStringState(route, value);
         }
 
         public void SetRouteValue(string route, float value)
@@ -327,10 +328,11 @@ namespace Revelator.io24.Api.Services
             var writer = new TcpMessageWriter(_deviceId);
             var data = writer.CreateRouteValueUpdate(route, value);
 
-            Serilog.Log.Information("set value: " + route + " - " + value.ToString());
+            //Serilog.Log.Information("set value: " + route + " - " + value.ToString());
 
 
             SendMessage(data);
+            _rawService.UpdateValueState(route, value);
         }
 
         public bool SendMessage(byte[] message)

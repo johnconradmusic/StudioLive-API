@@ -24,6 +24,8 @@ namespace Revelator.io24.Api.Models.Inputs
         public string AutomationName => username;
         public string AutomationId => _routePrefix + username;
 
+        public bool LinkSlave => !(link && !linkmaster);
+
         [RouteValue("clip")]
         public bool Clip
         {
@@ -64,17 +66,43 @@ namespace Revelator.io24.Api.Models.Inputs
         }
         public float pan { get => GetValue(); set => SetValue(value); }
         public float stereopan { get => GetValue(); set => SetValue(value); }
-        public int link
+        public bool link
         {
-            get => (int)GetValue();
-            set => SetValue(value);
+            get => GetBoolean();
+            set => SetBoolean(value);
         }
 
-        public int linkmaster
+        [RouteValue("sub1")]
+        public bool A
         {
-            get => (int)GetValue();
-            set => SetValue(value);
+            get => GetBoolean();
+            set => SetBoolean(value);
         }
+        [RouteValue("sub2")]
+        public bool B
+        {
+            get => GetBoolean();
+            set => SetBoolean(value);
+        }
+        [RouteValue("sub3")]
+        public bool C
+        {
+            get => GetBoolean();
+            set => SetBoolean(value);
+        }
+        [RouteValue("sub4")]
+        public bool D
+        {
+            get => GetBoolean();
+            set => SetBoolean(value);
+        }
+
+        public bool linkmaster
+        {
+            get => GetBoolean();
+            set => SetBoolean(value);
+        }
+
         public int dawpostdsp
         {
             get => (int)GetValue();
@@ -204,11 +232,12 @@ namespace Revelator.io24.Api.Models.Inputs
             get => (int)GetValue();
             set => SetValue(value);
         }
-        public int lr
+        public bool lr
         {
-            get => (int)GetValue();
-            set => SetValue(value);
+            get => GetBoolean();
+            set => SetBoolean(value);
         }
+
         public int sub_asn_flags
         {
             get => (int)GetValue();
@@ -236,15 +265,16 @@ namespace Revelator.io24.Api.Models.Inputs
         public int flexassignflags { get; set; }
 
         [RouteValue("48v")]
-        public int phantom
+        public bool phantom
         {
-            get => (int)GetValue();
-            set => SetValue(value);
+            get => GetBoolean();
+            set => SetBoolean(value);
         }
-        public int polarity
+
+        public bool polarity
         {
-            get => (int)GetValue();
-            set => SetValue(value);
+            get => GetBoolean();
+            set => SetBoolean(value);
         }
         public float preampgain
         {

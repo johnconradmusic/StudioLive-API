@@ -46,7 +46,6 @@ namespace Revelator.io24.Wpf
 
         public void OnPropertyChanged(string? name = null)
         {
-            Serilog.Log.Information("on property changed: " + name);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }

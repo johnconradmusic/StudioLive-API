@@ -17,6 +17,7 @@ namespace Revelator.io24.Api
         private Dictionary<string, float> _values = new Dictionary<string, float>();
         private Dictionary<string, string> _string = new Dictionary<string, string>();
         private Dictionary<string, string[]> _strings = new Dictionary<string, string[]>();
+        public Dictionary<string, Tuple<float, float>> _valueRanges = new Dictionary<string, Tuple<float, float>>();
 
         public event SyncronizeEvent Syncronized;
         public event ValueStateEvent ValueStateUpdated;
@@ -39,7 +40,21 @@ namespace Revelator.io24.Api
             if (route is null)
                 return;
 
+            var splits = route.Split('/');
+            var propName = splits[splits.Length - 1];
+            if (_valueRanges.TryGetValue(propName, out var valueRange))
+            {
+                Serilog.Log.Information("splitting to get " + propName);
+                Serilog.Log.Information("value was " + value.ToString());
 
+                var min = valueRange.Item1;
+                var max = valueRange.Item2;
+
+                value -= min;
+                max -= min;
+                value /= max;
+                Serilog.Log.Information("value is now: " + value.ToString());
+            }
             //Check if value has actually changed:
             //if (_values.TryGetValue(route, out var oldValue) && oldValue == value)
             //    return;
@@ -127,7 +142,7 @@ namespace Revelator.io24.Api
         }
 
         public void JSON()
-        { 
+        {
             var sceneFile = File.ReadAllText("C:\\Dev\\Scene.scn");
             SyncronizeState(sceneFile);
         }
@@ -193,6 +208,12 @@ namespace Revelator.io24.Api
 
             //Add '/' to path:
             return $"{path}/{propertyName}";
+        }
+
+        public void BuildRanges()
+        {
+            //_valueRanges.Add("preampgain", new Tuple<float, float>(0, 60));
+            //_valueRanges.Add("hpf", new Tuple<float, float>(0, 1000));
         }
     }
 }

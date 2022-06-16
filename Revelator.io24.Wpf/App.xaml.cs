@@ -28,10 +28,14 @@ namespace Revelator.io24.Wpf
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddRevelatorAPI();
+
+            
             serviceCollection.AddSingleton<Mixer>();
             serviceCollection.AddSingleton<MainViewModel>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
+            var service = serviceProvider.GetRequiredService<RawService>();
+            service.BuildRanges();
             serviceProvider.StartRevelatorAPI();
             
             //Run application:
