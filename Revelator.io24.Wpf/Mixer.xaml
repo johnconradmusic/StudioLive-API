@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revelator.io24.Wpf"
+        xmlns:converters="clr-namespace:Revelator.io24.Wpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
         Loaded="Window_Loaded"
         FocusManager.GotFocus="Window_GotFocus"
         Title="Mixer" Height="450" Width="1210">
+
     <WrapPanel Height="400" HorizontalAlignment="Center">
         <GroupBox Header="Channel Select">
             <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Width="150" ItemsSource="{Binding Path=Device.Channels}" >
@@ -21,12 +23,12 @@
         </GroupBox>
         <GroupBox IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="Channel Controls">
             <StackPanel Margin="5" Background="DarkGray">
-                <TextBox Margin="5" Height="20" FontWeight="Bold" FontSize="12" Text="{Binding ElementName=ChannelList, Path=SelectedItem.username}" />
+                <TextBox AcceptsReturn="True" Margin="5" Height="20" FontWeight="Bold" FontSize="12" Text="{Binding ElementName=ChannelList, Path=SelectedItem.username}" />
                 <WrapPanel>
-                    <Slider Tag="preampgain" AutomationProperties.Name="Trim" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain, Mode=TwoWay}"/>
+                    <local:MySlider Tag="db" AutomationProperties.Name="Trim" AutomationProperties.LiveSetting="Off" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="60" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Trim"/>
 
-                    <Slider Tag="hpf" AutomationProperties.Name="Hipass Filter" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.hipass, Mode=TwoWay}"/>
+                    <local:MySlider Tag="hertz" AutomationProperties.Name="Hi Pass Filter" AutomationProperties.LiveSetting="Off"  SmallChange="10" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding ElementName=ChannelList, Path=SelectedItem.hipass, Mode=TwoWay}" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="HPF"/>
                 </WrapPanel>
                 <CheckBox Margin="5" AutomationProperties.Name="Solo"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Solo</CheckBox>
@@ -35,11 +37,15 @@
                 <CheckBox Margin="5" AutomationProperties.Name="Phase Invert" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.polarity, Mode=TwoWay}">Phase Invert</CheckBox>
 
                 <WrapPanel>
-                    <Slider x:Name="Pan" AutomationProperties.Name="Pan" HorizontalAlignment="Center" Width="100" Orientation="Horizontal" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan, Mode=TwoWay}"/>
+                    <Slider x:Name="Pan" AutomationProperties.Name="Pan" AutomationProperties.LiveSetting="Off"  HorizontalAlignment="Center" Width="100" Orientation="Horizontal" SmallChange="0.1" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan, Mode=TwoWay, FallbackValue=0.5}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Pan"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Level" SmallChange="0.05" HorizontalAlignment="Center" Height="100" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.Name="Level" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0">
+                        <Slider.Value>
+                                <Binding ElementName="ChannelList" Path="SelectedItem.volume" Mode="TwoWay" FallbackValue="0"/>
+                        </Slider.Value>
+                    </Slider>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Level"/>
                 </WrapPanel>
                 <WrapPanel>
@@ -57,19 +63,19 @@
             <StackPanel Margin="5" Background="DarkGray">
                 <CheckBox AutomationProperties.Name="Gate On" Margin="5" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.gate_on, Mode=TwoWay}">Gate On</CheckBox>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Gate Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_threshold, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Gate Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-84" Maximum="0" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_threshold, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Gate Range" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_range, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Gate Range" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-84"  Maximum="0" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_range, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Range"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Gate Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_attack, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="ms" AutomationProperties.Name="Gate Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".02"  Maximum="500" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_attack, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Gate Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_release, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="ms"  AutomationProperties.Name="Gate Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="50" Maximum="2000" Value="{Binding ElementName=ChannelList, Path=SelectedItem.gate_release, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
                 </WrapPanel>
 
@@ -83,23 +89,23 @@
                 <CheckBox Margin="5" AutomationProperties.Name="Compressor On" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.comp_on, Mode=TwoWay}">Compressor On</CheckBox>
 
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Compressor Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_threshold, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Compressor Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-56" Maximum="0" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_threshold, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Compressor Ratio" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_ratio, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="to 1"  AutomationProperties.Name="Compressor Ratio" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="1"  Maximum="18" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_ratio, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Ratio"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Compressor Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_attack, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="ms"  AutomationProperties.Name="Compressor Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".20"  Maximum="150" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_attack, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Compressor Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_release, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="ms"  AutomationProperties.Name="Compressor Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="2.5"  Maximum="900" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_release, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
                 </WrapPanel>
                 <WrapPanel>
-                    <Slider AutomationProperties.Name="Compressor Makeup Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_gain, Mode=TwoWay}"/>
+                    <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Compressor Makeup Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="28" Value="{Binding ElementName=ChannelList, Path=SelectedItem.comp_gain, Mode=TwoWay}"/>
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="Makeup Gain"/>
                 </WrapPanel>
                 <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
@@ -115,11 +121,11 @@
                 <GroupBox Header="Band 1">
                     <WrapPanel>
                         <CheckBox AutomationProperties.Name="EQ Band 1 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandon1, Mode=TwoWay}">On</CheckBox>
-                        <Slider AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq1, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="1" LargeChange="20" Maximum="465" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq1, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
-                        <Slider AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain1, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain1, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
-                        <Slider AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q1, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="4" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q1, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
                         <CheckBox AutomationProperties.Name="EQ Band 1 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandop1, Mode=TwoWay}">Shelf</CheckBox>
                     </WrapPanel>
@@ -127,33 +133,33 @@
                 <GroupBox Header="Band 2">
                     <WrapPanel>
                         <CheckBox AutomationProperties.Name="EQ Band 2 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandon2, Mode=TwoWay}">On</CheckBox>
-                        <Slider AutomationProperties.Name="EQ Band 2 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq2, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="90" SmallChange="20" Maximum="1200" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq2, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
-                        <Slider AutomationProperties.Name="EQ Band 2 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain2, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain2, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
-                        <Slider AutomationProperties.Name="EQ Band 2 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q2, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="4" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q2, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
                     </WrapPanel>
                 </GroupBox>
                 <GroupBox Header="Band 3">
                     <WrapPanel>
                         <CheckBox AutomationProperties.Name="EQ Band 3 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandon3, Mode=TwoWay}">On</CheckBox>
-                        <Slider AutomationProperties.Name="EQ Band 3 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq3, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="380" SmallChange="50" Maximum="5000" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq3, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
-                        <Slider AutomationProperties.Name="EQ Band 3 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain3, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain3, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
-                        <Slider AutomationProperties.Name="EQ Band 3 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q3, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="4" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q3, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
                     </WrapPanel>
                 </GroupBox>
                 <GroupBox Header="Band 4">
                     <WrapPanel>
                         <CheckBox AutomationProperties.Name="EQ Band 4 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandon4, Mode=TwoWay}">On</CheckBox>
-                        <Slider AutomationProperties.Name="EQ Band 4 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq4, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="1400" SmallChange="100" Maximum="18000" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_freq4, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
-                        <Slider AutomationProperties.Name="EQ Band 4 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain4, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_gain4, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
-                        <Slider AutomationProperties.Name="EQ Band 4 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical"  Maximum="1" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q4, Mode=TwoWay}"/>
+                        <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="4" Value="{Binding ElementName=ChannelList, Path=SelectedItem.eq_q4, Mode=TwoWay}"/>
                         <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
                         <CheckBox AutomationProperties.Name="EQ Band 4 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.eq_bandop4, Mode=TwoWay}">Shelf</CheckBox>
                     </WrapPanel>
@@ -172,7 +178,7 @@
                 </WrapPanel>
                 <Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>
                 <Button Margin="5" Content="test 2" x:Name="but" Click="testButton_Click_1"/>
-                <TextBlock x:Name="screenReaderText" Height="40" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+                <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="40" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
             </StackPanel>
         </GroupBox>
     </WrapPanel>

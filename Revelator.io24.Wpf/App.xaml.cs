@@ -34,8 +34,7 @@ namespace Revelator.io24.Wpf
             serviceCollection.AddSingleton<MainViewModel>();
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var service = serviceProvider.GetRequiredService<RawService>();
-            service.BuildRanges();
+
             serviceProvider.StartRevelatorAPI();
             
             //Run application:

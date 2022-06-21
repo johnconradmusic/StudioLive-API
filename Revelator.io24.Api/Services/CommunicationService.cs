@@ -202,7 +202,7 @@ namespace Revelator.io24.Api.Services
         private void Json(string json)
         {
 
-            Log.Information("JSON: " + json);
+            //Log.Information("JSON: " + json);
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(json);
             if (!jsonElement.TryGetProperty("id", out var idProperty))
                 return;
@@ -349,13 +349,13 @@ namespace Revelator.io24.Api.Services
                 var emptyBytes = message.Range(-7, -4);
                 var state = BitConverter.ToSingle(message.Range(-4), 0);
 
-                Log.Information(route + " - " + state.ToString());
+                //Log.Information(route + " - " + state.ToString());
                 var networkStream = GetNetworkStream();
                 if (networkStream is null)
                     return false;
 
                 networkStream.Write(message, 0, message.Length);
-                Log.Information("success");
+                //Log.Information("success");
 
                 return true;
             }

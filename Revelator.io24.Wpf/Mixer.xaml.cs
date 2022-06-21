@@ -17,114 +17,143 @@ using System.Windows.Shapes;
 
 namespace Revelator.io24.Wpf
 {
-    /// <summary>
-    /// Interaction logic for Mixer.xaml
-    /// </summary>
-    public partial class Mixer : Window
-    {
-        MainViewModel vm;
-        public Mixer(MainViewModel viewModel)
-        {
-            DataContext = vm = viewModel;
+	/// <summary>
+	/// Interaction logic for Mixer.xaml
+	/// </summary>
+	public partial class Mixer : Window
+	{
+		MainViewModel vm;
+		public Mixer(MainViewModel viewModel)
+		{
+			DataContext = vm = viewModel;
 
-            InitializeComponent();
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;            
-        }
+			InitializeComponent();
+			viewModel.PropertyChanged += ViewModel_PropertyChanged;
+		}
 
-       
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)        {
 
-            Serilog.Log.Information("slider value changed");
+		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			if (e.Source is Slider slider)
+			{
+				if (slider.Tag.ToString() == "hz" && slider.Value > 1000)
+				{
+					var khzVal = slider.Value / 1000;
+					ReadTextToScreenReader(khzVal.ToString("F1") + " " + "khz");
 
-            if (e.Source is Slider slider)
-            {
-                var min = slider.Minimum;
-                var max = slider.Maximum;
+				}
+				else
+					ReadTextToScreenReader(slider.Value.ToString("F2") + " " + slider.Tag);
+			}
+		}
 
-                ReadTextToScreenReader("VALUE CHANGED");
-            }
-        }
+		private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
 
-        private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+		}
 
-        }
+		public void ReadTextToScreenReader(string text)
+		{
+			this.screenReaderText.Text = text;
+			var peer = UIElementAutomationPeer.FromElement(screenReaderText);
+			if (peer != null)
+			{
 
-        public void ReadTextToScreenReader(string text)
-        {
-            var peer = UIElementAutomationPeer.FromElement(screenReaderText);
-            if (peer != null)
-            {
-                this.screenReaderText.Text = text;
-                peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-            }
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            Application.Current.Shutdown();
+				peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+			}
+		}
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			Application.Current.Shutdown();
 #if DEBUG
-            Environment.Exit(0);
+			Environment.Exit(0);
 #endif
-        }
+		}
 
-        private void testButton_Click(object sender, RoutedEventArgs e)
-        {
-            //var vm = DataContext as MainViewModel;
-            //vm.Device.RawService.JSON();
-            //ChannelList.Items.Refresh();
-        }
+		private void testButton_Click(object sender, RoutedEventArgs e)
+		{
+			//var vm = DataContext as MainViewModel;
+			//vm.Device.RawService.JSON();
+			//ChannelList.Items.Refresh();
+		}
 
-        private void testButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            //var vm = DataContext as MainViewModel;
-            //vm.Device.RawService.SetValue("line/ch1/preampgain", .5f);
-        }
+		private void testButton_Click_1(object sender, RoutedEventArgs e)
+		{
+			//var vm = DataContext as MainViewModel;
+			//vm.Device.RawService.SetValue("line/ch1/preampgain", .5f);
+		}
 
-        private void Window_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Serilog.Log.Information("FOCUS CHANGE");
-        }
+		private void Window_GotFocus(object sender, RoutedEventArgs e)
+		{
+			if (FocusManager.GetFocusedElement(this) is Slider slider)
+			{
+				if (slider.Tag.ToString() == "hz" && slider.Value > 1000)
+				{
+					var khzVal = slider.Value / 1000;
+					ReadTextToScreenReader(UIElementAutomationPeer.FromElement(slider).GetName() + " " + khzVal.ToString("F1") + " " + "khz");
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            foreach (var ctrl in this.GetChildren())
-            {
-                if (ctrl is Slider slider)
-                {
-                    Serilog.Log.Information("its a slider");
-                    slider.ValueChanged += Slider_ValueChanged;
-                    //if (vm.Device.RawService._valueRanges.TryGetValue(slider.Tag.ToString(), out Tuple<float, float> range))
-                    //{
-                    //    slider.Minimum = range.Item1;
-                    //    slider.Maximum = range.Item2;
-                    //}
-                }
-            }
-            var vm = DataContext as MainViewModel;
-            vm.Device.RawService.JSON();
-            ChannelList.Items.Refresh();
-        }
-    }
-    public class MyList : ListView
-    {
-        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-        {
-            base.PrepareContainerForItemOverride(element, item);
-            FrameworkElement source = element as FrameworkElement;
+				}
+				else
+				ReadTextToScreenReader(UIElementAutomationPeer.FromElement(slider).GetName() + " " + slider.Value.ToString("F2") + " " + slider.Tag);
+			}
+			if (FocusManager.GetFocusedElement(this) is CheckBox checkbox)
+			{
+				ReadTextToScreenReader(UIElementAutomationPeer.FromElement(checkbox).GetName() + " " + (checkbox.IsChecked.Value ? "On" : "Off"));
+			}
+		}
 
-            source.SetBinding(AutomationProperties.AutomationIdProperty, new Binding
-            {
-                Path = new PropertyPath("Content.AutomationId"),
-                RelativeSource = new RelativeSource() { Mode = RelativeSourceMode.Self }
-            });
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
+			foreach (var ctrl in this.GetChildren())
+			{
+				if (ctrl is Slider slider)
+				{
+					UIElementAutomationPeer.CreatePeerForElement(slider);
 
-            source.SetBinding(AutomationProperties.NameProperty, new Binding
-            {
-                Path = new PropertyPath("Content.AutomationName"),
-                RelativeSource = new RelativeSource() { Mode = RelativeSourceMode.Self }
-            });
-        }
-    }
+					slider.ValueChanged += Slider_ValueChanged;
+					var peer = UIElementAutomationPeer.FromElement(slider);
+					if (peer != null)
+					{
+						
+					}
+				}
+			}
+			vm.Device.RawService.JSON();
+			ChannelList.Items.Refresh();
+			ChannelList.SelectedIndex = 0;
+			ChannelList.Focus();
+		}
+	}
+
+	public class MySlider : Slider
+	{
+		protected override void OnValueChanged(double oldValue, double newValue)
+		{
+			UIElementAutomationPeer.FromElement(this).InvalidatePeer();
+			base.OnValueChanged(oldValue, newValue);
+		}
+	}
+	public class MyList : ListView
+	{
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+		{
+			base.PrepareContainerForItemOverride(element, item);
+			FrameworkElement source = element as FrameworkElement;
+
+			source.SetBinding(AutomationProperties.AutomationIdProperty, new Binding
+			{
+				Path = new PropertyPath("Content.AutomationId"),
+				RelativeSource = new RelativeSource() { Mode = RelativeSourceMode.Self }
+			});
+
+			source.SetBinding(AutomationProperties.NameProperty, new Binding
+			{
+				Path = new PropertyPath("Content.AutomationName"),
+				RelativeSource = new RelativeSource() { Mode = RelativeSourceMode.Self }
+			});
+		}
+	}
 }

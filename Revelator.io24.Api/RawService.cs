@@ -1,4 +1,5 @@
-﻿using Revelator.io24.Api.Scene;
+﻿using Revelator.io24.Api.Models;
+using Revelator.io24.Api.Scene;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace Revelator.io24.Api
         private Dictionary<string, float> _values = new Dictionary<string, float>();
         private Dictionary<string, string> _string = new Dictionary<string, string>();
         private Dictionary<string, string[]> _strings = new Dictionary<string, string[]>();
-        public Dictionary<string, Tuple<float, float>> _valueRanges = new Dictionary<string, Tuple<float, float>>();
+        internal Dictionary<string, ValueRange> _propertyValueRanges = new Dictionary<string, ValueRange>();
 
         public event SyncronizeEvent Syncronized;
         public event ValueStateEvent ValueStateUpdated;
@@ -39,22 +40,7 @@ namespace Revelator.io24.Api
         {
             if (route is null)
                 return;
-
-            var splits = route.Split('/');
-            var propName = splits[splits.Length - 1];
-            if (_valueRanges.TryGetValue(propName, out var valueRange))
-            {
-                Serilog.Log.Information("splitting to get " + propName);
-                Serilog.Log.Information("value was " + value.ToString());
-
-                var min = valueRange.Item1;
-                var max = valueRange.Item2;
-
-                value -= min;
-                max -= min;
-                value /= max;
-                Serilog.Log.Information("value is now: " + value.ToString());
-            }
+                       
             //Check if value has actually changed:
             //if (_values.TryGetValue(route, out var oldValue) && oldValue == value)
             //    return;
@@ -83,28 +69,28 @@ namespace Revelator.io24.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            //Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }
 
         internal void UpdateStringState(string route, string value)
         {
-            Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
+            //Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
             _string[route] = value;
             StringStateUpdated?.Invoke(route, value);
         }
 
         internal void UpdateStringsState(string route, string[] values)
         {
-            Serilog.Log.Information("update strings state");
+            //Serilog.Log.Information("update strings state");
             _strings[route] = values;
             StringsStateUpdated?.Invoke(route, values);
         }
 
         internal void Syncronize(string json)
         {
-            Serilog.Log.Information("Synchronize");
+            //Serilog.Log.Information("Synchronize");
             //Serilog.Log.Warning(json);
             var doc = JsonSerializer.Deserialize<JsonDocument>(json);
             if (doc is null)
@@ -136,7 +122,7 @@ namespace Revelator.io24.Api
             var root = doc.RootElement;
 
 
-            Traverse(root, string.Empty);
+            TraverseSceneFile(root, string.Empty);
 
             Syncronized?.Invoke();
         }
@@ -174,6 +160,63 @@ namespace Revelator.io24.Api
             }
         }
 
+        private void TraverseSceneFile(JsonElement element, string path)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Number:
+                    //_values[path] = element.GetSingle();
+                    var value = element.GetSingle();
+                    //Serilog.Log.Information(path + ": " + element.GetSingle().ToString());
+                    _propertyValueRanges.TryGetValue(path, out var range);
+
+                    if (range != null)
+                    {
+                        var topOfRange = range.Max - range.Min;
+                        value = (value - range.Min) / topOfRange;
+
+                    }
+                    SetValue(path, value);
+                    return;
+                case JsonValueKind.String:
+                    _string[path] = element.GetString() ?? string.Empty;
+                    return;
+                case JsonValueKind.Array:
+                    var array = element.EnumerateArray();
+                    _strings[path] = array
+                        .Select(item => item.GetString() ?? string.Empty)
+                        .Where(str => str != string.Empty)
+                        .ToArray();
+                    return;
+                case JsonValueKind.Object:
+                    TraverseSceneObject(element, path);
+                    return;
+                default:
+                    //TODO: Logging, what is going on here?
+                    return;
+            }
+        }
+        private void TraverseSceneObject(JsonElement objectElement, string path)
+        {
+            var properties = objectElement.EnumerateObject();
+            foreach (var property in properties)
+            {
+                switch (property.Name)
+                {
+                    //Theese we can get from the ValueKind, should just be passed up with no '/' added.
+                    case "children":
+                    case "values":
+                    case "ranges":
+                    case "strings":
+                        TraverseSceneFile(property.Value, CreatePath(path));
+                        continue;
+                    default:
+                        var pathName = CreatePath(path, property.Name);
+                        TraverseSceneFile(property.Value, pathName);
+                        continue;
+                }
+            }
+        }
         private void TraverseObject(JsonElement objectElement, string path)
         {
             var properties = objectElement.EnumerateObject();
@@ -210,10 +253,6 @@ namespace Revelator.io24.Api
             return $"{path}/{propertyName}";
         }
 
-        public void BuildRanges()
-        {
-            //_valueRanges.Add("preampgain", new Tuple<float, float>(0, 60));
-            //_valueRanges.Add("hpf", new Tuple<float, float>(0, 1000));
-        }
+      
     }
 }

@@ -61,7 +61,7 @@ namespace Revelator.io24.Api.Services
 
                     if (messageType != "MS")
                     {
-                        Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
+                        //Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
                         continue;
                     }
 
