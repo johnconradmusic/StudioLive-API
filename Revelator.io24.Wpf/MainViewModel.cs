@@ -27,7 +27,7 @@ namespace Revelator.io24.Wpf
             MonitorValues = valuesMonitorModel;
             FatChannelValues = fatChannelMonitorModel;
 
-            Device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
+            //Device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
 
             RoutingMap = new RoutingMapper(routingTable);
             VolumeMap = new VolumeMapper(routingTable);

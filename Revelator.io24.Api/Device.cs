@@ -1,4 +1,5 @@
 ﻿using Revelator.io24.Api.Attributes;
+using Revelator.io24.Api.Models.Auxes;
 using Revelator.io24.Api.Models.Global;
 using Revelator.io24.Api.Models.Inputs;
 using Revelator.io24.Api.Models.Outputs;
@@ -8,7 +9,7 @@ using System.ComponentModel;
 
 namespace Revelator.io24.Api
 {
-    public class Device : INotifyPropertyChanged
+    public class Device 
     {
 
         private readonly RawService _rawService;
@@ -17,11 +18,10 @@ namespace Revelator.io24.Api
 
         public ObservableCollection<LineChannel> Channels { get; set; } = new ObservableCollection<LineChannel>();
 
-        //public LineChannel Channel1 { get; }
+        public ObservableCollection<AuxChannel> AuxChannels { get; set; } = new ObservableCollection<AuxChannel>();
 
         public readonly int ChannelCount = 32;
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public readonly int AuxCount = 16;
 
         public Main Main { get; }
         public Device(RawService rawService)
@@ -33,18 +33,17 @@ namespace Revelator.io24.Api
             {
                 var chan = new LineChannel("line/ch" + (i + 1).ToString(), rawService);
                 Channels.Add(chan);
-                chan.PropertyChanged += Chan_PropertyChanged;
             }
-
+            for (int i = 0; i < AuxCount; i++)
+            {
+                var chan = new AuxChannel("aux/ch" + (i + 1).ToString(), rawService);
+                AuxChannels.Add(chan);
+            }
             Main = new Main(rawService);
 
         }
 
-        private void Chan_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //Serilog.Log.Information("property on chan: " + e.ToString());
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
-
-        }
+  
+        
     }
 }

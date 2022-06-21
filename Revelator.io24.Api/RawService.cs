@@ -165,7 +165,6 @@ namespace Revelator.io24.Api
             switch (element.ValueKind)
             {
                 case JsonValueKind.Number:
-                    //_values[path] = element.GetSingle();
                     var value = element.GetSingle();
                     //Serilog.Log.Information(path + ": " + element.GetSingle().ToString());
                     _propertyValueRanges.TryGetValue(path, out var range);
@@ -176,7 +175,8 @@ namespace Revelator.io24.Api
                         value = (value - range.Min) / topOfRange;
 
                     }
-                    SetValue(path, value);
+                    _values[path] = value;
+                    //SetValue(path, value);
                     return;
                 case JsonValueKind.String:
                     _string[path] = element.GetString() ?? string.Empty;
