@@ -10,15 +10,17 @@
         Loaded="Window_Loaded"
         FocusManager.GotFocus="Window_GotFocus"
         Title="Mixer" Height="450" Width="1210">
-
+    <Window.Resources>
+        <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
+    </Window.Resources>
     <WrapPanel Background="DarkGray">
-                    <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}" >
-                        <local:MyList.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
-                            </DataTemplate>
-                        </local:MyList.ItemTemplate>
-                    </local:MyList>
+        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}" SelectionChanged="ChannelList_SelectionChanged" >
+            <local:MyList.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
+                </DataTemplate>
+            </local:MyList.ItemTemplate>
+        </local:MyList>
         <TabControl Background="DarkGray">
             <TabItem IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="Channel Controls">
                 <WrapPanel>
@@ -41,18 +43,14 @@
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="Pan"/>
                         </WrapPanel>
                         <WrapPanel>
-                            <Slider AutomationProperties.Name="Level" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0">
-                                <Slider.Value>
-                                    <Binding ElementName="ChannelList" Path="SelectedItem.volume" Mode="TwoWay" FallbackValue="0"/>
-                                </Slider.Value>
-                            </Slider>
+                            <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="Level" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
                             <TextBlock Margin="5" VerticalAlignment="Center" Text="Level"/>
                         </WrapPanel>
                         <WrapPanel>
-                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup A" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.A, Mode=TwoWay}">A</CheckBox>
-                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup B" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.B, Mode=TwoWay}">B</CheckBox>
-                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup C" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.C, Mode=TwoWay}">C</CheckBox>
-                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup D" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.D, Mode=TwoWay}">D</CheckBox>
+                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup A" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.sub1, Mode=TwoWay}">A</CheckBox>
+                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup B" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.sub2, Mode=TwoWay}">B</CheckBox>
+                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup C" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.sub3, Mode=TwoWay}">C</CheckBox>
+                            <CheckBox Margin="5" AutomationProperties.Name="Subgroup D" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.sub4, Mode=TwoWay}">D</CheckBox>
                         </WrapPanel>
                         <CheckBox Margin="5" AutomationProperties.Name="Send to Main" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.lr, Mode=TwoWay}">Send To Main</CheckBox>
 
@@ -180,13 +178,84 @@
             </TabItem>
             <TabItem Header="Aux Sends">
                 <WrapPanel>
-                    <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Aux Select" x:Name="AuxChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.AuxChannels}" >
-                        <local:MyList.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock IsEnabled="{Binding Slave}" AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
-                            </DataTemplate>
-                        </local:MyList.ItemTemplate>
-                    </local:MyList>
+                    <StackPanel>
+                        <GroupBox Margin="5" Height="150" Width="800" IsEnabled="{Binding SelectedChannelIsBus}" Header="Channels to selected Aux">
+                            <!--<WrapPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem}" AutomationProperties.Name="{Binding Device.Channels[0].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding Device.Channels[0].username}"/>
+                                </StackPanel>
+                            </WrapPanel>-->
+                        </GroupBox>
+                        <GroupBox Margin="5" Height="150" Width="800" IsEnabled="{Binding SelectedChannelIsBus, Converter={StaticResource booleanInverterConverter}}" Header="Selected channel to auxes">
+                            <WrapPanel x:Name="ChannelSendsToAuxes">
+                                <!--<StackPanel>
+                                    <Slider IsEnabled="{Binding Device.Buses[0].LinkSlave}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux1, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Channels[0].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[0].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider IsEnabled="{Binding Device.Buses[1].LinkSlave}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux2, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[1].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[1].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider  IsEnabled="{Binding Device.Buses[2].LinkSlave}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux3, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[2].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[2].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider  IsEnabled="{Binding Device.Buses[3].LinkSlave}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux4, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[3].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[3].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux5, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[4].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[4].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux6, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[5].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[5].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux7, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[6].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[6].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux8, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[7].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[7].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux9, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[8].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[8].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux10, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[9].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[9].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux11, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[10].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[10].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux12, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[11].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[11].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux13, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[12].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[12].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux14, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[13].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[13].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux15, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[14].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[14].username}"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem.aux16, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name="{Binding Device.Buses[15].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
+                                    <TextBlock Width="40" Margin="5" VerticalAlignment="Center" Text="{Binding Device.Buses[15].username}"/>
+                                </StackPanel>-->
+                            </WrapPanel>
+                        </GroupBox>
+                    </StackPanel>
                 </WrapPanel>
             </TabItem>
         </TabControl>

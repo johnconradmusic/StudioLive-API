@@ -40,7 +40,7 @@ namespace Revelator.io24.Api
         {
             if (route is null)
                 return;
-                       
+
             //Check if value has actually changed:
             //if (_values.TryGetValue(route, out var oldValue) && oldValue == value)
             //    return;
@@ -60,8 +60,11 @@ namespace Revelator.io24.Api
         }
 
         public string GetString(string route)
-            => _string.TryGetValue(route, out var value)
-                ? value : default;
+        {
+            //Serilog.Log.Information("GET: " + route);
+            return _string.TryGetValue(route, out var value)
+                           ? value : default;
+        }
 
         public string[] GetStrings(string route)
             => _strings.TryGetValue(route, out var value)
@@ -179,7 +182,9 @@ namespace Revelator.io24.Api
                     //SetValue(path, value);
                     return;
                 case JsonValueKind.String:
-                    _string[path] = element.GetString() ?? string.Empty;
+                    var strVal = element.GetString();
+                    _string[path] = strVal ?? string.Empty;
+                    //Serilog.Log.Information(path + ": " + strVal);
                     return;
                 case JsonValueKind.Array:
                     var array = element.EnumerateArray();
@@ -253,6 +258,6 @@ namespace Revelator.io24.Api
             return $"{path}/{propertyName}";
         }
 
-      
+
     }
 }

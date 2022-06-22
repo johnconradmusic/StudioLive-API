@@ -1,0 +1,54 @@
+﻿using Revelator.io24.Api.Attributes;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Revelator.io24.Api.Models.Auxes
+{
+    public class BusChannel : ChannelBase
+    {
+        public BusChannel(string routePrefix, RawService rawService) : base(routePrefix, rawService) { }
+
+        public int auxpremode { get => (int)GetValue(); set => SetValue(value); }
+        public int busmode { get => (int)GetValue(); set => SetValue(value); }
+        public float busdelay { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 1000, Enums.Unit.hz)][RouteValue("filter/hpf")] public float hipass { get => GetValue(); set => SetValue(value); }
+        public bool lr_assign { get => GetBoolean(); set => SetBoolean(value); }
+        public int bussrc { get => (int)GetValue(); set => SetValue(value); }
+
+        #region EQ
+        [RouteValue("eq/eqallon")] public bool eq_on { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon1")] public bool eq_bandon1 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon2")] public bool eq_bandon2 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon3")] public bool eq_bandon3 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon3")] public bool eq_bandon4 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon3")] public bool eq_bandon5 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandon4")] public bool eq_bandon6 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandop1")] public bool eq_bandop1 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqbandop4")] public bool eq_bandop6 { get { return GetBoolean(); } set { SetBoolean(value); } }
+        [RouteValue("eq/eqgain1")] public float eq_gain1 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqgain2")] public float eq_gain2 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqgain3")] public float eq_gain3 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqgain4")] public float eq_gain4 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqgain4")] public float eq_gain5 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqgain4")] public float eq_gain6 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq1")] public float eq_q1 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq2")] public float eq_q2 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq3")] public float eq_q3 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq4")] public float eq_q4 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq4")] public float eq_q5 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqq4")] public float eq_q6 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq1")] public float eq_freq1 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq2")] public float eq_freq2 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq3")] public float eq_freq3 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq4")] public float eq_freq4 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq4")] public float eq_freq5 { get => GetValue(); set => SetValue(value); }
+        [RouteValue("eq/eqfreq4")] public float eq_freq6 { get => GetValue(); set => SetValue(value); }
+
+        #endregion
+
+    }
+}

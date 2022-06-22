@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Revelator.io24.Api.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -107,10 +108,12 @@ namespace Revelator.io24.Wpf
         {
             if (FocusManager.GetFocusedElement(this) is Slider slider)
             {
+                var peer = UIElementAutomationPeer.FromElement(slider);
+                if (peer == null) return;
                 if (slider.Tag != null && slider.Tag.ToString() == "hz" && slider.Value > 1000)
                 {
                     var khzVal = slider.Value / 1000;
-                    ReadTextToScreenReader(UIElementAutomationPeer.FromElement(slider).GetName() + " " + khzVal.ToString("F1") + " " + "khz");
+                    ReadTextToScreenReader(peer.GetName() + " " + khzVal.ToString("F1") + " " + "khz");
 
                 }
                 if (slider.Tag != null && slider.Tag.ToString() == "pan")
@@ -136,19 +139,63 @@ namespace Revelator.io24.Wpf
             }
             if (FocusManager.GetFocusedElement(this) is CheckBox checkbox)
             {
-                ReadTextToScreenReader(UIElementAutomationPeer.FromElement(checkbox).GetName() + " " + (checkbox.IsChecked.Value ? "On" : "Off"));
+                if (checkbox.IsChecked.HasValue)
+                {
+                    var peer = UIElementAutomationPeer.FromElement(checkbox);
+                    if (peer == null) return;
+                    ReadTextToScreenReader(peer.GetName() + " " + (checkbox.IsChecked.Value ? "On" : "Off"));
+                }
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            for (int i = 0; i < 16; i++)
+            {
+                var stackPanel = new StackPanel();
+                var slider = new Slider();
+
+                Binding valueBinding = new Binding();
+                //valueBinding.Source = vm;
+                valueBinding.ElementName = "ChannelList";
+                valueBinding.Path = new PropertyPath("SelectedItem.aux" + (i + 1).ToString());
+                valueBinding.Mode = BindingMode.TwoWay;
+                slider.SetBinding(Slider.ValueProperty, valueBinding);
+                slider.Width = 40;
+                slider.Height = 100;
+                slider.Tag = "db";
+                slider.Minimum = -84;
+                slider.Maximum = 10;
+                slider.Orientation = Orientation.Vertical;
+
+                Binding nameBinding = new Binding();
+                nameBinding.Path = new PropertyPath("Device.Buses[" + i.ToString() + "].username");
+                //nameBinding.Source = vm;
+                slider.SetBinding(Slider.NameProperty, nameBinding);
+
+                var sliderPeer = UIElementAutomationPeer.CreatePeerForElement(slider);
+
+                stackPanel.Children.Add(slider);
+
+                TextBlock textBlock = new TextBlock();
+                textBlock.SetBinding(TextBlock.TextProperty, nameBinding);
+
+                stackPanel.Children.Add(textBlock);
+                ChannelSendsToAuxes.Children.Add(stackPanel);
+            }
+            //        < StackPanel >
+            //< Slider IsEnabled = "{Binding Device.Buses[0].LinkSlave}" Value = "{Binding ElementName=ChannelList, Path=SelectedItem.aux1, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name = "{Binding Device.Channels[0].username}" Tag = "db" AutomationProperties.LiveSetting = "Off"  SmallChange = "1" HorizontalAlignment = "Center" Height = "100" Orientation = "Vertical" Minimum = "-84"  Maximum = "10" TickPlacement = "Both" Ticks = "0.0" />
+
+            //                         < TextBlock Width = "40" Margin = "5" VerticalAlignment = "Center" Text = "{Binding Device.Buses[0].username}" />
+
+            //                            </ StackPanel >
+
             UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
             foreach (var ctrl in this.GetChildren())
             {
                 if (ctrl is Slider slider)
                 {
                     UIElementAutomationPeer.CreatePeerForElement(slider);
-
                     slider.ValueChanged += Slider_ValueChanged;
                 }
                 if (ctrl is CheckBox checkBox)
@@ -158,6 +205,16 @@ namespace Revelator.io24.Wpf
             ChannelList.Items.Refresh();
             ChannelList.SelectedIndex = 0;
             ChannelList.Focus();
+        }
+
+        private void ChannelList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ChannelList.SelectedItem is ChannelBase channel)
+            {
+                vm.SelectedChannel = channel;
+            }
+            else vm.SelectedChannel = null;
+            vm.OnPropertyChanged(nameof(vm.SelectedChannelIsBus));
         }
     }
 

@@ -1,4 +1,6 @@
 ﻿using Revelator.io24.Api;
+using Revelator.io24.Api.Models;
+using Revelator.io24.Api.Models.Auxes;
 using Revelator.io24.Api.Models.Monitor;
 using Revelator.io24.Wpf.Models;
 using System.ComponentModel;
@@ -16,6 +18,8 @@ namespace Revelator.io24.Wpf
         public RoutingMapper RoutingMap { get; set; }
         public VolumeMapper VolumeMap { get; set; }
         public VolumeDbMapper VolumeDbMap { get; set; }
+        public ChannelBase SelectedChannel { get; set; }
+        public bool SelectedChannelIsBus => SelectedChannel is BusChannel;
 
         public MainViewModel(
             RoutingTable routingTable,
