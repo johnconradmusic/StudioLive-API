@@ -11,10 +11,7 @@
         FocusManager.GotFocus="Window_GotFocus"
         Title="Mixer" Height="450" Width="1210">
 
-    <StackPanel Background="DarkGray">
-        <TabControl Background="DarkGray">
-            <TabItem IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="Channel Controls">
-                <WrapPanel>
+    <WrapPanel Background="DarkGray">
                     <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}" >
                         <local:MyList.ItemTemplate>
                             <DataTemplate>
@@ -22,6 +19,9 @@
                             </DataTemplate>
                         </local:MyList.ItemTemplate>
                     </local:MyList>
+        <TabControl Background="DarkGray">
+            <TabItem IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="Channel Controls">
+                <WrapPanel>
                     <StackPanel Margin="5" Background="DarkGray">
                         <TextBox AcceptsReturn="True" Margin="5" Height="20" FontWeight="Bold" FontSize="12" Text="{Binding ElementName=ChannelList, Path=SelectedItem.username}" />
                         <WrapPanel>
@@ -193,6 +193,6 @@
         <StatusBar VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
             <TextBlock  AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values" RenderTransformOrigin="0.502,4.013"/>
         </StatusBar>
-    </StackPanel>
+    </WrapPanel>
 
 </Window>
