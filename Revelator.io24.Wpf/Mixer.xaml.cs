@@ -150,46 +150,7 @@ namespace Revelator.io24.Wpf
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 16; i++)
-            {
-                var stackPanel = new StackPanel();
-                var slider = new Slider();
-
-                Binding valueBinding = new Binding();
-                //valueBinding.Source = vm;
-                valueBinding.ElementName = "ChannelList";
-                valueBinding.Path = new PropertyPath("SelectedItem.aux" + (i + 1).ToString());
-                valueBinding.Mode = BindingMode.TwoWay;
-                slider.SetBinding(Slider.ValueProperty, valueBinding);
-                slider.Width = 40;
-                slider.Height = 100;
-                slider.Tag = "db";
-                slider.Minimum = -84;
-                slider.Maximum = 10;
-                slider.Orientation = Orientation.Vertical;
-
-                Binding nameBinding = new Binding();
-                nameBinding.Path = new PropertyPath("Device.Buses[" + i.ToString() + "].username");
-                //nameBinding.Source = vm;
-                slider.SetBinding(Slider.NameProperty, nameBinding);
-
-                var sliderPeer = UIElementAutomationPeer.CreatePeerForElement(slider);
-
-                stackPanel.Children.Add(slider);
-
-                TextBlock textBlock = new TextBlock();
-                textBlock.SetBinding(TextBlock.TextProperty, nameBinding);
-
-                stackPanel.Children.Add(textBlock);
-                ChannelSendsToAuxes.Children.Add(stackPanel);
-            }
-            //        < StackPanel >
-            //< Slider IsEnabled = "{Binding Device.Buses[0].LinkSlave}" Value = "{Binding ElementName=ChannelList, Path=SelectedItem.aux1, Mode=TwoWay, FallbackValue=0}" AutomationProperties.Name = "{Binding Device.Channels[0].username}" Tag = "db" AutomationProperties.LiveSetting = "Off"  SmallChange = "1" HorizontalAlignment = "Center" Height = "100" Orientation = "Vertical" Minimum = "-84"  Maximum = "10" TickPlacement = "Both" Ticks = "0.0" />
-
-            //                         < TextBlock Width = "40" Margin = "5" VerticalAlignment = "Center" Text = "{Binding Device.Buses[0].username}" />
-
-            //                            </ StackPanel >
-
+          
             UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
             foreach (var ctrl in this.GetChildren())
             {
@@ -218,14 +179,6 @@ namespace Revelator.io24.Wpf
         }
     }
 
-    public class MySlider : Slider
-    {
-        protected override void OnValueChanged(double oldValue, double newValue)
-        {
-            UIElementAutomationPeer.FromElement(this).InvalidatePeer();
-            base.OnValueChanged(oldValue, newValue);
-        }
-    }
     public class MyList : ListView
     {
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)

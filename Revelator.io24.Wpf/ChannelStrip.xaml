@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Revelator.io24.Wpf.ChannelStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Revelator.io24.Wpf"
+             xmlns:nm="clr-namespace:NumericUpDownControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="100">
+    <StackPanel DataContext="{Binding}">
+        <WrapPanel Orientation="Horizontal">
+            <nm:NumericBox Value="{Binding preampgain}" Increment="1" Minimum="0" Maximum="60"/>
+            <TextBlock VerticalAlignment="Center" FontSize="12" Text="Trim"/>
+        </WrapPanel>
+        
+    </StackPanel>
+</UserControl>
