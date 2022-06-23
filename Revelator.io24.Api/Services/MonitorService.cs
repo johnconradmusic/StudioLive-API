@@ -22,13 +22,15 @@ namespace Revelator.io24.Api.Services
         private readonly Thread _thread;
         private readonly FatChannelMonitorModel _fatChannel;
         private readonly ValuesMonitorModel _values;
-
+        private readonly RawService _rawService;
         public ushort Port { get; }
 
         public MonitorService(
             FatChannelMonitorModel fatChannelMonitorModel,
-            ValuesMonitorModel valuesMonitorModel)
+            ValuesMonitorModel valuesMonitorModel,
+            RawService rawService)
         {
+            this._rawService = rawService;
             _udpClient = new UdpClient(0);
             var ipEndpoint = _udpClient.Client.LocalEndPoint as IPEndPoint;
             if (ipEndpoint is null)
@@ -51,17 +53,17 @@ namespace Revelator.io24.Api.Services
                 {
                     IPEndPoint endPoint = null;
                     var data = _udpClient.Receive(ref endPoint);
-
+                    //Log.Information("received on udp");
                     var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
                     if (!isUcNetPackage)
                         continue;
 
                     var messageType = PackageHelper.GetMessageType(data);
-                    Log.Debug("[{className}] {messageType}", nameof(MonitorService), messageType);
+                    //Log.Information("[{className}] {messageType}", nameof(MonitorService), messageType);
 
                     if (messageType != "MS")
                     {
-                        //Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
+                        Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
                         continue;
                     }
 
@@ -84,189 +86,33 @@ namespace Revelator.io24.Api.Services
         {
             //TODO: Add back... When the whole range thing is figured out.
             //return;
-
+            
             var header = Encoding.ASCII.GetString(data.Range(0, 4)); //UC01
             var unknownValue = BitConverter.ToUInt16(data.Range(4, 6), 0); //always: 0x6C, 0xDB : 108, 219: 56172 (27867 inversed)
             var type = Encoding.ASCII.GetString(data.Range(6, 8)); //MS: Monitor Status?
             var from = data.Range(8, 10);
             var to = data.Range(10, 12);
-            //Good tool for testing, send to source:
-            //https://www.szynalski.com/tone-generator/
-            //Tone + balance (testing of left and right)
+            var msg = Encoding.ASCII.GetString(data.Range(12, 16));
+            //Log.Information(msg);
 
-            //What does theese numbers mean?
-            //length             some number
-            //                       18
-            //81:  6C:65:76:6C:00:00:12:00
-            //                       20
-            //85:  6c:65:76:6c:00:00:14:00
-            //                       22
-            //101: 72:65:64:75:00:00:16:00
-            var unknownHeader = BitConverter.ToString(data.Range(12, 20)).Replace("-", ":"); //Always the same (but there is tree of them, 81, 85, 101).
-
-            //FatChannel, gain reduction etc.:
-            if (data.Length == 101)
+            switch (msg)
             {
-                //Gate meter:
-                var gateL_A = BitConverter.ToUInt16(data, 20);
-                var gateR_A = BitConverter.ToUInt16(data, 22);
-
-                var unknown1 = data.Range(24, 28);
-                var unknown1Val = BitConverter.ToString(unknown1).Replace("-", "");
-                if (unknown1Val != "FFFFFFFF")
-                    Log.Information("Something 1: {val1}", unknown1Val);
-
-                //Compressor VU meter (FF FF is the lowest value)
-                //Ex. DeEss is always Standard and not the VU meter.
-                var compressorVuMonitor = data.Range(28, 30);
-                //TODO: Test on 30..32, I guess there is a left and right here.
-
-                var unknown2 = data.Range(30, 36);
-                var unknown2Val = BitConverter.ToString(unknown2).Replace("-", "");
-                if (unknown2Val != "FFFFFFFFFFFF")
-                    Log.Information("Something 2: {val1}", unknown2Val);
-
-                //Compressor Standard (F9FF: OFF):
-                //There might be a bug here. I am not sure where this indicator is suposed to be shown.
-                var compressorStandardMonitor = data.Range(36, 38);
-                //TODO: Test on 38..40, I guess there is a left and right here.
-
-                var unknown3 = data.Range(38, 44);
-                var unknown3Val = BitConverter.ToString(unknown3).Replace("-", "");
-                if (unknown3Val != "FFFFFFFFFFFF")
-                    Log.Information("Something 3: {val1}", unknown3Val);
-
-                //One of the gain reduction meters are probarbly the Gate meter
-                //Gain Reduction Meter (0xFF, 0xFF is highest = no blue line):
-                _fatChannel.GainReductionMeter_L = BitConverter.ToUInt16(data, 44);
-                _fatChannel.GainReductionMeter_R = BitConverter.ToUInt16(data, 46);
-
-                var unknown4 = data.Range(48, 101);
-                var unknown4Val = BitConverter.ToString(unknown4).Replace("-", "");
-
-                //What is this, why does it sometimes change, but almost never?
-                var prevValues = new[] {
-                    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0600010000040000020400040000040800040000000C000400040010000400070014000200",
-                    "FFFFFFFFF9FFF9FFFFFFFFFFFFFFFFFF0600010000040000020400040000040800040000000C000400040010000400070014000200",
-                    "FFFFFFFFF9FFF9FFF9FFF9FFF9FFF9FF0600010000040000020400040000040800040000000C000400040010000400070014000200",
-                    "FFFFFFFFFFFFFFFFF9FFF9FFFFFFFFFF0600010000040000020400040000040800040000000C000400040010000400070014000200",
-                    "FFFFFFFFFFFFFFFFFFFFF9FFFFFFFFFF0600010000040000020400040000040800040000000C000400040010000400070014000200",
-                    "FFFFFFFFF9FFF9FFF9FFF9FFFFFFFFFF0600010000040000020400040000040800040000000C000400040010000400070014000200"
-                };
-
-                //This FF->something->FF changes a lot if I clip the output channels. Ex. playing music at 100% percent and run +10db on Input and Output
-                // WARNING: (be carefull on this test).
-                if (!prevValues.Contains(unknown4Val))
-                    Log.Information("Something 3: {val1}", unknown4Val);
-
-                _fatChannel.RaiseModelUpdated();
+                case "levl":
+                    for (int i = 0; i < 32; i++)
+                    {
+                        var val = BitConverter.ToUInt16(data, 20 + (i * 2));
+                        //Log.Information("meter: " + (i + 1).ToString() + " - " + val.ToString());
+                        float normalizedValue = (float)val / (float)ushort.MaxValue;
+                        //Log.Information(normalizedValue.ToString());
+                        _values.Line[i] = normalizedValue;
+                        _rawService.SetValue("line/ch" + (i + 1).ToString() + "/level_meter", normalizedValue);
+                    }
+                    _values.RaiseModelUpdated();
+                    break;
+                case "redu":
+                    break;
             }
-            //Audio monitoring (mic channels unlinked):
-            else if (data.Length == 81)
-            {
-                //Microphone:
-                _values.Microphone_L = BitConverter.ToUInt16(data, 20); //XLR Input left
-                _values.Microphone_R = BitConverter.ToUInt16(data, 22); //XLR Input Right
-
-                //Unknown 1:
-                var unknown1 = data.Range(24, 32);
-                var unknown1Val = BitConverter.ToString(unknown1).Replace("-", "");
-                if (unknown1Val != "0000000000000000")
-                    Log.Information("Unknown 1: {val1}", unknown1Val);
-
-                //Outputs:
-                //Palyback L/R:
-                _values.Playback_L = BitConverter.ToUInt16(data, 32);
-                _values.Playback_R = BitConverter.ToUInt16(data, 34);
-
-                //Virtual Output A L/R:
-                _values.VirtualOutputA_L = BitConverter.ToUInt16(data, 36);
-                _values.VirtualOutputA_R = BitConverter.ToUInt16(data, 38);
-
-                //Virtual Output B L/R:
-                _values.VirtualOutputB_L = BitConverter.ToUInt16(data, 40);
-                _values.VirtualOutputB_R = BitConverter.ToUInt16(data, 42);
-
-                //Mixes:
-                //Stream Mix 1:
-                _values.StreamMix1_L = BitConverter.ToUInt16(data, 44);
-                _values.StreamMix1_R = BitConverter.ToUInt16(data, 46);
-
-                //Stream Mix 2:
-                _values.StreamMix2_L = BitConverter.ToUInt16(data, 48);
-                _values.StreamMix2_R = BitConverter.ToUInt16(data, 50);
-
-                //Main monitor:
-                _values.Main_L = BitConverter.ToUInt16(data, 52);
-                _values.Main_R = BitConverter.ToUInt16(data, 54);
-
-                //Unknown 2:
-                var unknown2 = data.Range(56);
-                var unknown2Val = BitConverter.ToString(unknown2).Replace("-", "");
-                if (unknown2Val != "0400000000060001000600060004000C000400070010000200")
-                    Log.Information("Unknown 2: {val1}", unknown2Val);
-
-                _values.RaiseModelUpdated();
-            }
-            //Audio monitoring (mic channels linked):
-            else if (data.Length == 85)
-            {
-                //Microphone L/R:
-                _values.Microphone_L = BitConverter.ToUInt16(data, 20); //XLR Input left
-                _values.Microphone_R = BitConverter.ToUInt16(data, 22); //XLR Input Right
-
-                //Microphone L/R again?:
-                var somethingL = BitConverter.ToUInt16(data, 24); //Same as Microphone L
-                var somethingR = BitConverter.ToUInt16(data, 26); //Same as Microphone R
-                if (_values.Microphone_L != somethingL)
-                    Log.Information("Mic L != Something L: {val1} {val2}", _values.Microphone_L, somethingL);
-                if (_values.Microphone_R != somethingR)
-                    Log.Information("Mic R != Something R: {val1} {val2}", _values.Microphone_R, somethingR);
-
-                //Unknown 1:
-                var unknown1 = data.Range(32, 36);
-                var unknown1Val = BitConverter.ToString(unknown1).Replace("-", "");
-                if (unknown1Val != "00000000")
-                    Log.Information("Unknown 1: {val1}", unknown1Val);
-
-                //Outputs:
-                //Playback:
-                _values.Playback_L = BitConverter.ToUInt16(data, 36);
-                _values.Playback_R = BitConverter.ToUInt16(data, 38);
-
-                //Virtual Output A L/R:
-                _values.VirtualOutputA_L = BitConverter.ToUInt16(data, 40);
-                _values.VirtualOutputA_R = BitConverter.ToUInt16(data, 42);
-
-                //Virtual Output B L/R:
-                _values.VirtualOutputB_L = BitConverter.ToUInt16(data, 44);
-                _values.VirtualOutputB_R = BitConverter.ToUInt16(data, 46);
-
-                //Mixes:
-                //Stream Mix 1:
-                _values.StreamMix1_L = BitConverter.ToUInt16(data, 48);
-                _values.StreamMix1_R = BitConverter.ToUInt16(data, 50);
-
-                //Stream Mix 2:
-                _values.StreamMix2_L = BitConverter.ToUInt16(data, 52);
-                _values.StreamMix2_R = BitConverter.ToUInt16(data, 54);
-
-                //Main monitor:
-                _values.Main_L = BitConverter.ToUInt16(data, 56);
-                _values.Main_R = BitConverter.ToUInt16(data, 58);
-
-                //Unknown 2:
-                var unknown2 = data.Range(60);
-                var unknown2Val = BitConverter.ToString(unknown2).Replace("-", "");
-                if (unknown2Val != "0400000000080001000800060004000E000400070012000200")
-                    Log.Information("Unknown 2: {val1}", unknown2Val);
-
-                _values.RaiseModelUpdated();
-            }
-            else
-            {
-                //Log.Warning("Unknown data length: {val1}", data.Length);
-            }
+            return;
         }
 
         public void Dispose()

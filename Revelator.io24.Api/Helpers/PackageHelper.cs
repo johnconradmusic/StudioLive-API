@@ -40,13 +40,14 @@ namespace Revelator.io24.Api.Helpers
         {
             if (data is null || data.Length - index < 4)
                 return false;
-
+            
             //Serilog.Log.Information("is ucnet package!");
-            return data[index] == 0x55 && data[index + 1] == 0x43 && data[index + 2] == 0x00 && data[index + 3] == 0x01;
+            return data[index] == 85 && data[index + 1] == 67 && data[index + 2] == 0 && data[index + 3] == 1;
         }
 
         public static string GetMessageType(byte[] data)
         {
+            if (data.Length <= 1) return null;
             return Encoding.ASCII.GetString(data.Range(6, 8));
         }
 

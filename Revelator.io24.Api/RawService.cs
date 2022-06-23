@@ -51,6 +51,9 @@ namespace Revelator.io24.Api
 
         public float GetValue(string route)
         {
+
+            if (route.Contains("meter"))
+                Serilog.Log.Information(route);
             var success = _values.TryGetValue(route, out var value);
             if (success)
             {
@@ -72,7 +75,8 @@ namespace Revelator.io24.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            //Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            if (route.Contains("clip"))
+                Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }

@@ -21,6 +21,11 @@ namespace Revelator.io24.Wpf
         public ChannelBase SelectedChannel { get; set; }
         public bool SelectedChannelIsBus => SelectedChannel is BusChannel;
 
+        public MainViewModel()
+        {
+
+        }
+
         public MainViewModel(
             RoutingTable routingTable,
             Device device,

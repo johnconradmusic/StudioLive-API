@@ -128,52 +128,46 @@ namespace Revelator.io24.Api.Services
                         continue;
                     }
 
-                    var bytesReceived = networkStream.Read(receiveBytes, 0, receiveBytes.Length);
-                    var data = receiveBytes.Range(0, bytesReceived);
+                    var numberOfBytes = networkStream.Read(receiveBytes, 0, receiveBytes.Length);
+                    var data = receiveBytes.Range(0, numberOfBytes);
 
                     //Multiple messages can be in one package:
                     var chunks = PackageHelper.ChuncksByIndicator(data).ToArray();
-                    foreach (var chunck in chunks)
+                    foreach (var chunk in chunks)
                     {
-                        var messageType = PackageHelper.GetMessageType(chunck);
+                        var messageType = PackageHelper.GetMessageType(chunk);
                         Log.Information(messageType);
                         switch (messageType)
                         {
                             case "BO":
-                                BO(chunck);
+                                BO(chunk);
                                 break;
                             case "CK":
-                                var chks = PackageHelper.ChuncksByIndicator(chunck).ToArray();
-                                foreach (var c in chks)
-                                {
-                                    var mt = PackageHelper.GetMessageType(c);
-                                    Log.Information("CK? :" + mt);
-                                    //CK(c);
-                                }
                                 break;
                             case "PL":
                                 //PL List:
-                                PL(chunck);
+                                PL(chunk);
                                 break;
                             case "PR":
 
                                 break;
                             case "PV":
                                 //PV Settings packet
-                                PV(chunck);
+                                PV(chunk);
                                 break;
                             case "JM":
-                                var jm = JM.GetJsonMessage(chunck);
+                                var jm = JM.GetJsonMessage(chunk);
                                 Json(jm);
                                 break;
                             case "ZM":
-                                var zm = ZM.GetJsonMessage(chunck);
+                                var zm = ZM.GetJsonMessage(chunk);
                                 Json(zm);
                                 break;
                             case "PS":
-                                PS(chunck);
+                                PS(chunk);
                                 break;
                             case "MS":
+                                Log.Information("ms");
                                 break;
                             default:
                                 break;
@@ -182,7 +176,7 @@ namespace Revelator.io24.Api.Services
                 }
                 catch (Exception exception)
                 {
-                    Log.Error("[{className}] {exception}", nameof(CommunicationService), exception);
+                    Log.Error("[{className}] {data}", nameof(CommunicationService), receiveBytes);
                 }
             }
         }

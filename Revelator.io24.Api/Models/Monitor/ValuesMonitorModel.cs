@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Revelator.io24.Api.Models.Monitor
 {
@@ -6,26 +7,8 @@ namespace Revelator.io24.Api.Models.Monitor
     {
         public event EventHandler ValuesUpdated;
 
-        public ushort Microphone_L { get; set; }
-        public ushort Microphone_R { get; set; }
+        public float[] Line { get; set; } = new float[32];
 
-        public ushort Playback_L { get; set; }
-        public ushort Playback_R { get; set; }
-
-        public ushort VirtualOutputA_L { get; set; }
-        public ushort VirtualOutputA_R { get; set; }
-
-        public ushort VirtualOutputB_L { get; set; }
-        public ushort VirtualOutputB_R { get; set; }
-
-        public ushort Main_L { get; set; }
-        public ushort Main_R { get; set; }
-
-        public ushort StreamMix1_L { get; set; }
-        public ushort StreamMix1_R { get; set; }
-
-        public ushort StreamMix2_L { get; set; }
-        public ushort StreamMix2_R { get; set; }
 
         public void RaiseModelUpdated()
         {

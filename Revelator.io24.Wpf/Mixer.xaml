@@ -8,13 +8,62 @@
         xmlns:nm="clr-namespace:NumericUpDownControl"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
-        Loaded="Window_Loaded"
-        FocusManager.GotFocus="Window_GotFocus"
-        Title="Mixer" Height="450" Width="1210">
+        Title="Mixer" Height="850" Width="1810" WindowState="Maximized">
     <Window.Resources>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
+        <Style x:Key="muteButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border HorizontalAlignment="Center" Margin="5" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="2" Background="#FFEAEAEA" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#FFC31010"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="soloButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border HorizontalAlignment="Center" Margin="5" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="2" Background="#FFEAEAEA" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#FFC3A410"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <DataTemplate x:Key="channelStrip">
+            <StackPanel Orientation="Vertical" Width="60">
+                <Slider Minimum="0" Maximum="60" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Trim}" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
+                <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Clip Indicator}" Style="{StaticResource muteButton}" IsChecked="{Binding clip, Mode=OneWay}"/>
+                <ProgressBar Orientation="Horizontal" Height="10" Minimum="-64" Maximum="0" Value="{Binding level_meter, Mode=OneWay}"/>
+
+                <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Solo}" Style="{StaticResource soloButton}" IsChecked="{Binding solo}" Content="Solo"/>
+                <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Mute}" Style="{StaticResource muteButton}" IsChecked="{Binding mute}" Content="Mute"/>
+                <Slider Minimum="-100" Maximum="100" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Pan}" Value="{Binding pan}" Orientation="Horizontal" Width="40"/>
+                <Slider Minimum="-84" Maximum="10" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Level}" Value="{Binding volume}" Orientation="Vertical" Height="80"/>
+                <TextBlock Width="auto" Height="20" Margin="5" Background="AntiqueWhite" Text="{Binding Path=username, Mode=TwoWay}" />
+            </StackPanel>
+        </DataTemplate>
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="ToggleButton">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
     </Window.Resources>
-    <WrapPanel Background="DarkGray">
+    <!--<WrapPanel Background="DarkGray">
         <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}" SelectionChanged="ChannelList_SelectionChanged" >
             <local:MyList.ItemTemplate>
                 <DataTemplate>
@@ -60,7 +109,7 @@
                         </WrapPanel>
                         <CheckBox Margin="5" AutomationProperties.Name="Send to Main" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.lr, Mode=TwoWay}">Send To Main</CheckBox>
 
-                        <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+                        
                     </StackPanel>
                     <nm:NumericBox Tag="db"  Minimum="0" Maximum="60" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain, Mode=TwoWay}"/>
                 </WrapPanel>
@@ -87,7 +136,7 @@
 
                     <CheckBox Margin="5" AutomationProperties.Name="Expander" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.gate_expander, Mode=TwoWay}">Expander</CheckBox>
 
-                    <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+                    
                 </StackPanel>
             </TabItem>
             <TabItem IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="Compressor Controls">
@@ -117,7 +166,7 @@
                     <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
                     <CheckBox AutomationProperties.Name="Compressor Auto Time" Margin="5" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.comp_automode, Mode=TwoWay}">Auto Mode</CheckBox>
 
-                    <!--<Button Margin="5" Content="test" x:Name="testButton" Click="testButton_Click"/>-->
+                    
                 </StackPanel>
             </TabItem>
             <TabItem IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkSlave}" Header="EQ Controls">
@@ -187,12 +236,12 @@
                 <WrapPanel>
                     <StackPanel>
                         <GroupBox Margin="5" Height="150" Width="800" IsEnabled="{Binding SelectedChannelIsBus}" Header="Channels to selected Aux">
-                            <!--<WrapPanel>
+                            <WrapPanel>
                                 <StackPanel>
                                     <Slider Value="{Binding ElementName=ChannelList, Path=SelectedItem}" AutomationProperties.Name="{Binding Device.Channels[0].username}" Tag="db" AutomationProperties.LiveSetting="Off"  SmallChange="1" HorizontalAlignment="Center" Height="100" Orientation="Vertical" Minimum="-84"  Maximum="10" TickPlacement="Both" Ticks="0.0"/>
                                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding Device.Channels[0].username}"/>
                                 </StackPanel>
-                            </WrapPanel>-->
+                            </WrapPanel>
                         </GroupBox>
                         <GroupBox Margin="5" Height="150" Width="800" IsEnabled="{Binding SelectedChannelIsBus, Converter={StaticResource booleanInverterConverter}}" Header="Selected channel to auxes">
                             <WrapPanel>
@@ -208,6 +257,26 @@
         <StatusBar VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
             <TextBlock  AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values" RenderTransformOrigin="0.502,4.013"/>
         </StatusBar>
+    </WrapPanel>-->
+    <WrapPanel VerticalAlignment="Bottom">
+        <ScrollViewer VerticalAlignment="Bottom" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Device.Channels, Mode=TwoWay}" ItemTemplate="{StaticResource channelStrip}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+        <StackPanel Orientation="Vertical" Width="60">
+            <Slider Minimum="0" Maximum="60" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Trim}" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
+            <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Clip Indicator}" Style="{StaticResource muteButton}" IsChecked="{Binding clip, Mode=OneWay}"/>
+            <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Solo}" Style="{StaticResource soloButton}" IsChecked="{Binding solo}" Content="Solo"/>
+            <ToggleButton AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Mute}" Style="{StaticResource muteButton}" IsChecked="{Binding mute}" Content="Mute"/>
+            <Slider Minimum="-100" Maximum="100" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Pan}" Value="{Binding pan}" Orientation="Horizontal" Width="40"/>
+            <Slider Minimum="-84" Maximum="10" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=username, StringFormat=\{0\} Level}" Value="{Binding volume}" Orientation="Vertical" Height="80"/>
+            <TextBlock Width="auto" Height="20" Margin="5" Background="AntiqueWhite" Text="{Binding Path=username, Mode=TwoWay}" />
+            <ProgressBar Orientation="Horizontal" Height="10" Minimum="0" Maximum="1" Value="{Binding MonitorValues.Line[28], Mode=OneWay}"/>
+        </StackPanel>
     </WrapPanel>
-
 </Window>
