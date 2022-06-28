@@ -8,6 +8,6 @@ namespace Revelator.io24.Api.Enums
 {
 	public enum Unit
 	{
-		none, db, hz, khz, octave
+		none, db, hz, khz, octave, ms
 	}
 }

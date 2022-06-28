@@ -19,18 +19,18 @@ namespace Revelator.io24.Api.Models.Inputs
         [RouteValue("eq/eqbandon4")] public bool eq_bandon4 { get { return GetBoolean(); } set { SetBoolean(value); } }
         [RouteValue("eq/eqbandop1")] public bool eq_bandop1 { get { return GetBoolean(); } set { SetBoolean(value); } }
         [RouteValue("eq/eqbandop4")] public bool eq_bandop4 { get { return GetBoolean(); } set { SetBoolean(value); } }
-        [RouteValue("eq/eqgain1")] public float eq_gain1 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqgain2")] public float eq_gain2 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqgain3")] public float eq_gain3 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqgain4")] public float eq_gain4 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqq1")] public float eq_q1 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqq2")] public float eq_q2 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqq3")] public float eq_q3 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqq4")] public float eq_q4 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqfreq1")] public float eq_freq1 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqfreq2")] public float eq_freq2 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqfreq3")] public float eq_freq3 { get => GetValue(); set => SetValue(value); }
-        [RouteValue("eq/eqfreq4")] public float eq_freq4 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-15,15,Enums.Unit.db)][RouteValue("eq/eqgain1")] public float eq_gain1 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain2")] public float eq_gain2 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain3")] public float eq_gain3 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain4")] public float eq_gain4 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq1")] public float eq_q1 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq2")] public float eq_q2 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq3")] public float eq_q3 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq4")] public float eq_q4 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq1")] public float eq_freq1 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq2")] public float eq_freq2 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq3")] public float eq_freq3 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq4")] public float eq_freq4 { get => GetValue(); set => SetValue(value); }
         #endregion
     }
 }

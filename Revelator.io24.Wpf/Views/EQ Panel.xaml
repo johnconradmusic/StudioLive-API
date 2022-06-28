@@ -1,0 +1,75 @@
+﻿<Window x:Class="Revelator.io24.Wpf.Views.EQ_Panel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revelator.io24.Wpf.Views"
+        xmlns:c="clr-namespace:Revelator.io24.Wpf.Converters"
+        mc:Ignorable="d"
+        Title="EQ_Panel" Height="450" Width="400">
+    <Window.Resources>
+        <c:AlwaysVisibleConverter x:Key="visibility"/>
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="ToggleButton">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+    <StackPanel Margin="5" Background="DarkGray">
+        <CheckBox AutomationProperties.Name="EQ On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_on, Mode=TwoWay}">EQ On</CheckBox>
+
+        <GroupBox Header="Band 1">
+            <WrapPanel>
+                <CheckBox AutomationProperties.Name="EQ Band 1 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon1, Mode=TwoWay}">On</CheckBox>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="1" LargeChange="20" Maximum="18000" Value="{Binding Path=eq_freq1, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain1, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q1, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                <CheckBox AutomationProperties.Name="EQ Band 1 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandop1, Mode=TwoWay}">Shelf</CheckBox>
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox Header="Band 2">
+            <WrapPanel>
+                <CheckBox AutomationProperties.Name="EQ Band 2 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon2, Mode=TwoWay}">On</CheckBox>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="20" Maximum="18000" Value="{Binding Path=eq_freq2, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain2, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q2, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox Header="Band 3">
+            <WrapPanel>
+                <CheckBox AutomationProperties.Name="EQ Band 3 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon3, Mode=TwoWay}">On</CheckBox>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="50" Maximum="18000" Value="{Binding Path=eq_freq3, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain3, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q3, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox Header="Band 4">
+            <WrapPanel>
+                <CheckBox AutomationProperties.Name="EQ Band 4 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon4, Mode=TwoWay}">On</CheckBox>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="100" Maximum="18000" Value="{Binding Path=eq_freq4, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain4, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                <Slider AutomationProperties.LiveSetting="Off" Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q4, Mode=TwoWay}"/>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                <CheckBox AutomationProperties.Name="EQ Band 4 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandop4, Mode=TwoWay}">Shelf</CheckBox>
+            </WrapPanel>
+        </GroupBox>
+    </StackPanel>
+</Window>

@@ -1,0 +1,36 @@
+﻿<Window x:Class="Revelator.io24.Wpf.Views.CompressorPanel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Revelator.io24.Wpf.Views"
+        mc:Ignorable="d"
+        Title="CompressorPanel" Height="450" Width="800">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
+        <CheckBox Margin="5" AutomationProperties.Name="Compressor On" IsChecked="{Binding Path=comp_on, Mode=TwoWay}">Compressor On</CheckBox>
+        <WrapPanel>
+            <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Compressor Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-56" Maximum="0" Value="{Binding Path=comp_threshold, Mode=TwoWay}"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Slider AutomationProperties.LiveSetting="Off" Tag="to 1"  AutomationProperties.Name="Compressor Ratio" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="1"  Maximum="18" Value="{Binding Path=comp_ratio, Mode=TwoWay}"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="Ratio"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Slider AutomationProperties.LiveSetting="Off" Tag="ms"  AutomationProperties.Name="Compressor Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".20"  Maximum="150" Value="{Binding Path=comp_attack, Mode=TwoWay}"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Slider AutomationProperties.LiveSetting="Off" Tag="ms"  AutomationProperties.Name="Compressor Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="2.5"  Maximum="900" Value="{Binding Path=comp_release, Mode=TwoWay}"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
+        </WrapPanel>
+        <WrapPanel>
+            <Slider AutomationProperties.LiveSetting="Off" Tag="db"  AutomationProperties.Name="Compressor Makeup Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="0" Maximum="28" Value="{Binding Path=comp_gain, Mode=TwoWay}"/>
+            <TextBlock Margin="5" VerticalAlignment="Center" Text="Makeup Gain"/>
+        </WrapPanel>
+        <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding Path=comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
+        <CheckBox AutomationProperties.Name="Compressor Auto Time" Margin="5" IsChecked="{Binding Path=comp_automode, Mode=TwoWay}">Auto Mode</CheckBox>
+
+
+    </StackPanel>
+</Window>
