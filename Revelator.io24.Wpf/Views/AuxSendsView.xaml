@@ -5,24 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.Views"
         mc:Ignorable="d"
-        Title="AuxSendsView" Height="450" Width="800">
+        Title="AuxSendsView" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="5"/>
+            <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
+            <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
+        </Style>
+    </Window.Resources>
     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux6, Mode=TwoWay}" AutomationProperties.Name="Aux 6"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux7, Mode=TwoWay}" AutomationProperties.Name="Aux 7"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux8, Mode=TwoWay}" AutomationProperties.Name="Aux 8"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux9, Mode=TwoWay}" AutomationProperties.Name="Aux 9"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux10, Mode=TwoWay}" AutomationProperties.Name="Aux 10"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux11, Mode=TwoWay}" AutomationProperties.Name="Aux 11"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux12, Mode=TwoWay}" AutomationProperties.Name="Aux 12"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux13, Mode=TwoWay}" AutomationProperties.Name="Aux 13"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux14, Mode=TwoWay}" AutomationProperties.Name="Aux 14"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux15, Mode=TwoWay}" AutomationProperties.Name="Aux 15"/>
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux16, Mode=TwoWay}" AutomationProperties.Name="Aux 16"/>
-
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux6, Mode=TwoWay}" AutomationProperties.Name="Aux 6"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux7, Mode=TwoWay}" AutomationProperties.Name="Aux 7"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux8, Mode=TwoWay}" AutomationProperties.Name="Aux 8"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux9, Mode=TwoWay}" AutomationProperties.Name="Aux 9"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux10, Mode=TwoWay}" AutomationProperties.Name="Aux 10"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux11, Mode=TwoWay}" AutomationProperties.Name="Aux 11"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux12, Mode=TwoWay}" AutomationProperties.Name="Aux 12"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux13, Mode=TwoWay}" AutomationProperties.Name="Aux 13"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux14, Mode=TwoWay}" AutomationProperties.Name="Aux 14"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux15, Mode=TwoWay}" AutomationProperties.Name="Aux 15"/>
+        <Slider Tag="db" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux16, Mode=TwoWay}" AutomationProperties.Name="Aux 16"/>
+        <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
+            <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+        </StatusBar>
     </WrapPanel>
 </Window>

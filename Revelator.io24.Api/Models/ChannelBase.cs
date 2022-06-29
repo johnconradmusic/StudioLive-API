@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,10 @@ namespace Presonus.StudioLive32.Api.Models
         public event PropertyChangedEventHandler PropertyChanged;
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs) { PropertyChanged?.Invoke(this, eventArgs); }
 
-        public ChannelBase(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
+        public ChannelBase(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
+        {
+        }
+
 
         [RouteValueRange(-84, 0, Enums.Unit.db)]
         public float level_meter { get => GetValue(); set => SetValue(value); }
@@ -126,7 +130,7 @@ namespace Presonus.StudioLive32.Api.Models
         [RouteValue("comp/automode")] public bool comp_automode { get => GetBoolean(); set => SetBoolean(value); }
         [RouteValue("comp/softknee")] public bool comp_softknee { get => GetBoolean(); set => SetBoolean(value); }
         [RouteValueRange(-56, 0, Enums.Unit.db)][RouteValue("comp/threshold")] public float comp_threshold { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(1, 18,Enums.Unit.db)][RouteValue("comp/ratio")] public float comp_ratio { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(1, 18, Enums.Unit.db)][RouteValue("comp/ratio")] public float comp_ratio { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(0.2f, 150, Enums.Unit.ms)][RouteValue("comp/attack")] public float comp_attack { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(2.5f, 900, Enums.Unit.ms)][RouteValue("comp/release")] public float comp_release { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(0, 28, Enums.Unit.db)][RouteValue("comp/gain")] public float comp_gain { get => GetValue(); set => SetValue(value); }

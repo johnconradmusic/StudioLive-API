@@ -44,6 +44,8 @@
         </Style>
         <Style TargetType="Slider">
             <Setter Property="Margin" Value="5"/>
+            <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
+            <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
         </Style>
         <Style TargetType="ToggleButton">
             <Setter Property="Margin" Value="5"/>
@@ -56,7 +58,7 @@
         </Style>
     </Window.Resources>
     <WrapPanel Background="DarkGray" Margin="5">
-        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}" SelectionChanged="ChannelList_SelectionChanged" >
+        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}">
             <local:MyList.ItemTemplate>
                 <DataTemplate>
                     <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
@@ -70,13 +72,13 @@
         </local:MyList>
 
         <StackPanel Orientation="Vertical" Width="60">
-            <Slider Minimum="0" Maximum="60" HorizontalAlignment="Center" AutomationProperties.Name="{Binding Path=SelectedChannel.username, StringFormat=\{0\} Trim}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
-            <CheckBox AutomationProperties.Name="{Binding ElementName=ChannelList, Path=SelectedItem.username, StringFormat=\{0\} Clip Indicator}" Content="Clip" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.clip, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
-            <ToggleButton AutomationProperties.Name="{Binding ElementName=ChannelList, Path=SelectedItem.username, StringFormat=\{0\} Solo}" Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
-            <ToggleButton AutomationProperties.Name="{Binding ElementName=ChannelList, Path=SelectedItem.username, StringFormat=\{0\} Mute}" Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
-            <Slider Minimum="-100" Maximum="100" HorizontalAlignment="Center" AutomationProperties.Name="{Binding ElementName=ChannelList, Path=SelectedItem.username, StringFormat=\{0\} Pan}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>
-            <Slider Minimum="-84" Maximum="10" HorizontalAlignment="Center" AutomationProperties.Name="{Binding ElementName=ChannelList, Path=SelectedItem.username, StringFormat=\{0\} Level}" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
-            <!--<ProgressBar Orientation="Horizontal" Height="10" Minimum="0" Maximum="1" Value="{Binding Path=SelectedChannel.level_meter, Mode=OneWay}"/>-->
+            <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
+            <CheckBox Content="Clip" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.clip, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+            <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
+            <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
+            <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>
+            <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
+
         </StackPanel>
         <StackPanel Margin="5" VerticalAlignment="Center">
             <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />

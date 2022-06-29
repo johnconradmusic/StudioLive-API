@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.Views"
         mc:Ignorable="d"
-        Title="ChannelTools" Height="450" Width="800">
+        Title="ChannelTools" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <Style TargetType="Slider">
+            <Setter Property="Margin" Value="5"/>
+            <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
+            <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
+        </Style>
+    </Window.Resources>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Slider Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
+        <Slider Tag="hz" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
+        <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
+            <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+        </StatusBar>
     </StackPanel>
 </Window>

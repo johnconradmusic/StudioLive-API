@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presonus.UC.Api
+namespace Presonus.UC.Api.Helpers
 {
-	public interface IRoutable
-	{
-		string Route { get; }
-	}
+    public class ValueToMessageConverter
+    {
+
+    }
 }

@@ -121,7 +121,7 @@ namespace Presonus.StudioLive32.Api.Models
 			}
 		}
 
-		protected StringParameter GetString([CallerMemberName] string propertyName = "")
+		protected string GetString([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -129,7 +129,7 @@ namespace Presonus.StudioLive32.Api.Models
 			return _rawService.GetString(route);
 		}
 
-		protected void SetString(StringParameter value, [CallerMemberName] string propertyName = "")
+		protected void SetString(string value, [CallerMemberName] string propertyName = "")
 		{
 			if (value is null)
 				return;
@@ -140,7 +140,7 @@ namespace Presonus.StudioLive32.Api.Models
 			_rawService.SetString(route, value);
 		}
 
-		protected void SetBoolean(BoolParameter value, [CallerMemberName] string propertyName = "")
+		protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return;
@@ -151,7 +151,7 @@ namespace Presonus.StudioLive32.Api.Models
 
 		}
 
-		protected BoolParameter GetBoolean([CallerMemberName] string propertyName = "")
+		protected bool GetBoolean([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -160,7 +160,7 @@ namespace Presonus.StudioLive32.Api.Models
 			return value > 0.5f;
 		}
 
-		protected FloatParameter GetValue([CallerMemberName] string propertyName = "")
+		protected float GetValue([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -173,10 +173,11 @@ namespace Presonus.StudioLive32.Api.Models
 				var topOfRange = range.Max - range.Min;
 				value = (value * topOfRange) + range.Min;
 			}
+			Console.WriteLine(propertyName + ": " + value);
 			return value;
 		}
 
-		protected void SetValue(FloatParameter value, [CallerMemberName] string propertyName = "")
+		protected void SetValue(float value, [CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return;

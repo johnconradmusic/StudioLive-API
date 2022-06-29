@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="UserControls\" />
+    <Folder Include="Windows\" />
   </ItemGroup>
 
   <ItemGroup>
