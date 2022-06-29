@@ -1,7 +1,7 @@
-﻿using Revelator.io24.Api;
-using Revelator.io24.Api.Enums;
+﻿using Presonus.StudioLive32.Api;
+using Presonus.StudioLive32.Api.Enums;
 
-namespace Revelator.io24.Wpf.Models
+namespace Presonus.StudioLive32.Wpf.Models
 {
     public class RoutingMapper
     {

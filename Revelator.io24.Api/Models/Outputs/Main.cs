@@ -1,7 +1,7 @@
-﻿using Revelator.io24.Api.Attributes;
+﻿using Presonus.StudioLive32.Api.Attributes;
 using System.ComponentModel;
 
-namespace Revelator.io24.Api.Models.Outputs
+namespace Presonus.StudioLive32.Api.Models.Outputs
 {
     public class Main : DeviceRoutingBase
     {

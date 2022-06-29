@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Revelator.io24.Api\Presonus.UC.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="View\ChannelStrip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\ChannelStripDCA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\EQCurveEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\KnobControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\SettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="View\VerticalSlider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,12 +1,12 @@
-﻿using Revelator.io24.Api.Models;
-using Revelator.io24.Api.Scene;
+﻿using Presonus.StudioLive32.Api.Models;
+using Presonus.StudioLive32.Api.Scene;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace Revelator.io24.Api
+namespace Presonus.StudioLive32.Api
 {
     public class RawService
     {

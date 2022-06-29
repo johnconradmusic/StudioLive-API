@@ -1,5 +1,5 @@
-﻿using Revelator.io24.Api.Attributes;
-using Revelator.io24.Api.Models.Inputs;
+﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.StudioLive32.Api.Models.Inputs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Revelator.io24.Api.Models
+namespace Presonus.StudioLive32.Api.Models
 {
 	public abstract class DeviceRoutingBase
 	{
@@ -93,7 +93,7 @@ namespace Revelator.io24.Api.Models
 				if (routeValue != null || property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float))
 				{
 					var route = routeValue != null ? $"{_routePrefix}/{routeValue.RouteValueName}" : $"{_routePrefix}/{property.Name}";
-					_propertyValueNameRoute[property.Name] = route;
+					_propertyValueNameRoute[property.Name.ToLower()] = route;
 					var range = property.GetCustomAttribute<RouteValueRangeAttribute>();
 					if (range != null)
 					{
@@ -106,7 +106,7 @@ namespace Revelator.io24.Api.Models
 				if (routeString != null || property.PropertyType == typeof(string))
 				{
 					var route = routeString != null ? $"{_routePrefix}/{routeString.RouteStringName}" : $"{_routePrefix}/{property.Name}";
-					_propertyStringNameRoute[property.Name] = route;
+					_propertyStringNameRoute[property.Name.ToLower()] = route;
 					continue;
 				}
 
@@ -114,22 +114,14 @@ namespace Revelator.io24.Api.Models
 				if (routeStrings != null)
 				{
 					var route = $"{_routePrefix}/{routeStrings.RouteStringsName}";
-					_propertyStringsNameRoute[property.Name] = route;
+					_propertyStringsNameRoute[property.Name.ToLower()] = route;
 					continue;
 				}
 
 			}
 		}
 
-		protected string[] GetStrings([CallerMemberName] string propertyName = "")
-		{
-			if (!_propertyStringsNameRoute.TryGetValue(propertyName, out var route))
-				return Array.Empty<string>();
-
-			return _rawService.GetStrings(route);
-		}
-
-		protected string GetString([CallerMemberName] string propertyName = "")
+		protected StringParameter GetString([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -137,7 +129,7 @@ namespace Revelator.io24.Api.Models
 			return _rawService.GetString(route);
 		}
 
-		protected void SetString(string value, [CallerMemberName] string propertyName = "")
+		protected void SetString(StringParameter value, [CallerMemberName] string propertyName = "")
 		{
 			if (value is null)
 				return;
@@ -148,7 +140,7 @@ namespace Revelator.io24.Api.Models
 			_rawService.SetString(route, value);
 		}
 
-		protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
+		protected void SetBoolean(BoolParameter value, [CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return;
@@ -159,7 +151,7 @@ namespace Revelator.io24.Api.Models
 
 		}
 
-		protected bool GetBoolean([CallerMemberName] string propertyName = "")
+		protected BoolParameter GetBoolean([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -168,7 +160,7 @@ namespace Revelator.io24.Api.Models
 			return value > 0.5f;
 		}
 
-		protected float GetValue([CallerMemberName] string propertyName = "")
+		protected FloatParameter GetValue([CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return default;
@@ -184,7 +176,7 @@ namespace Revelator.io24.Api.Models
 			return value;
 		}
 
-		protected void SetValue(float value, [CallerMemberName] string propertyName = "")
+		protected void SetValue(FloatParameter value, [CallerMemberName] string propertyName = "")
 		{
 			if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
 				return;

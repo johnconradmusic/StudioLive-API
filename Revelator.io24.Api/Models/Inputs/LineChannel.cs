@@ -1,9 +1,9 @@
-﻿using Revelator.io24.Api.Attributes;
-using Revelator.io24.Api.Scene;
+﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.StudioLive32.Api.Scene;
 using System;
 using System.ComponentModel;
 
-namespace Revelator.io24.Api.Models.Inputs
+namespace Presonus.StudioLive32.Api.Models.Inputs
 {
     public class LineChannel : InputChannel
     {

@@ -1,10 +1,10 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Revelator.io24.Api.Extensions;
+using Presonus.StudioLive32.Api.Extensions;
 using System;
 using System.IO;
 using System.Text;
 
-namespace Revelator.io24.Api.Messages.Readers
+namespace Presonus.StudioLive32.Api.Messages.Readers
 {
     public static class ZM
     {

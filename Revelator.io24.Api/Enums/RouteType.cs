@@ -1,4 +1,4 @@
-﻿namespace Revelator.io24.Api.Enums
+﻿namespace Presonus.StudioLive32.Api.Enums
 {
     /// <summary>
     /// Some values has inverted On/Off state.

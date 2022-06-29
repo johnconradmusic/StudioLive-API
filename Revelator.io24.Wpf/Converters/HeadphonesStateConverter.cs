@@ -1,9 +1,9 @@
-﻿using Revelator.io24.Api.Enums;
+﻿using Presonus.StudioLive32.Api.Enums;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Revelator.io24.Wpf.Converters
+namespace Presonus.StudioLive32.Wpf.Converters
 {
     public class HeadphonesStateConverter : IValueConverter
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace Revelator.io24.Api.Messages
+namespace Presonus.StudioLive32.Api.Messages
 {
     public class TcpMessageWriter
     {

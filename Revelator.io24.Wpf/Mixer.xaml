@@ -1,12 +1,11 @@
-﻿<Window x:Class="Revelator.io24.Wpf.Mixer"
+﻿<Window x:Class="Presonus.StudioLive32.Wpf.Mixer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Revelator.io24.Wpf"
-        xmlns:converters="clr-namespace:Revelator.io24.Wpf.Converters"
-        xmlns:nm="clr-namespace:NumericUpDownControl"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf"
+        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
+                mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
         Title="Mixer" Height="500" Width="500" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus">
     <Window.Resources>

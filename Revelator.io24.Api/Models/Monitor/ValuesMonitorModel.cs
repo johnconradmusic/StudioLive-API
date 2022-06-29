@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Revelator.io24.Api.Models.Monitor
+namespace Presonus.StudioLive32.Api.Models.Monitor
 {
     public class ValuesMonitorModel
     {

@@ -1,4 +1,4 @@
-﻿using Revelator.io24.Api.Models;
+﻿using Presonus.StudioLive32.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Revelator.io24.Wpf.Views
+namespace Presonus.StudioLive32.Wpf.Views
 {
     /// <summary>
     /// Interaction logic for AuxSendsView.xaml

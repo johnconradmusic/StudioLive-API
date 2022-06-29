@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Revelator.io24.Api;
-using Revelator.io24.Api.Configuration;
+using Presonus.StudioLive32.Api;
+using Presonus.StudioLive32.Api.Configuration;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.IO;
 using System.Windows;
 
-namespace Revelator.io24.Wpf
+namespace Presonus.StudioLive32.Wpf
 {
     /// <summary>
     /// Interaction logic for App.xaml

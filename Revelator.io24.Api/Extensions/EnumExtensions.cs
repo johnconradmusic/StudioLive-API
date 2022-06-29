@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Revelator.io24.Api.Extensions
+namespace Presonus.StudioLive32.Api.Extensions
 {
     public static class EnumExtensions
     {

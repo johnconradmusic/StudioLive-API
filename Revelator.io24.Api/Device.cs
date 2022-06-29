@@ -1,14 +1,14 @@
-﻿using Revelator.io24.Api.Attributes;
-using Revelator.io24.Api.Models;
-using Revelator.io24.Api.Models.Auxes;
-using Revelator.io24.Api.Models.Global;
-using Revelator.io24.Api.Models.Inputs;
-using Revelator.io24.Api.Models.Outputs;
+﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.StudioLive32.Api.Models;
+using Presonus.StudioLive32.Api.Models.Auxes;
+using Presonus.StudioLive32.Api.Models.Global;
+using Presonus.StudioLive32.Api.Models.Inputs;
+using Presonus.StudioLive32.Api.Models.Outputs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Revelator.io24.Api
+namespace Presonus.StudioLive32.Api
 {
     public class Device
     {

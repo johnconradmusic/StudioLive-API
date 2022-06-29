@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Revelator.io24.Api.Models.Monitor;
-using Revelator.io24.Api.Services;
+using Presonus.StudioLive32.Api.Models.Monitor;
+using Presonus.StudioLive32.Api.Services;
 using System;
 
-namespace Revelator.io24.Api.Configuration
+namespace Presonus.StudioLive32.Api.Configuration
 {
     public static class ServiceProviderExtension
     {

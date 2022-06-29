@@ -1,8 +1,8 @@
-﻿using Revelator.io24.Api.Extensions;
-using Revelator.io24.Api.Helpers;
-using Revelator.io24.Api.Messages;
-using Revelator.io24.Api.Messages.Readers;
-using Revelator.io24.Api.Scene;
+﻿using Presonus.StudioLive32.Api.Extensions;
+using Presonus.StudioLive32.Api.Helpers;
+using Presonus.StudioLive32.Api.Messages;
+using Presonus.StudioLive32.Api.Messages.Readers;
+using Presonus.StudioLive32.Api.Scene;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
-namespace Revelator.io24.Api.Services
+namespace Presonus.StudioLive32.Api.Services
 {
     public class CommunicationService : IDisposable
     {

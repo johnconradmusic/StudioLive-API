@@ -1,11 +1,11 @@
-﻿using Revelator.io24.Api;
-using Revelator.io24.Api.Models;
-using Revelator.io24.Api.Models.Auxes;
-using Revelator.io24.Api.Models.Monitor;
-using Revelator.io24.Wpf.Models;
+﻿using Presonus.StudioLive32.Api;
+using Presonus.StudioLive32.Api.Models;
+using Presonus.StudioLive32.Api.Models.Auxes;
+using Presonus.StudioLive32.Api.Models.Monitor;
+using Presonus.StudioLive32.Wpf.Models;
 using System.ComponentModel;
 
-namespace Revelator.io24.Wpf
+namespace Presonus.StudioLive32.Wpf
 {
     public class MainViewModel : INotifyPropertyChanged
     {

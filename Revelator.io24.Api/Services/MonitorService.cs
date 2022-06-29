@@ -1,6 +1,6 @@
-﻿using Revelator.io24.Api.Extensions;
-using Revelator.io24.Api.Helpers;
-using Revelator.io24.Api.Models.Monitor;
+﻿using Presonus.StudioLive32.Api.Extensions;
+using Presonus.StudioLive32.Api.Helpers;
+using Presonus.StudioLive32.Api.Models.Monitor;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Revelator.io24.Api.Services
+namespace Presonus.StudioLive32.Api.Services
 {
     /// <summary>
     /// This service is used to receive UDP packages containing monitorin data.

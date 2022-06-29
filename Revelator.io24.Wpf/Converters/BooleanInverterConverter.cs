@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Revelator.io24.Wpf.Converters
+namespace Presonus.StudioLive32.Wpf.Converters
 {
     public class BooleanInverterConverter : IValueConverter
     {

@@ -1,8 +1,8 @@
-﻿using Revelator.io24.Api.Enums;
+﻿using Presonus.StudioLive32.Api.Enums;
 using System;
 using System.Collections.Generic;
 
-namespace Revelator.io24.Api
+namespace Presonus.StudioLive32.Api
 {
     /// <summary>
     /// API for turning routing.

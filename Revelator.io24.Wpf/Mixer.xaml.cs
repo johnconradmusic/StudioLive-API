@@ -1,6 +1,6 @@
-﻿using Revelator.io24.Api.Models;
-using Revelator.io24.Api.Models.Monitor;
-using Revelator.io24.Wpf.Views;
+﻿using Presonus.StudioLive32.Api.Models;
+using Presonus.StudioLive32.Api.Models.Monitor;
+using Presonus.StudioLive32.Wpf.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace Revelator.io24.Wpf
+namespace Presonus.StudioLive32.Wpf
 {
     /// <summary>
     /// Interaction logic for Mixer.xaml
@@ -33,25 +33,16 @@ namespace Revelator.io24.Wpf
             vm.Device.RawService.JSON();
 
             InitializeComponent();
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
-            timer.Start();
+
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
-
-        private void Timer_Tick(object? sender, EventArgs e)
-        {
-            vm.OnPropertyChanged(nameof(ValuesMonitorModel));
-        }
-
 
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (ChannelList.IsFocused) return;
-            if (e.Source is Slider slider)
+            if (e.Source is Slider slider && slider.IsFocused)
             {
+                
                 if (slider.Tag != null && slider.Tag.ToString() == "hz" && slider.Value > 1000)
                 {
                     var khzVal = slider.Value / 1000;

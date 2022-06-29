@@ -1,4 +1,4 @@
-﻿namespace Revelator.io24.Api.Enums
+﻿namespace Presonus.StudioLive32.Api.Enums
 {
     public enum Value
     {

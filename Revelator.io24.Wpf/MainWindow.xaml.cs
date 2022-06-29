@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Revelator.io24.Wpf
+namespace Presonus.StudioLive32.Wpf
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

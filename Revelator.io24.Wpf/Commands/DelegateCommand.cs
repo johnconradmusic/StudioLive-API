@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Revelator.io24.Wpf.Commands
+namespace Presonus.StudioLive32.Wpf.Commands
 {
     public class DelegateCommand : ICommand
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revelator.io24.Api.Enums
+namespace Presonus.StudioLive32.Api.Enums
 {
 	public enum Unit
 	{

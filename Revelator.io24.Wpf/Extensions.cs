@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Revelator.io24.Wpf
+namespace Presonus.StudioLive32.Wpf
 {
     public static class Extensions
     {

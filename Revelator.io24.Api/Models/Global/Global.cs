@@ -1,8 +1,8 @@
-﻿using Revelator.io24.Api.Attributes;
-using Revelator.io24.Api.Enums;
+﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.StudioLive32.Api.Enums;
 using System.ComponentModel;
 
-namespace Revelator.io24.Api.Models.Global
+namespace Presonus.StudioLive32.Api.Models.Global
 {
     public class Global : DeviceRoutingBase, INotifyPropertyChanged
     {

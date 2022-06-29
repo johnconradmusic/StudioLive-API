@@ -1,7 +1,7 @@
-﻿using Revelator.io24.Api.Enums;
+﻿using Presonus.StudioLive32.Api.Enums;
 using System;
 
-namespace Revelator.io24.Api.Attributes
+namespace Presonus.StudioLive32.Api.Attributes
 {
 	//[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
 	//public class RoutePrefixAttribute : Attribute

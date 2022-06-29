@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Revelator.io24.Api.Extensions
+namespace Presonus.StudioLive32.Api.Extensions
 {
     internal static class ArrayExtensions
     {

@@ -1,5 +1,5 @@
-﻿using Revelator.io24.Api.Extensions;
-using Revelator.io24.Api.Helpers;
+﻿using Presonus.StudioLive32.Api.Extensions;
+using Presonus.StudioLive32.Api.Helpers;
 using Serilog;
 using System;
 using System.Net;
@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Revelator.io24.Api.Services
+namespace Presonus.StudioLive32.Api.Services
 {
     /// <summary>
     /// This service is used to get broadcast UDP messages.

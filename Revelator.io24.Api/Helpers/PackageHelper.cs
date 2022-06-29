@@ -1,10 +1,10 @@
-﻿using Revelator.io24.Api.Extensions;
-using Revelator.io24.Api.Services;
+﻿using Presonus.StudioLive32.Api.Extensions;
+using Presonus.StudioLive32.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Revelator.io24.Api.Helpers
+namespace Presonus.StudioLive32.Api.Helpers
 {
     public static class PackageHelper
     {

@@ -1,11 +1,11 @@
-﻿using Revelator.io24.Api.Attributes;
+﻿using Presonus.StudioLive32.Api.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revelator.io24.Api.Models.Inputs
+namespace Presonus.StudioLive32.Api.Models.Inputs
 {
     public class InputChannel : ChannelBase
     {
