@@ -9,17 +9,22 @@ using System.Threading.Tasks;
 
 namespace Presonus.StudioLive32.Api.Models
 {
-    public class ChannelBase : DeviceRoutingBase
+    public class ChannelBase : DeviceRoutingBase, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs) { PropertyChanged?.Invoke(this, eventArgs); }
+        public override event PropertyChangedEventHandler PropertyChanged;
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+        {
+
+            PropertyChanged?.Invoke(this, eventArgs);
+        }
 
         public ChannelBase(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
         {
         }
 
 
-        [RouteValueRange(-84, 0, Enums.Unit.db)]
+        [RouteValueRange(-72, 0, Enums.Unit.db)]
         public float level_meter { get => GetValue(); set => SetValue(value); }
         public string AutomationName => username;
         public string AutomationId => _routePrefix + username;

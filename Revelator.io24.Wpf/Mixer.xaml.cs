@@ -1,6 +1,7 @@
 ﻿using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Monitor;
 using Presonus.StudioLive32.Wpf.Views;
+using Presonus.UC.Api.Sound;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +43,10 @@ namespace Presonus.StudioLive32.Wpf
         {
             if (sender is Slider slider && slider.IsFocused)
             {
-                Console.WriteLine("SLIDER VALUE CHANGE: {0} - {1} ", e.OldValue, e.NewValue);
+                //Console.WriteLine("SLIDER VALUE CHANGE: {0} - {1} ", e.OldValue, e.NewValue);
 
                 ReportValueOfControl(slider);
             }
-
         }
 
         private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -65,7 +65,7 @@ namespace Presonus.StudioLive32.Wpf
             if (peer != null)
             {
                 peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-                Console.WriteLine("SCREENREADER: " + text);
+                //Console.WriteLine("SCREENREADER: " + text);
             }
         }
         protected override void OnClosed(EventArgs e)
@@ -148,6 +148,27 @@ namespace Presonus.StudioLive32.Wpf
         private void Slider_GotFocus(object sender, RoutedEventArgs e)
         {
             ReportValueOfControl((Slider)sender, true);
+        }
+
+        private void ClipChecked(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is CheckBox checkbox)
+            {
+                bool clipped = checkbox.IsChecked.Value;
+                if (clipped) SoundPlayer.PlaySound("clip.wav");
+
+            }
+        }
+
+        private void ChannelList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(e.Source is ListBox listBox)
+            {
+                if(listBox.SelectedItem is ChannelBase channel)
+                {
+                    vm.SelectedChannel = channel;
+                }
+            }
         }
     }
 

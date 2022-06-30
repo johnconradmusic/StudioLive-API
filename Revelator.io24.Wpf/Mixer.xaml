@@ -58,7 +58,7 @@
         </Style>
     </Window.Resources>
     <WrapPanel Background="DarkGray" Margin="5">
-        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" ItemsSource="{Binding Path=Device.Channels}">
+        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding Path=Device.Channels}">
             <local:MyList.ItemTemplate>
                 <DataTemplate>
                     <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
@@ -73,7 +73,7 @@
 
         <StackPanel Orientation="Vertical" Width="60">
             <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
-            <CheckBox Content="Clip" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.clip, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+            <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
             <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
             <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
             <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>

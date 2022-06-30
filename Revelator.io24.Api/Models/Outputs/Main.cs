@@ -5,7 +5,7 @@ namespace Presonus.StudioLive32.Api.Models.Outputs
 {
     public class Main : DeviceRoutingBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler PropertyChanged;
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
             => PropertyChanged?.Invoke(this, eventArgs);
@@ -15,11 +15,6 @@ namespace Presonus.StudioLive32.Api.Models.Outputs
             //
         }
 
-        [RouteValue("hardwareMute")]
-        public bool HardwareMute
-        {
-            get => GetBoolean();
-            //set => SetBoolean(value);
-        }
+
     }
 }

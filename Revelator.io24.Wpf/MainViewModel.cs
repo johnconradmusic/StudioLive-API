@@ -36,7 +36,7 @@ namespace Presonus.StudioLive32.Wpf
             MonitorValues = valuesMonitorModel;
             FatChannelValues = fatChannelMonitorModel;
 
-            //Device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
+            device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
 
             RoutingMap = new RoutingMapper(routingTable);
             VolumeMap = new VolumeMapper(routingTable);

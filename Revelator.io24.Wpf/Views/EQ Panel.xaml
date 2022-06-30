@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.Views"
         xmlns:c="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
         mc:Ignorable="d"
-        Title="EQ_Panel" Height="450" Width="400" PreviewKeyDown="Window_PreviewKeyDown">
+        Title="EQ Panel" Height="450" Width="400" PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <c:AlwaysVisibleConverter x:Key="visibility"/>
         <Style TargetType="Slider">

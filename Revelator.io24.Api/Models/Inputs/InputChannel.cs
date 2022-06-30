@@ -1,13 +1,14 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Presonus.StudioLive32.Api.Models.Inputs
 {
-    public class InputChannel : ChannelBase
+    public class InputChannel : ChannelBase, INotifyPropertyChanged
     {
         public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
 

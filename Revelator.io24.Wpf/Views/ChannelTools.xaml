@@ -22,13 +22,18 @@
             <StackPanel>
                 <CheckBox Content="Phantom" IsChecked="{Binding Path=phantom, Mode=TwoWay}" AutomationProperties.Name="Phantom"/>
                 <CheckBox Content="Stereo Link" IsChecked="{Binding Path=link, Mode=TwoWay}" AutomationProperties.Name="Stereo Link"/>
+                <CheckBox Content="Line Level" IsChecked="{Binding Path=preampmode, Mode=TwoWay}" AutomationProperties.Name="Line Level"/>
+
                 <CheckBox Content="Send To Main" IsChecked="{Binding Path=lr, Mode=TwoWay}" AutomationProperties.Name="Send to Main"/>
                 <CheckBox Content="Subgroup A" IsChecked="{Binding Path=sub1, Mode=TwoWay}" AutomationProperties.Name="Subgroup A"/>
                 <CheckBox Content="Subgroup B" IsChecked="{Binding Path=sub2, Mode=TwoWay}" AutomationProperties.Name="Subgroup B"/>
                 <CheckBox Content="Subgroup C" IsChecked="{Binding Path=sub3, Mode=TwoWay}" AutomationProperties.Name="Subgroup C"/>
                 <CheckBox Content="Subgroup D" IsChecked="{Binding Path=sub4, Mode=TwoWay}" AutomationProperties.Name="Subgroup D"/>
             </StackPanel>
-            <ProgressBar Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
+            <StackPanel>
+                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Path=clip, Mode=TwoWay}" AutomationProperties.Name="Clip Indicator"/>
+                <ProgressBar Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
+            </StackPanel>
         </WrapPanel>
         <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
             <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>

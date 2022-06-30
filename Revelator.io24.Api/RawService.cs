@@ -51,8 +51,6 @@ namespace Presonus.StudioLive32.Api
 
         public float GetValue(string route)
         {
-            if (route.Contains("meter"))
-                Serilog.Log.Information(route);
             var success = _values.TryGetValue(route, out var value);
             if (success)
             {

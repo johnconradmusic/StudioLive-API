@@ -5,17 +5,28 @@ using System.ComponentModel;
 
 namespace Presonus.StudioLive32.Api.Models.Inputs
 {
-    public class LineChannel : InputChannel
+    public class LineChannel : InputChannel, INotifyPropertyChanged
     {
+        override public event PropertyChangedEventHandler PropertyChanged;
+        protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+        {
+            if (eventArgs.PropertyName == "level_meter")
+            {
+                Console.WriteLine(username + " " + level_meter);
+            }
+            PropertyChanged?.Invoke(this, eventArgs);
+        }
+
         public LineChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
         {
+
         }
 
         public bool sub1 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub2 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub3 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub4 { get => GetBoolean(); set => SetBoolean(value); }
-
+        public bool preampmode { get => GetBoolean(); set => SetBoolean(value); }
         public bool lr { get => GetBoolean(); set => SetBoolean(value); }
 
         public int sub_asn_flags { get => (int)GetValue(); set => SetValue(value); }
@@ -33,7 +44,30 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         public int flexassignflags { get; set; }
         [RouteValue("48v")] public bool phantom { get => GetBoolean(); set => SetBoolean(value); }
         public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
-        [RouteValueRange(0, 60, Enums.Unit.db)] public float preampgain { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 60, Enums.Unit.db)]
+        public float preampgain
+        {
+            get
+            {
+                Console.WriteLine(preampmode);
+                var newValue = GetValue();
+                if (preampmode)
+                { //line level
+                    return newValue / 3;
+                }
+                else return newValue;
+            }
+            set
+            {
+                if (preampmode)
+                {
+                    if (value * 3 > 60) return;
+                    SetValue(value * 3);
+                }
+                else
+                    SetValue(value);
+            }
+        }
         public float digitalgain { get => GetValue(); set => SetValue(value); }
         public int _10db_boost { get => (int)GetValue(); set => SetValue(value); }
         public int gatekeysrc { get => (int)GetValue(); set => SetValue(value); }

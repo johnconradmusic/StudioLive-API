@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace Presonus.StudioLive32.Api.Models
 {
-	public abstract class DeviceRoutingBase
+	public abstract class DeviceRoutingBase : INotifyPropertyChanged
 	{
 		private readonly RawService _rawService;
 
@@ -19,7 +19,9 @@ namespace Presonus.StudioLive32.Api.Models
 
 		protected readonly string _routePrefix;
 
-		public DeviceRoutingBase(string routePrefix, RawService rawService)
+        public abstract event PropertyChangedEventHandler PropertyChanged;
+
+        public DeviceRoutingBase(string routePrefix, RawService rawService)
 		{
 			_rawService = rawService;
 			_routePrefix = routePrefix;
