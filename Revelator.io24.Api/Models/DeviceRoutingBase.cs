@@ -173,7 +173,6 @@ namespace Presonus.StudioLive32.Api.Models
 				var topOfRange = range.Max - range.Min;
 				value = (value * topOfRange) + range.Min;
 			}
-			Console.WriteLine(propertyName + ": " + value);
 			return value;
 		}
 
