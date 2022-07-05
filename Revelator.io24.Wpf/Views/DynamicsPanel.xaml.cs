@@ -20,9 +20,9 @@ namespace Presonus.StudioLive32.Wpf.Views
     /// <summary>
     /// Interaction logic for CompressorPanel.xaml
     /// </summary>
-    public partial class CompressorPanel : Window
+    public partial class DynamicsPanel : Window
     {
-        public CompressorPanel(ChannelBase channel)
+        public DynamicsPanel(ChannelBase channel)
         {
             InitializeComponent();
             DataContext = channel;

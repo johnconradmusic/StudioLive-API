@@ -127,6 +127,7 @@ namespace Presonus.StudioLive32.Wpf
             {
                 new ChannelTools(channel).ShowDialog();
             }
+            ChannelList.Items.Refresh();
         }
 
         private void auxPanelButton_Click(object sender, RoutedEventArgs e)
@@ -141,7 +142,7 @@ namespace Presonus.StudioLive32.Wpf
         {
             if (ChannelList.SelectedItem is ChannelBase channel)
             {
-                new CompressorPanel(channel).ShowDialog();
+                new DynamicsPanel(channel).ShowDialog();
             }
         }
 
@@ -154,8 +155,7 @@ namespace Presonus.StudioLive32.Wpf
         {
             if (e.Source is CheckBox checkbox)
             {
-                bool clipped = checkbox.IsChecked.Value;
-                if (clipped) SoundPlayer.PlaySound("clip.wav");
+
 
             }
         }

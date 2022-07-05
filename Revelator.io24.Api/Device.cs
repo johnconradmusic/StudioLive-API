@@ -3,6 +3,7 @@ using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Auxes;
 using Presonus.StudioLive32.Api.Models.Inputs;
 using Presonus.StudioLive32.Api.Models.Outputs;
+using Presonus.UC.Api.Sound;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,12 +23,11 @@ namespace Presonus.StudioLive32.Api
         public DateTime timeOfLastClipCheck = DateTime.Now;
 
 
-
         public bool IsAnyChannelClipping
         {
             get
             {
-                return Channels.Any((c) => c.level_meter > -1);
+                return Channels.Any((c) => c.level_meter > -3);
             }
         }
 
@@ -85,14 +85,11 @@ namespace Presonus.StudioLive32.Api
             {
                 foreach (var chan in Channels)
                 {
-                    if (chan.level_meter > -1)
+                    if (chan.level_meter > -3 || chan.clip)
                     {
                         if (chan is LineChannel lineChannel)
                         {
-
-                            Console.WriteLine("hndling clip : old value is " + lineChannel.preampgain);
-                            lineChannel.preampgain -= 3;
-
+                            lineChannel.AutoAdjustTrim();
                         }
                     }
                 }
@@ -102,9 +99,10 @@ namespace Presonus.StudioLive32.Api
         private void Chan_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "level_meter")
-            {
+            {                
                 if (IsAnyChannelClipping)
                 {
+                    SoundPlayer.PlaySound("clip.wav");
                     CheckClips();
                 }
                 OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsAnyChannelClipping)));

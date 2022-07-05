@@ -12,7 +12,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         {
             if (eventArgs.PropertyName == "level_meter")
             {
-                Console.WriteLine(username + " " + level_meter);
+                //Console.WriteLine(username + " " + level_meter);
             }
             PropertyChanged?.Invoke(this, eventArgs);
         }
@@ -44,6 +44,26 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         public int flexassignflags { get; set; }
         [RouteValue("48v")] public bool phantom { get => GetBoolean(); set => SetBoolean(value); }
         public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
+
+        bool canAdjustTrim = true;
+        public void AutoAdjustTrim()
+        {
+            Console.WriteLine("AUTOADJUST TRIM: allowed? " + canAdjustTrim.ToString());
+            if (canAdjustTrim)
+            {
+                Console.WriteLine("handling clip : old value is " + preampgain);
+
+                preampgain -= 1;
+                clip = false;
+                Console.WriteLine("handling clip: new value is " + preampgain);
+                canAdjustTrim = false;
+                System.Timers.Timer timer = new System.Timers.Timer(100);
+                timer.Elapsed += (s, e) => { canAdjustTrim = true; Console.WriteLine("allowed again"); };
+                timer.AutoReset = false;
+                timer.Start();
+            }
+        }
+
         [RouteValueRange(0, 60, Enums.Unit.db)]
         public float preampgain
         {
@@ -89,10 +109,10 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         public int asn_flags_fxret_ret { get => (int)GetValue(); set => SetValue(value); }
 
         #region Gate
-        [RouteValue("gate/threshold")] public float gate_threshold { get => GetValue(); set => SetValue(value); }
-        [RouteValue("gate/range")] public float gate_range { get => GetValue(); set => SetValue(value); }
-        [RouteValue("gate/attack")] public float gate_attack { get => GetValue(); set => SetValue(value); }
-        [RouteValue("gate/release")] public float gate_release { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-84, 0, Enums.Unit.db)][RouteValue("gate/threshold")] public float gate_threshold { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-84, 0, Enums.Unit.db)][RouteValue("gate/range")] public float gate_range { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(.02f, 500, Enums.Unit.ms)][RouteValue("gate/attack")] public float gate_attack { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(50, 2000, Enums.Unit.ms)][RouteValue("gate/release")] public float gate_release { get => GetValue(); set => SetValue(value); }
         [RouteValue("gate/on")] public bool gate_on { get => GetBoolean(); set => SetBoolean(value); }
         [RouteValue("gate/expander")] public bool gate_expander { get => GetBoolean(); set => SetBoolean(value); }
         #endregion

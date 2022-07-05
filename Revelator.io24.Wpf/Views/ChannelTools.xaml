@@ -20,6 +20,7 @@
         <WrapPanel VerticalAlignment="Center">
             <Slider Tag="hz" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
             <StackPanel>
+                <TextBox Text="{Binding username, Mode=TwoWay}" AutomationProperties.Name="Channel Name"/>
                 <CheckBox Content="Phantom" IsChecked="{Binding Path=phantom, Mode=TwoWay}" AutomationProperties.Name="Phantom"/>
                 <CheckBox Content="Stereo Link" IsChecked="{Binding Path=link, Mode=TwoWay}" AutomationProperties.Name="Stereo Link"/>
                 <CheckBox Content="Line Level" IsChecked="{Binding Path=preampmode, Mode=TwoWay}" AutomationProperties.Name="Line Level"/>
@@ -32,7 +33,7 @@
             </StackPanel>
             <StackPanel>
                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Path=clip, Mode=TwoWay}" AutomationProperties.Name="Clip Indicator"/>
-                <ProgressBar Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
+                <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="level_meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
             </StackPanel>
         </WrapPanel>
         <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">

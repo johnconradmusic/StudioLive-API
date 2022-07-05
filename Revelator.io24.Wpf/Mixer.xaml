@@ -83,7 +83,7 @@
         <StackPanel Margin="5" VerticalAlignment="Center">
             <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
             <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
-            <Button Margin="5" x:Name="compPanelButton" Content="Compressor Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
+            <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
             <Button Margin="5" x:Name="auxPanelButton" Content="Aux Send Panel" Height="30" Width="140" Click="auxPanelButton_Click"/>
         </StackPanel>
         <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">

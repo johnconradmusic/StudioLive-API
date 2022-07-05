@@ -70,16 +70,12 @@ namespace Presonus.StudioLive32.Wpf.Views
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) Close();
+            if (e.Key == Key.J) ReadTextToScreenReader("Meter: " + Math.Round(level_meter.Value,2) + " db");
         }
 
         private void ClipChecked(object sender, RoutedEventArgs e)
         {
-            if(e.Source is CheckBox checkbox)
-            {
-                bool clipped = checkbox.IsChecked.Value;
-                if (clipped) SoundPlayer.PlaySound("clip.wav");
 
-            }
         }
     }
 }

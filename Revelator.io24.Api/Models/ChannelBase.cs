@@ -24,6 +24,7 @@ namespace Presonus.StudioLive32.Api.Models
         }
 
 
+
         [RouteValueRange(-72, 0, Enums.Unit.db)]
         public float level_meter { get => GetValue(); set => SetValue(value); }
         public string AutomationName => username;
@@ -142,7 +143,7 @@ namespace Presonus.StudioLive32.Api.Models
         #endregion
 
         #region Limiter
-        [RouteValue("limit/threshold")] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
+        [RouteValue("limit/threshold")][RouteValueRange(-28,0,Enums.Unit.db)] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
         [RouteValue("limit/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
         #endregion
     }
