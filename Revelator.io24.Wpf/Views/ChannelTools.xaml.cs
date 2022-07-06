@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Models;
+using Presonus.UC.Api;
 using Presonus.UC.Api.Sound;
 using System;
 using System.Collections.Generic;
@@ -70,12 +71,24 @@ namespace Presonus.StudioLive32.Wpf.Views
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) Close();
-            if (e.Key == Key.J) ReadTextToScreenReader("Meter: " + Math.Round(level_meter.Value,2) + " db");
+            if (e.Key == Key.J) ReadMeter();
         }
 
+        CircularBuffer<float> meterValues = new CircularBuffer<float>(50);
         private void ClipChecked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void meterChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            meterValues.Enqueue((float)e.NewValue);
+        }
+
+        private void ReadMeter()
+        {
+            var val = meterValues.Max();
+            ReadTextToScreenReader(Math.Round(val, 2) + " db");
         }
     }
 }

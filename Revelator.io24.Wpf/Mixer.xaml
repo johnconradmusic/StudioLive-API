@@ -9,6 +9,7 @@
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
         Title="Mixer" Height="500" Width="500" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus">
     <Window.Resources>
+        <converters:AlwaysVisibleConverter x:Key="alwaysVisibleConverter"/>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
         <Style x:Key="muteButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
@@ -57,37 +58,45 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
-    <WrapPanel Background="DarkGray" Margin="5">
-        <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding Path=Device.Channels}">
-            <local:MyList.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
-                </DataTemplate>
-            </local:MyList.ItemTemplate>
-            <local:MyList.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="IsEnabled" Value="{Binding LinkSlave}"/>
-                </Style>
-            </local:MyList.ItemContainerStyle>
-        </local:MyList>
+    <StackPanel>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="File">
+                <MenuItem Header="Save Scene..." Click="saveScene"/>
+                <MenuItem Header="Load Scene..." Click="loadScene"/>
+            </MenuItem>
+        </Menu>
+        <WrapPanel Background="DarkGray" Margin="5">
+            <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding Path=Device.Channels}">
+                <local:MyList.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
+                    </DataTemplate>
+                </local:MyList.ItemTemplate>
+                <local:MyList.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="IsEnabled" Value="{Binding LinkSlave}"/>
+                    </Style>
+                </local:MyList.ItemContainerStyle>
+            </local:MyList>
 
-        <StackPanel Orientation="Vertical" Width="60">
-            <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
-            <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
-            <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
-            <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
-            <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>
-            <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
+            <StackPanel Orientation="Vertical" Width="60">
+                <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
+                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
+                <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
+                <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
+                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>
+                <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
 
-        </StackPanel>
-        <StackPanel Margin="5" VerticalAlignment="Center">
-            <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
-            <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
-            <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
-            <Button Margin="5" x:Name="auxPanelButton" Content="Aux Send Panel" Height="30" Width="140" Click="auxPanelButton_Click"/>
-        </StackPanel>
-        <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
-            <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
-        </StatusBar>
-    </WrapPanel>
+            </StackPanel>
+            <StackPanel Margin="5" VerticalAlignment="Center">
+                <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
+                <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
+                <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
+                <Button Margin="5" x:Name="auxPanelButton" Content="Aux Send Panel" Height="30" Width="140" Click="auxPanelButton_Click"/>
+            </StackPanel>
+            <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
+                <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+            </StatusBar>
+        </WrapPanel>
+    </StackPanel>
 </Window>

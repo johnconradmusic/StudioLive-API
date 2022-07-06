@@ -1,4 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.StudioLive32.Api;
+using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Monitor;
 using Presonus.StudioLive32.Wpf.Views;
 using Presonus.UC.Api.Sound;
@@ -169,6 +170,17 @@ namespace Presonus.StudioLive32.Wpf
                     vm.SelectedChannel = channel;
                 }
             }
+        }
+
+        private void saveScene(object sender, RoutedEventArgs e)
+        {
+            Presonus.UC.Api.Services.Serializer.Serialize(vm.Device);
+        }
+
+        private void loadScene(object sender, RoutedEventArgs e)
+        {
+            Device d = (Device)UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
+            vm.Device.SetStateFromLoadedSceneFile(d);
         }
     }
 

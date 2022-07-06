@@ -15,7 +15,6 @@ namespace Presonus.StudioLive32.Api.Models
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
         {
-
             PropertyChanged?.Invoke(this, eventArgs);
         }
 
@@ -23,10 +22,11 @@ namespace Presonus.StudioLive32.Api.Models
         {
         }
 
-
+        public ChannelBase() { }
 
         [RouteValueRange(-72, 0, Enums.Unit.db)]
         public float level_meter { get => GetValue(); set => SetValue(value); }
+
         public string AutomationName => username;
         public string AutomationId => _routePrefix + username;
         public bool LinkSlave
@@ -34,7 +34,11 @@ namespace Presonus.StudioLive32.Api.Models
             get { var val = !(link && !linkmaster); return val; }
         }
 
-        public string username { get => GetString(); set => SetString(value); }
+        public string username 
+        {
+            get => GetString(); 
+            set => SetString(value); 
+        }
         public bool solo { get => GetBoolean(); set => SetBoolean(value); }
         public int color { get => (int)GetValue(); set => SetValue(value); }
         [RouteValueRange(-84, 10, Enums.Unit.db)] public float volume { get { return GetValue(); } set { SetValue(value); } }

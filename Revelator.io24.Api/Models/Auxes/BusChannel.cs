@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,8 +11,13 @@ namespace Presonus.StudioLive32.Api.Models.Auxes
 {
     public class BusChannel : ChannelBase
     {
+        public BusChannel()
+        {
+
+        }
         public BusChannel(string routePrefix, RawService rawService) : base(routePrefix, rawService) { }
 
+        public BusChannelRoutingMode AuxRoutingMode { get { return (BusChannelRoutingMode)auxpremode; } set { auxpremode = (int)value; } }
         public int auxpremode { get => (int)GetValue(); set => SetValue(value); }
         public int busmode { get => (int)GetValue(); set => SetValue(value); }
         public float busdelay { get => GetValue(); set => SetValue(value); }

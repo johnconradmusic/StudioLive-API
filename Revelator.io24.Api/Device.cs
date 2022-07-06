@@ -13,6 +13,7 @@ using System.Timers;
 
 namespace Presonus.StudioLive32.Api
 {
+    [Serializable]
     public class Device : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,8 +21,26 @@ namespace Presonus.StudioLive32.Api
 
         public bool AutoClipAvoidance { get; set; } = true;
 
-        public DateTime timeOfLastClipCheck = DateTime.Now;
-
+        public void SetStateFromLoadedSceneFile(Device device)
+        {
+            //if (device == null) return;
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    var sceneChannel = device.Channels[i];
+            //    var mixerChannel = Channels[i];
+            //    Type mixerType = mixerChannel.GetType();
+            //    var props = sceneChannel.GetType().GetProperties();
+            //    foreach (var prop in props)
+            //    {
+            //        var value = prop.GetValue(sceneChannel);
+            //        if (value == null) return;
+            //        if (prop.CanWrite)
+            //        {                        
+            //            prop.SetValue(mixerChannel, value);
+            //        }
+            //    }
+            //}
+        }
 
         public bool IsAnyChannelClipping
         {
@@ -30,8 +49,9 @@ namespace Presonus.StudioLive32.Api
                 return Channels.Any((c) => c.level_meter > -3);
             }
         }
-
+        [NonSerialized]
         private readonly RawService _rawService;
+
         public RawService RawService => _rawService;
         public List<ChannelBase> Channels { get; set; } = new List<ChannelBase>();
         public List<BusChannel> Buses { get; set; } = new List<BusChannel>();
@@ -41,8 +61,6 @@ namespace Presonus.StudioLive32.Api
         public readonly int FXReturnCount = 4;
         public Device(RawService rawService)
         {
-
-
             _rawService = rawService;
 
             for (int i = 0; i < ChannelCount; i++)
@@ -99,7 +117,7 @@ namespace Presonus.StudioLive32.Api
         private void Chan_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "level_meter")
-            {                
+            {
                 if (IsAnyChannelClipping)
                 {
                     SoundPlayer.PlaySound("clip.wav");

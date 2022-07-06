@@ -32,7 +32,7 @@ namespace Presonus.StudioLive32.Api
         {
             if (route is null)
                 return;
-
+            Console.WriteLine("set string: " + route + " : " + value);
             SetStringMethod?.Invoke(route, value);
         }
 
@@ -72,15 +72,15 @@ namespace Presonus.StudioLive32.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            if (!route.Contains("meter"))
-                Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            //if (!route.Contains("meter"))
+            //    Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }
 
         internal void UpdateStringState(string route, string value)
         {
-            //Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
+            Serilog.Log.Information("update string state: " + route + ": " + value.ToString());
             _string[route] = value;
             StringStateUpdated?.Invoke(route, value);
         }

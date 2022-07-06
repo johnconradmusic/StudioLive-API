@@ -10,6 +10,10 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 {
     public class InputChannel : ChannelBase, INotifyPropertyChanged
     {
+        public InputChannel()
+        {
+
+        }
         public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
 
         #region EQ
