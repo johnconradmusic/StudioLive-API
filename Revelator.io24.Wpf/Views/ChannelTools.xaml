@@ -5,17 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.Views"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
+        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" 
+        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
         mc:Ignorable="d"
         Title="ChannelTools" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown">
-    <Window.Resources>
-        <ObjectDataProvider x:Key="enumValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="enums:BusChannelRoutingMode"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+    <Window.Resources>        
         <converters:AlwaysVisibleConverter x:Key="AlwaysVisibleConverter"/>
-
         <Style TargetType="Slider">
             <Setter Property="Margin" Value="5"/>
             <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
@@ -24,34 +19,51 @@
         <Style TargetType="CheckBox">
             <Setter Property="Margin" Value="5"/>
         </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
     </Window.Resources>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <WrapPanel VerticalAlignment="Center">
             <Slider Tag="hz" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
-            <StackPanel>
+            <StackPanel Margin="5">
                 <TextBox Text="{Binding username, Mode=TwoWay}" AutomationProperties.Name="Channel Name"/>
                 <CheckBox Content="Phantom" IsChecked="{Binding Path=phantom, Mode=TwoWay}" AutomationProperties.Name="Phantom"
-                          Visibility="{Binding phantom, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding phantom, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Stereo Link" IsChecked="{Binding Path=link, Mode=TwoWay}" AutomationProperties.Name="Stereo Link"
-                          Visibility="{Binding link, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding link, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Line Level" IsChecked="{Binding Path=preampmode, Mode=TwoWay}" AutomationProperties.Name="Line Level"
-                          Visibility="{Binding preampmode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding preampmode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
 
                 <CheckBox Content="Send To Main" IsChecked="{Binding Path=lr, Mode=TwoWay}" AutomationProperties.Name="Send to Main"
-                          Visibility="{Binding lr, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding lr, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Subgroup A" IsChecked="{Binding Path=sub1, Mode=TwoWay}" AutomationProperties.Name="Subgroup A"
-                          Visibility="{Binding sub1, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding sub1, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Subgroup B" IsChecked="{Binding Path=sub2, Mode=TwoWay}" AutomationProperties.Name="Subgroup B"
-                          Visibility="{Binding sub2, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding sub2, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Subgroup C" IsChecked="{Binding Path=sub3, Mode=TwoWay}" AutomationProperties.Name="Subgroup C"
-                          Visibility="{Binding sub3, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding sub3, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
                 <CheckBox Content="Subgroup D" IsChecked="{Binding Path=sub4, Mode=TwoWay}" AutomationProperties.Name="Subgroup D"
-                          Visibility="{Binding sub4, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=Collapsed}"/>
+                          IsEnabled="{Binding sub4, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
             </StackPanel>
-            <StackPanel>
-                <ComboBox Width="100" ItemsSource="{Binding Source={StaticResource enumValues}}" SelectedValuePath="{Binding Path=AuxRoutingMode, Mode=TwoWay}" />
+            <StackPanel Margin="5">
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:BusChannelRoutingMode}}}"
+                          SelectedItem="{Binding Path=auxpremode, Mode=TwoWay}" AutomationProperties.Name="Aux Routing Mode"
+                          IsEnabled="{Binding Path=auxpremode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:ReturnInputSource}}}"
+                          SelectedItem="{Binding Path=returninputsrc, Mode=TwoWay}" AutomationProperties.Name="Input Source"
+                          IsEnabled="{Binding Path=returninputsrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:LineInputSource}}}"
+                          SelectedItem="{Binding Path=lineinputsrc, Mode=TwoWay}" AutomationProperties.Name="Input Source"
+                          IsEnabled="{Binding Path=lineinputsrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:DawPostDsp}}}"
+                          SelectedItem="{Binding Path=dawpostdsp, Mode=TwoWay}" AutomationProperties.Name="Digital Send Option"
+                          IsEnabled="{Binding Path=dawpostdsp, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:BusSource}}}"
+                          SelectedItem="{Binding Path=bussrc, Mode=TwoWay}" AutomationProperties.Name="Digital Send Option"
+                          IsEnabled="{Binding Path=bussrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
             </StackPanel>
-            <StackPanel>
+            <StackPanel Margin="5">
                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Path=clip, Mode=TwoWay}" AutomationProperties.Name="Clip Indicator"/>
                 <ProgressBar ValueChanged="meterChanged" AutomationProperties.LiveSetting="Off" x:Name="level_meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
             </StackPanel>

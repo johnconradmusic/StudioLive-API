@@ -72,8 +72,8 @@ namespace Presonus.StudioLive32.Api
 
         internal void UpdateValueState(string route, float value)
         {
-            //if (!route.Contains("meter"))
-            //    Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
+            if (!route.Contains("meter"))
+                Serilog.Log.Information("update value state: " + route + ": " + value.ToString());
             _values[route] = value;
             ValueStateUpdated?.Invoke(route, value);
         }

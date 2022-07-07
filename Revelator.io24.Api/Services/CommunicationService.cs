@@ -222,6 +222,9 @@ namespace Presonus.StudioLive32.Api.Services
                 case "UserLoggedIn":
                     //logged in
                     return;
+                case "RecalledPreset":
+                    Console.WriteLine(jsonElement.ToString());
+                    return;
                 default:
                     Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
                     return;
@@ -260,6 +263,10 @@ namespace Presonus.StudioLive32.Api.Services
             //0x0A (\n): List delimiter
             //Last char is a 0x00 (\0)
             var list = Encoding.ASCII.GetString(data.Range((i + 7), -1)).Split('\n');
+            foreach(var preset in list)
+            {
+                Console.WriteLine(preset);
+            }
             //if (!route.EndsWith("/presets/preset"))
             //{
             //    Log.Warning("[{className}] PL unknown list on route {route}", nameof(CommunicationService), route);

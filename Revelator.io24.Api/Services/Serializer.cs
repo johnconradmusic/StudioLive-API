@@ -17,10 +17,10 @@ namespace Presonus.UC.Api.Services
             File.WriteAllText("C:\\Dev\\scenefile.scene", jsonString);
         }
 
-        public static object Deserialize(string v)
+        public static string Deserialize(string v)
         {
-            var jsonString = File.ReadAllText(v);
-            return JsonSerializer.Deserialize(jsonString, typeof(Device));
+            return File.ReadAllText(v);
+            //return JsonSerializer.Deserialize(jsonString, typeof(Device));
         }
     }
 }

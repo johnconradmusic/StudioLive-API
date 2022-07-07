@@ -16,7 +16,7 @@ namespace Presonus.StudioLive32.Wpf.Converters
         public object Convert(object value,
                               Type targetType, object parameter, CultureInfo culture)
         {
-            return Visibility.Visible;
+            return true;
         }
 
         public object ConvertBack(object value, Type targetType,

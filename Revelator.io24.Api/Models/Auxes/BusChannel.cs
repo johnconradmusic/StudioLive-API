@@ -11,19 +11,14 @@ namespace Presonus.StudioLive32.Api.Models.Auxes
 {
     public class BusChannel : ChannelBase
     {
-        public BusChannel()
-        {
-
-        }
+        public BusSource bussrc { get => (BusSource)GetValue(); set => SetValue((int)value); }
+        public DawPostDsp dawpostdsp { get => (DawPostDsp)GetValue(); set => SetValue((int)value); }
         public BusChannel(string routePrefix, RawService rawService) : base(routePrefix, rawService) { }
-
-        public BusChannelRoutingMode AuxRoutingMode { get { return (BusChannelRoutingMode)auxpremode; } set { auxpremode = (int)value; } }
-        public int auxpremode { get => (int)GetValue(); set => SetValue(value); }
+        public BusChannelRoutingMode auxpremode { get => (BusChannelRoutingMode)(GetValue() * 2); set => SetValue((float)value / 2); }
         public int busmode { get => (int)GetValue(); set => SetValue(value); }
         public float busdelay { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(0, 1000, Enums.Unit.hz)][RouteValue("filter/hpf")] public float hipass { get => GetValue(); set => SetValue(value); }
         public bool lr_assign { get => GetBoolean(); set => SetBoolean(value); }
-        public int bussrc { get => (int)GetValue(); set => SetValue(value); }
 
         #region EQ
         [RouteValue("eq/eqallon")] public bool eq_on { get { return GetBoolean(); } set { SetBoolean(value); } }

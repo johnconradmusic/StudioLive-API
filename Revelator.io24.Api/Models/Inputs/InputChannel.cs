@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 
         }
         public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
+        public DawPostDsp dawpostdsp { get => (DawPostDsp)GetValue(); set => SetValue((int)value); }
 
         #region EQ
         [RouteValue("eq/eqallon")] public bool eq_on { get { return GetBoolean(); } set { SetBoolean(value); } }

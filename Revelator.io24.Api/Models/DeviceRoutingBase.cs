@@ -14,11 +14,11 @@ namespace Presonus.StudioLive32.Api.Models
     {
         private readonly RawService _rawService;
 
-        private readonly Dictionary<string, string> _propertyValueNameRoute = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> _propertyStringNameRoute = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> _propertyStringsNameRoute = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> _propertyValueNameRoute = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> _propertyStringNameRoute = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> _propertyStringsNameRoute = new Dictionary<string, string>();
 
-        protected readonly string _routePrefix;
+        public readonly string _routePrefix;
 
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,125 +95,125 @@ namespace Presonus.StudioLive32.Api.Models
 
 
                 var routeValue = property.GetCustomAttribute<RouteValueAttribute>();
-                if (routeValue != null || property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float))
+                if (routeValue != null || property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float) || property.PropertyType.IsEnum)
                 {
                     var route = routeValue != null ? $"{_routePrefix}/{routeValue.RouteValueName}" : $"{_routePrefix}/{property.Name}";
-                    _propertyValueNameRoute[property.Name.ToLower()] = route;
+        _propertyValueNameRoute[property.Name.ToLower()] = route;
                     var range = property.GetCustomAttribute<RouteValueRangeAttribute>();
                     if (range != null)
                     {
                         _rawService._propertyValueRanges[route] = new ValueRange(range.Min, range.Max, range.Unit);
-                    }
+    }
                     continue;
                 }
 
-                var routeString = property.GetCustomAttribute<RouteStringAttribute>();
-                if (routeString != null || property.PropertyType == typeof(string))
-                {
-                    var route = routeString != null ? $"{_routePrefix}/{routeString.RouteStringName}" : $"{_routePrefix}/{property.Name}";
-                    _propertyStringNameRoute[property.Name.ToLower()] = route;
-                    continue;
-                }
+var routeString = property.GetCustomAttribute<RouteStringAttribute>();
+if (routeString != null || property.PropertyType == typeof(string))
+{
+    var route = routeString != null ? $"{_routePrefix}/{routeString.RouteStringName}" : $"{_routePrefix}/{property.Name}";
+    _propertyStringNameRoute[property.Name.ToLower()] = route;
+    continue;
+}
 
-                var routeStrings = property.GetCustomAttribute<RouteStringsAttribute>();
-                if (routeStrings != null)
-                {
-                    var route = $"{_routePrefix}/{routeStrings.RouteStringsName}";
-                    _propertyStringsNameRoute[property.Name.ToLower()] = route;
-                    continue;
-                }
+var routeStrings = property.GetCustomAttribute<RouteStringsAttribute>();
+if (routeStrings != null)
+{
+    var route = $"{_routePrefix}/{routeStrings.RouteStringsName}";
+    _propertyStringsNameRoute[property.Name.ToLower()] = route;
+    continue;
+}
 
             }
         }
 
         protected string GetString([CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
-                return default;
+{
+    if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
+        return default;
 
-            return _rawService.GetString(route);
-        }
+    return _rawService.GetString(route);
+}
 
-        protected void SetString(string value, [CallerMemberName] string propertyName = "")
-        {
-            if (value is null)
-                return;
+protected void SetString(string value, [CallerMemberName] string propertyName = "")
+{
+    if (value is null)
+        return;
 
-            if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
-                return;
-            Console.WriteLine("Device routing base set string: value:" + value);
-            _rawService.SetString(route, value);
-        }
+    Console.WriteLine("Device routing base set string: value:" + propertyName + " : " + value);
+    if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
+        return;
+    _rawService.SetString(route, value);
+}
 
-        protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return;
+protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return;
 
-            var floatValue = value ? 1.0f : 0.0f;
-            _rawService.SetValue(route, floatValue);
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+    var floatValue = value ? 1.0f : 0.0f;
+    _rawService.SetValue(route, floatValue);
+    OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
 
-        }
+}
 
-        protected bool GetBoolean([CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return default;
+protected bool GetBoolean([CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return default;
 
-            var value = _rawService.GetValue(route);
-            return value > 0.5f;
-        }
+    var value = _rawService.GetValue(route);
+    return value > 0.5f;
+}
 
-        protected float GetValue([CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return default;
+protected float GetValue([CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return default;
 
-            _rawService._propertyValueRanges.TryGetValue(route, out var range);
+    _rawService._propertyValueRanges.TryGetValue(route, out var range);
 
-            var value = _rawService.GetValue(route);
-            if (range != null)
-            {
-                var topOfRange = range.Max - range.Min;
-                value = (value * topOfRange) + range.Min;
-            }
-            return value;
-        }
+    var value = _rawService.GetValue(route);
+    if (range != null)
+    {
+        var topOfRange = range.Max - range.Min;
+        value = (value * topOfRange) + range.Min;
+    }
+    return value;
+}
 
-        protected void SetValue(float value, [CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return;
-            _rawService._propertyValueRanges.TryGetValue(route, out var range);
+protected void SetValue(float value, [CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return;
+    _rawService._propertyValueRanges.TryGetValue(route, out var range);
 
-            if (range != null)
-            {
-                var topOfRange = range.Max - range.Min;
-                value = (value - range.Min) / topOfRange;
+    if (range != null)
+    {
+        var topOfRange = range.Max - range.Min;
+        value = (value - range.Min) / topOfRange;
 
-            }
+    }
+    Console.WriteLine("set value " + propertyName + " : " + value);
+    _rawService.SetValue(route, value);
+    OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+}
 
-            _rawService.SetValue(route, value);
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
+protected int GetVolume([CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return default;
 
-        protected int GetVolume([CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return default;
+    var floatValue = _rawService.GetValue(route);
+    return (int)Math.Round(floatValue * 100f);
+}
 
-            var floatValue = _rawService.GetValue(route);
-            return (int)Math.Round(floatValue * 100f);
-        }
+protected void SetVolume(float value, [CallerMemberName] string propertyName = "")
+{
+    if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
+        return;
 
-        protected void SetVolume(float value, [CallerMemberName] string propertyName = "")
-        {
-            if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
-                return;
-
-            var floatValue = value / 100f;
-            _rawService.SetValue(route, floatValue);
-        }
+    var floatValue = value / 100f;
+    _rawService.SetValue(route, floatValue);
+}
     }
 }

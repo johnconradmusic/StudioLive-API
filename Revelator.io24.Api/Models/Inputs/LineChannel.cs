@@ -1,5 +1,6 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
 using Presonus.StudioLive32.Api.Scene;
+using Presonus.UC.Api.Enums;
 using System;
 using System.ComponentModel;
 
@@ -22,6 +23,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 
         }
 
+
         public bool sub1 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub2 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub3 { get => GetBoolean(); set => SetBoolean(value); }
@@ -39,7 +41,9 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         [RouteValueRange(-84, 10, Enums.Unit.db)] public float FXF { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-84, 10, Enums.Unit.db)] public float FXG { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-84, 10, Enums.Unit.db)] public float FXH { get => GetValue(); set => SetValue(value); }
-        public int inputsrc { get => (int)GetValue(); set => SetValue(value); }
+
+        [RouteValue("inputsrc")]
+        public LineInputSource lineinputsrc { get => (LineInputSource)(GetValue()*3); set => SetValue((float)value/3); }
         public float delay { get => GetValue(); set => SetValue(value); }
         public int flexassignflags { get; set; }
         [RouteValue("48v")] public bool phantom { get => GetBoolean(); set => SetBoolean(value); }
@@ -48,14 +52,14 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         bool canAdjustTrim = true;
         public void AutoAdjustTrim()
         {
-            Console.WriteLine("AUTOADJUST TRIM: allowed? " + canAdjustTrim.ToString());
+            // Console.WriteLine("AUTOADJUST TRIM: allowed? " + canAdjustTrim.ToString());
             if (canAdjustTrim)
             {
-                Console.WriteLine("handling clip : old value is " + preampgain);
+                //Console.WriteLine("handling clip : old value is " + preampgain);
 
                 preampgain -= 1;
                 clip = false;
-                Console.WriteLine("handling clip: new value is " + preampgain);
+                //Console.WriteLine("handling clip: new value is " + preampgain);
                 canAdjustTrim = false;
                 System.Timers.Timer timer = new System.Timers.Timer(100);
                 timer.Elapsed += (s, e) => { canAdjustTrim = true; Console.WriteLine("allowed again"); };
@@ -92,7 +96,8 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         public int _10db_boost { get => (int)GetValue(); set => SetValue(value); }
         public int gatekeysrc { get => (int)GetValue(); set => SetValue(value); }
         public int compkeysrc { get => (int)GetValue(); set => SetValue(value); }
-        public int digsendsrc { get => (int)GetValue(); set => SetValue(value); }
+        public enum SendSource { Digital, Analog }
+        public SendSource digsendsrc { get => (SendSource)GetValue(); set => SetValue((int)value); }
         public int gaincomp { get => (int)GetValue(); set => SetValue(value); }
         [RouteValueRange(0, 1000, Enums.Unit.hz)][RouteValue("filter/hpf")] public float hipass { get => GetValue(); set => SetValue(value); }
 

@@ -179,8 +179,13 @@ namespace Presonus.StudioLive32.Wpf
 
         private void loadScene(object sender, RoutedEventArgs e)
         {
-            Device d = (Device)UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
-            vm.Device.SetStateFromLoadedSceneFile(d);
+            string jsonString = UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
+            vm.Device.SetStateFromLoadedSceneFile(jsonString);
+        }
+
+        private void recallScene_Click(object sender, RoutedEventArgs e)
+        {
+            vm.Device.RawService.SetValue("presets/scn", 0);
         }
     }
 

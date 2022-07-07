@@ -10,6 +10,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Timers;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Presonus.StudioLive32.Api
 {
@@ -21,27 +23,102 @@ namespace Presonus.StudioLive32.Api
 
         public bool AutoClipAvoidance { get; set; } = true;
 
-        public void SetStateFromLoadedSceneFile(Device device)
+        public void SetStateFromLoadedSceneFile(string jsonString)
         {
-            //if (device == null) return;
-            //for (int i = 0; i < 1; i++)
-            //{
-            //    var sceneChannel = device.Channels[i];
-            //    var mixerChannel = Channels[i];
-            //    Type mixerType = mixerChannel.GetType();
-            //    var props = sceneChannel.GetType().GetProperties();
-            //    foreach (var prop in props)
-            //    {
-            //        var value = prop.GetValue(sceneChannel);
-            //        if (value == null) return;
-            //        if (prop.CanWrite)
-            //        {                        
-            //            prop.SetValue(mixerChannel, value);
-            //        }
-            //    }
-            //}
+            Console.WriteLine("load scene");
+
+            if (jsonString == null) return;
+
+            var doc = JsonSerializer.Deserialize<JsonDocument>(jsonString);
+
+            var root = doc.RootElement;
+
+            TraverseSceneFile(root, "");
+
         }
 
+        private void TraverseSceneFile(JsonElement element, string path)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Number:
+                    var value = element.GetSingle();
+                    Console.WriteLine(path + " - " + value);
+                    //_values[path] = value;
+                    //SetValue(path, value);
+                    return;
+                case JsonValueKind.String:
+                    var strVal = element.GetString();
+                    Console.WriteLine(path + " - " + strVal);
+
+                    //_string[path] = strVal ?? string.Empty;
+                    //Serilog.Log.Information(path + ": " + strVal);
+                    return;
+                case JsonValueKind.Array:
+                    var array = element.EnumerateArray();
+                    
+                    //Console.WriteLine("THIS IS AN ARRAY");
+                    int index = 0;
+                    foreach (var channel in array)
+                    {
+                        //Console.WriteLine(item.ToString());
+                        var channelProps = channel.EnumerateObject();
+                        foreach (var property in channelProps)
+                        {                            
+                                Channels[index].GetType().GetProperty(property.Name).SetValue(Channels[index], property.Value);
+                        }
+                        index++;
+                    }
+                    //_strings[path] = array
+                    //    .Select(item => item.GetString() ?? string.Empty)
+                    //    .Where(str => str != string.Empty)
+                    //    .ToArray();
+                    return;
+                case JsonValueKind.Object:
+                    TraverseSceneObject(element, path);
+                    return;
+                default:
+                    //TODO: Logging, what is going on here?
+                    return;
+            }
+        }
+        private void TraverseSceneObject(JsonElement objectElement, string path)
+        {
+            var properties = objectElement.EnumerateObject();
+            foreach (var property in properties)
+            {
+                //Console.WriteLine(property.Name + " - "  + property.Value);
+                switch (property.Name)
+                {
+                    //Theese we can get from the ValueKind, should just be passed up with no '/' added.
+                    case "Buses":
+                        return;
+                    case "Channels":
+                    case "values":
+                    case "ranges":
+                    case "strings":
+                        TraverseSceneFile(property.Value, CreatePath(path));
+                        continue;
+                    default:
+                        var pathName = CreatePath(path, property.Name);
+                        TraverseSceneFile(property.Value, pathName);
+                        continue;
+                }
+            }
+        }
+        private string CreatePath(string path, string propertyName = null)
+        {
+            //Path should never start with a '/'
+            if (path is null || path.Length < 1)
+                return $"{path}{propertyName}";
+
+            //Path already ends with '/', should not add another one
+            if (path.Last() == '/')
+                return $"{path}{propertyName}";
+
+            //Add '/' to path:
+            return $"{path}/{propertyName}";
+        }
         public bool IsAnyChannelClipping
         {
             get

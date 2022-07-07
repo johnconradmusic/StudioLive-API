@@ -47,7 +47,6 @@ namespace Presonus.StudioLive32.Api.Models
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float stereopan { get => GetValue(); set => SetValue(value); }
         public bool link { get => GetBoolean(); set => SetBoolean(value); }
         public bool linkmaster { get => GetBoolean(); set => SetBoolean(value); }
-        public int dawpostdsp { get => (int)GetValue(); set => SetValue(value); }
         public int memab { get => (int)GetValue(); set => SetValue(value); }
         public string iconid { get => GetString(); set => SetString(value); }
         public long aux_asn_flags { get => (long)GetValue(); set => SetValue(value); }
