@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -41,7 +42,18 @@ namespace Presonus.StudioLive32.Api.Models
         }
         public bool solo { get => GetBoolean(); set => SetBoolean(value); }
         public int color { get => (int)GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float volume { get { return GetValue(); } set { SetValue(value); } }
+        [RouteValueRange(-84, 10, Enums.Unit.db)] public float volume 
+        { 
+            get 
+            {
+                var val = GetValue(useRange: false);
+                return Util.GetDBFromFloat(val);
+            } 
+            set 
+            { 
+                SetValue(Util.GetFloatFromDB(value), useRange: false);
+            } 
+        }
         public bool mute { get => GetBoolean(); set => SetBoolean(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float pan { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float stereopan { get => GetValue(); set => SetValue(value); }

@@ -47,6 +47,7 @@
             <Setter Property="Margin" Value="5"/>
             <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
             <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
+            <EventSetter Event="PreviewKeyDown" Handler="Slider_PreviewKeyDown"/>
         </Style>
         <Style TargetType="ToggleButton">
             <Setter Property="Margin" Value="5"/>
@@ -93,8 +94,7 @@
                 <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
                 <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
                 <Button Margin="5" x:Name="auxPanelButton" Content="Aux Send Panel" Height="30" Width="140" Click="auxPanelButton_Click"/>
-                <!--<Button Margin="5" x:Name="recallScene" Content="Test" Height="30" Width="140" Click="recallScene_Click"/>
--->
+                <Button Margin="5" x:Name="recallScene" Content="Test" Height="30" Width="140" Click="recallScene_Click"/>
             </StackPanel>
             <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
                 <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>

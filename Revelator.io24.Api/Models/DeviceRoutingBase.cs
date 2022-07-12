@@ -165,7 +165,7 @@ protected bool GetBoolean([CallerMemberName] string propertyName = "")
     return value > 0.5f;
 }
 
-protected float GetValue([CallerMemberName] string propertyName = "")
+protected float GetValue([CallerMemberName] string propertyName = "", bool useRange = true)
 {
     if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
         return default;
@@ -173,7 +173,7 @@ protected float GetValue([CallerMemberName] string propertyName = "")
     _rawService._propertyValueRanges.TryGetValue(route, out var range);
 
     var value = _rawService.GetValue(route);
-    if (range != null)
+    if (range != null && useRange == true)
     {
         var topOfRange = range.Max - range.Min;
         value = (value * topOfRange) + range.Min;
@@ -181,13 +181,13 @@ protected float GetValue([CallerMemberName] string propertyName = "")
     return value;
 }
 
-protected void SetValue(float value, [CallerMemberName] string propertyName = "")
+protected void SetValue(float value, [CallerMemberName] string propertyName = "", bool useRange = true)
 {
     if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
         return;
     _rawService._propertyValueRanges.TryGetValue(route, out var range);
 
-    if (range != null)
+    if (range != null && useRange == true)
     {
         var topOfRange = range.Max - range.Min;
         value = (value - range.Min) / topOfRange;

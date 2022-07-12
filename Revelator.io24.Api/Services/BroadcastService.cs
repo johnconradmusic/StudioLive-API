@@ -28,6 +28,7 @@ namespace Presonus.StudioLive32.Api.Services
             _udpClient = new UdpClient();
             _udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             _udpClient.Client.Bind(GetIpEndpoint());
+            
 
             _thread = new Thread(Listener) { IsBackground = true };
         }
@@ -49,7 +50,7 @@ namespace Presonus.StudioLive32.Api.Services
                 case PlatformID.WinCE:
                 case PlatformID.Xbox:
                 default:
-                    return new IPEndPoint(IPAddress.Loopback, 47809);
+                    return new IPEndPoint(IPAddress.Any, 47809);
             }
         }
 
@@ -66,13 +67,13 @@ namespace Presonus.StudioLive32.Api.Services
                 {
                     IPEndPoint endPoint = null;
                     var data = _udpClient.Receive(ref endPoint);
-                    Log.Debug("broadcast message");
+                    Console.WriteLine("broadcast message");
                     var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
                     if (!isUcNetPackage)
                         continue;
 
                     var messageType = PackageHelper.GetMessageType(data);
-                    Log.Debug("[{className}] {messageType}", nameof(BroadcastService), messageType);
+                    Console.WriteLine("[{0}] {1}", nameof(BroadcastService), messageType);
 
                     //DA is udp broadcast message from PreSonusHardwareAccessService.exe
                     //NO is udp broadcast message sent from the UC Surface App

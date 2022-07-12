@@ -163,9 +163,9 @@ namespace Presonus.StudioLive32.Wpf
 
         private void ChannelList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(e.Source is ListBox listBox)
+            if (e.Source is ListBox listBox)
             {
-                if(listBox.SelectedItem is ChannelBase channel)
+                if (listBox.SelectedItem is ChannelBase channel)
                 {
                     vm.SelectedChannel = channel;
                 }
@@ -185,7 +185,26 @@ namespace Presonus.StudioLive32.Wpf
 
         private void recallScene_Click(object sender, RoutedEventArgs e)
         {
-            vm.Device.RawService.SetValue("presets/scn", 0);
+            //vm.Device.RawService.SetValue("presets/scn", 0);
+            for (float i = 0; i < 1; i += 0.1f)
+            {
+                Console.WriteLine(i + " - DB from float - " + UC.Api.Helpers.Util.GetDBFromFloat(i));
+            }
+            for (int i = -84; i < 10; i+=5)
+            {
+                Console.WriteLine(i + " - float from DB - " + UC.Api.Helpers.Util.GetFloatFromDB(i));
+            }
+        }
+
+        private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(sender is Slider slider)
+            {
+                if(e.Key == Key.Delete)
+                {
+                    slider.Value = 0;
+                }
+            }
         }
     }
 
