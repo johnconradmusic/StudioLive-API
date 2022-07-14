@@ -10,80 +10,80 @@ namespace Presonus.UC.Api.Helpers
     {
         public static float Map(float oldRangeMin, float oldRangeMax, float newRangeMin, float newRangeMax, float value)
         {
-            //setter (value within range to percentage 0-1) 
+            //convert initial value within old range to percentage
             var topOfRange = oldRangeMax - oldRangeMin; // absolute
-            value = (value - oldRangeMin) / topOfRange;
+            float percentageValue = (value - oldRangeMin) / topOfRange;
 
+            //convert percentage to new value within new range
+            topOfRange = newRangeMax - newRangeMin; // absolute
+            float newValue = (percentageValue * topOfRange) + newRangeMin;
+            return newValue;
 
-
-            //getter (percentage 0-1 to value wthin range)
-            topOfRange = newRangeMax - newRangeMin;
-            value = (value * topOfRange) + newRangeMin;
-            return value;
-
-            var retVal = (oldRangeMax - oldRangeMin) * ((value - newRangeMin) / (newRangeMax - newRangeMin)) + oldRangeMin;
-                return retVal;
-            
         }
-        static float[] range1 = new float[4] { -84, -58, 0, 0.27f };
-        static float[] range2 = new float[4] { -58, -40, 0.27f, 0.46f };
-        static float[] range3 = new float[4] { -40, 0, 0.46f, 0.73f };
-        static float[] range4 = new float[4] { 0, 10, 0.73f, 1f };
+
+
+
+        static List<(float db, float floatVal)> VolumeDBRanges = new List<(float db, float floatVal)>
+        {
+            new(-84, 0),
+            new(-58, .0095f),
+            new(-30, .2f),
+            new(-17, .37f),
+            new(-9, .5f),
+            new(0, .73f),
+            new(10, 1)
+        };
+
+        static List<(float freq, float floatVal)> FrequencyRanges = new List<(float hz, float floatVal)>
+        {
+            new(36, 0),
+            new(100, .1643951f),
+            new(200, .2759f),
+            new(500, .4233f),
+            new(750, .488f),
+            new(1000, .5349068f),
+            new(2000, .64644f),
+            new(5000, .79388f),
+            new(7500, .85912f),
+            new(10000, .90541834f),
+            new(20000,1)
+
+        };
+
+        public static float GetFloatFromFrequency(float freq)
+        {
+            for (int i = 0; i < FrequencyRanges.Count - 1; i++)
+                if (freq >= FrequencyRanges[i].freq && freq <= FrequencyRanges[i + 1].freq)
+                    return Map(FrequencyRanges[i].freq, FrequencyRanges[i + 1].freq, FrequencyRanges[i].floatVal, FrequencyRanges[i + 1].floatVal, freq);
+            return 0;
+        }
+
+        public static float GetFrequencyFromFloat(float floatValue)
+        {
+            for (int i = 0; i < FrequencyRanges.Count - 1; i++)
+                if (floatValue >= FrequencyRanges[i].floatVal && floatValue <= FrequencyRanges[i + 1].floatVal)
+                    return Map(FrequencyRanges[i].floatVal, FrequencyRanges[i + 1].floatVal, FrequencyRanges[i].freq, FrequencyRanges[i + 1].freq, floatValue);
+
+            return 0;
+        }
+
         public static float GetFloatFromDB(float db)
         {
-            float[][] ranges = new float[4][] { range1, range2, range3, range4 };
-            foreach (var range in ranges)
-            {
-                if (db >= range[0] && db <= range[1]) //is between values in this range
-                {
-                    return Map(range[0], range[1], range[2], range[3], db);
-                }
-            }
+            for (int i = 0; i < VolumeDBRanges.Count - 1; i++)
+                if (db >= VolumeDBRanges[i].db && db <= VolumeDBRanges[i + 1].db)
+                    return Map(VolumeDBRanges[i].db, VolumeDBRanges[i + 1].db, VolumeDBRanges[i].floatVal, VolumeDBRanges[i + 1].floatVal, db);
+
+
             return 0;
         }
         public static float GetDBFromFloat(float floatValue)
         {
             //value = value / (float)ushort.MaxValue;
+            for (int i = 0; i < VolumeDBRanges.Count - 1; i++)
+                if (floatValue >= VolumeDBRanges[i].floatVal && floatValue <= VolumeDBRanges[i + 1].floatVal)
+                    return Map(VolumeDBRanges[i].floatVal, VolumeDBRanges[i + 1].floatVal, VolumeDBRanges[i].db, VolumeDBRanges[i + 1].db, floatValue);
 
-
-            float[][] ranges = new float[4][] { range1, range2, range3, range4 };
-            foreach (var range in ranges)
-            {
-                if (floatValue >= range[2] && floatValue <= range[3]) //is between values in this range
-                {
-                    return Map(range[2], range[3], range[0], range[1], floatValue);
-                }
-            }
             return 0;
-
-            var a = 0.47f;
-            var b = 0.09f;
-            var c = 0.004f;
-
-            if (floatValue >= a)
-            {
-                var y = (floatValue - a) / (1 - a);
-                return (float)Math.Round(y * 20) - 10;
-            }
-
-            if (floatValue >= b)
-            {
-                var y = floatValue / (a - b);
-                return (float)Math.Round(y * 30) - 47;
-            }
-
-            if (floatValue >= c)
-            {
-                var y = floatValue / (b - c);
-                return (float)Math.Round(y * 20) - 61;
-            }
-
-            {
-                var y = floatValue / (c - 0.0001111f);
-                return (float)Math.Round(y * 35) - 96;
-            }
-
-            return floatValue - 10;
         }
 
     }

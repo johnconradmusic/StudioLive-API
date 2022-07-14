@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf"
         xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
-                mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}" Background="DarkGray"
-        Title="Mixer" Height="500" Width="500" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus">
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
+        Title="Mixer" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus">
     <Window.Resources>
         <converters:AlwaysVisibleConverter x:Key="alwaysVisibleConverter"/>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
@@ -66,7 +66,7 @@
                 <MenuItem Header="Load Scene..." Click="loadScene"/>
             </MenuItem>
         </Menu>
-        <WrapPanel Background="DarkGray" Margin="5">
+        <WrapPanel Margin="5">
             <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding Path=Device.Channels}">
                 <local:MyList.ItemTemplate>
                     <DataTemplate>
@@ -85,7 +85,10 @@
                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
                 <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
                 <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
-                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"/>
+                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"
+                        IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.IsMono, Converter={StaticResource alwaysVisibleConverter}}"/>
+                <Slider Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.stereopan}" Orientation="Horizontal" Width="40"
+                        IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkMaster, Converter={StaticResource alwaysVisibleConverter}, FallbackValue=False}" />
                 <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
 
             </StackPanel>
@@ -93,12 +96,11 @@
                 <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
                 <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
                 <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
-                <Button Margin="5" x:Name="auxPanelButton" Content="Aux Send Panel" Height="30" Width="140" Click="auxPanelButton_Click"/>
-                <Button Margin="5" x:Name="recallScene" Content="Test" Height="30" Width="140" Click="recallScene_Click"/>
+                <Button Margin="5" x:Name="sendsOnFadersPanelButton" Content="Sends On Faders" Height="30" Width="140" Click="sendsOnFadersPanelButton_Click"/>
             </StackPanel>
-            <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
-                <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
-            </StatusBar>
         </WrapPanel>
+        <StatusBar Height="30" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
+            <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+        </StatusBar>
     </StackPanel>
 </Window>

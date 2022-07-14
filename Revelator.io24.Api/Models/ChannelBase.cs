@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Enums;
 using Presonus.UC.Api.Helpers;
 using System;
 using System.Collections.Generic;
@@ -30,33 +31,17 @@ namespace Presonus.StudioLive32.Api.Models
 
         public string AutomationName => username;
         public string AutomationId => _routePrefix + username;
-        public bool LinkSlave
-        {
-            get { var val = !(link && !linkmaster); return val; }
-        }
-
-        public string username 
-        {
-            get => GetString(); 
-            set => SetString(value); 
-        }
+        public bool LinkSlave => !(link && !linkmaster);
+        public bool LinkMaster => link && linkmaster;
+        public bool IsMono => !link;
+        public string username { get => GetString(); set => SetString(value); }
         public bool solo { get => GetBoolean(); set => SetBoolean(value); }
         public int color { get => (int)GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float volume 
-        { 
-            get 
-            {
-                var val = GetValue(useRange: false);
-                return Util.GetDBFromFloat(val);
-            } 
-            set 
-            { 
-                SetValue(Util.GetFloatFromDB(value), useRange: false);
-            } 
-        }
+        public float volume { get => GetVolume(); set => SetVolume(value); }
         public bool mute { get => GetBoolean(); set => SetBoolean(value); }
+
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float pan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float stereopan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float stereopan { get => GetValue(); set => SetValue(value); }
         public bool link { get => GetBoolean(); set => SetBoolean(value); }
         public bool linkmaster { get => GetBoolean(); set => SetBoolean(value); }
         public int memab { get => (int)GetValue(); set => SetValue(value); }
@@ -66,38 +51,39 @@ namespace Presonus.StudioLive32.Api.Models
 
 
         #region aux
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux1 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux2 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux3 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux4 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux5 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux6 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux7 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux8 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux9 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux10 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux11 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux12 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux13 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux14 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux15 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux16 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux17 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux18 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux19 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux20 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux21 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux22 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux23 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux24 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux25 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux26 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux27 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux28 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux29 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux30 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux31 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float aux32 { get => GetValue(); set => SetValue(value); }
+
+        public float aux1 { get => GetVolume(); set => SetVolume(value); }
+        public float aux2 { get => GetVolume(); set => SetVolume(value); }
+        public float aux3 { get => GetVolume(); set => SetVolume(value); }
+        public float aux4 { get => GetVolume(); set => SetVolume(value); }
+        public float aux5 { get => GetVolume(); set => SetVolume(value); }
+        public float aux6 { get => GetVolume(); set => SetVolume(value); }
+        public float aux7 { get => GetVolume(); set => SetVolume(value); }
+        public float aux8 { get => GetVolume(); set => SetVolume(value); }
+        public float aux9 { get => GetVolume(); set => SetVolume(value); }
+        public float aux10 { get => GetVolume(); set => SetVolume(value); }
+        public float aux11 { get => GetVolume(); set => SetVolume(value); }
+        public float aux12 { get => GetVolume(); set => SetVolume(value); }
+        public float aux13 { get => GetVolume(); set => SetVolume(value); }
+        public float aux14 { get => GetVolume(); set => SetVolume(value); }
+        public float aux15 { get => GetVolume(); set => SetVolume(value); }
+        public float aux16 { get => GetVolume(); set => SetVolume(value); }
+        public float aux17 { get => GetVolume(); set => SetVolume(value); }
+        public float aux18 { get => GetVolume(); set => SetVolume(value); }
+        public float aux19 { get => GetVolume(); set => SetVolume(value); }
+        public float aux20 { get => GetVolume(); set => SetVolume(value); }
+        public float aux21 { get => GetVolume(); set => SetVolume(value); }
+        public float aux22 { get => GetVolume(); set => SetVolume(value); }
+        public float aux23 { get => GetVolume(); set => SetVolume(value); }
+        public float aux24 { get => GetVolume(); set => SetVolume(value); }
+        public float aux25 { get => GetVolume(); set => SetVolume(value); }
+        public float aux26 { get => GetVolume(); set => SetVolume(value); }
+        public float aux27 { get => GetVolume(); set => SetVolume(value); }
+        public float aux28 { get => GetVolume(); set => SetVolume(value); }
+        public float aux29 { get => GetVolume(); set => SetVolume(value); }
+        public float aux30 { get => GetVolume(); set => SetVolume(value); }
+        public float aux31 { get => GetVolume(); set => SetVolume(value); }
+        public float aux32 { get => GetVolume(); set => SetVolume(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux12_pan { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux34_pan { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux56_pan { get => GetValue(); set => SetValue(value); }
@@ -114,33 +100,31 @@ namespace Presonus.StudioLive32.Api.Models
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2728_pan { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2930_pan { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux3132_pan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux12_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux34_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux56_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux78_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux910_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux1112_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux1314_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux1516_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux1718_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux1920_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2122_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2324_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2526_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2728_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux2930_stpan { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(-100, 100, Enums.Unit.none)] public float aux3132_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux12_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux34_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux56_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux78_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux910_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux1112_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux1314_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux1516_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux1718_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux1920_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux2122_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux2324_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux2526_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux2728_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux2930_stpan { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 100, Enums.Unit.none)] public float aux3132_stpan { get => GetValue(); set => SetValue(value); }
 
         #endregion
         public bool mono { get => GetBoolean(); set => SetBoolean(value); }
-        [RouteValueRange(-84, 10, Enums.Unit.db)] public float monolevel { get => GetValue(); set => SetValue(value); }
+        public float monolevel { get => GetVolume(); set => SetVolume(value); }
         public float centerdiv { get => GetValue(); set => SetValue(value); }
         public int insertslot { get => (int)GetValue(); set => SetValue(value); }
         public int insertprepost { get => (int)GetValue(); set => SetValue(value); }
-        public int adc_src { get => (int)GetValue(); set => SetValue(value); }
-        public int avb_src { get => (int)GetValue(); set => SetValue(value); }
-        public int usb_src { get => (int)GetValue(); set => SetValue(value); }
-        public int sd_src { get => (int)GetValue(); set => SetValue(value); }
+
+        public AVBSource avb_src { get => GetEnumValue<AVBSource>(); set => SetEnumValue(value); }
         public int adc_src2 { get => (int)GetValue(); set => SetValue(value); }
         public int avb_src2 { get => (int)GetValue(); set => SetValue(value); }
         public int usb_src2 { get => (int)GetValue(); set => SetValue(value); }
@@ -158,7 +142,7 @@ namespace Presonus.StudioLive32.Api.Models
         #endregion
 
         #region Limiter
-        [RouteValue("limit/threshold")][RouteValueRange(-28,0,Enums.Unit.db)] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
+        [RouteValue("limit/threshold")][RouteValueRange(-28, 0, Enums.Unit.db)] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
         [RouteValue("limit/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
         #endregion
     }

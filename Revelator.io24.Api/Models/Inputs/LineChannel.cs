@@ -23,7 +23,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 
         }
 
-
+        public ADCSource adc_src { get => GetEnumValue<ADCSource>(); set => SetEnumValue(value); }
         public bool sub1 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub2 { get => GetBoolean(); set => SetBoolean(value); }
         public bool sub3 { get => GetBoolean(); set => SetBoolean(value); }
@@ -43,7 +43,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         [RouteValueRange(-84, 10, Enums.Unit.db)] public float FXH { get => GetValue(); set => SetValue(value); }
 
         [RouteValue("inputsrc")]
-        public LineInputSource lineinputsrc { get => (LineInputSource)(GetValue()*3); set => SetValue((float)value/3); }
+        public LineInputSource lineinputsrc { get => GetEnumValue<LineInputSource>(); set => SetEnumValue(value); }
         public float delay { get => GetValue(); set => SetValue(value); }
         public int flexassignflags { get; set; }
         [RouteValue("48v")] public bool phantom { get => GetBoolean(); set => SetBoolean(value); }
@@ -97,9 +97,9 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         public int gatekeysrc { get => (int)GetValue(); set => SetValue(value); }
         public int compkeysrc { get => (int)GetValue(); set => SetValue(value); }
         public enum SendSource { Digital, Analog }
-        public SendSource digsendsrc { get => (SendSource)GetValue(); set => SetValue((int)value); }
+        public SendSource digsendsrc { get => GetEnumValue<SendSource>(); set => SetEnumValue(value); }
         public int gaincomp { get => (int)GetValue(); set => SetValue(value); }
-        [RouteValueRange(0, 1000, Enums.Unit.hz)][RouteValue("filter/hpf")] public float hipass { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(0, 1000, Enums.Unit.hz)][RouteValue("filter/hpf")] public float hipass { get => GetFrequency(); set => SetFrequency(value); }
 
         public float fx1 { get; set; }
         public float fx2 { get; set; }

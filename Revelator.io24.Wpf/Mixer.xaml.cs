@@ -1,5 +1,6 @@
 ﻿using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Models;
+using Presonus.StudioLive32.Api.Models.Inputs;
 using Presonus.StudioLive32.Api.Models.Monitor;
 using Presonus.StudioLive32.Wpf.Views;
 using Presonus.UC.Api.Sound;
@@ -174,13 +175,13 @@ namespace Presonus.StudioLive32.Wpf
 
         private void saveScene(object sender, RoutedEventArgs e)
         {
-            Presonus.UC.Api.Services.Serializer.Serialize(vm.Device);
+            //Presonus.UC.Api.Services.Serializer.Serialize(vm.Device);
         }
 
         private void loadScene(object sender, RoutedEventArgs e)
         {
-            string jsonString = UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
-            vm.Device.SetStateFromLoadedSceneFile(jsonString);
+            //string jsonString = UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
+            //vm.Device.SetStateFromLoadedSceneFile(jsonString);
         }
 
         private void recallScene_Click(object sender, RoutedEventArgs e)
@@ -190,7 +191,7 @@ namespace Presonus.StudioLive32.Wpf
             {
                 Console.WriteLine(i + " - DB from float - " + UC.Api.Helpers.Util.GetDBFromFloat(i));
             }
-            for (int i = -84; i < 10; i+=5)
+            for (int i = -84; i < 10; i += 5)
             {
                 Console.WriteLine(i + " - float from DB - " + UC.Api.Helpers.Util.GetFloatFromDB(i));
             }
@@ -198,15 +199,29 @@ namespace Presonus.StudioLive32.Wpf
 
         private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(sender is Slider slider)
+            if (sender is Slider slider)
             {
-                if(e.Key == Key.Delete)
+                if (e.Key == Key.Delete)
                 {
                     slider.Value = 0;
                 }
             }
         }
+        private void sendsOnFadersPanelButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ChannelList.SelectedItem is Api.Models.Auxes.BusChannel channel)
+            {
+                new SendsOnFadersPanel(channel, vm.Device).ShowDialog();
+            }
+            if (ChannelList.SelectedItem is InputChannel inputChannel)
+            {
+                new AuxSendsView(inputChannel).ShowDialog();
+            }
+        }
+
     }
+
+
 
     public class MyList : ListView
     {
@@ -229,3 +244,5 @@ namespace Presonus.StudioLive32.Wpf
         }
     }
 }
+
+

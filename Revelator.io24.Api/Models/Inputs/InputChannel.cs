@@ -16,8 +16,9 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 
         }
         public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
-        public DawPostDsp dawpostdsp { get => (DawPostDsp)GetValue(); set => SetValue((int)value); }
-
+        public DawPostDsp dawpostdsp { get => GetEnumValue<DawPostDsp>(); set => SetEnumValue(value); }
+        public USBSource usb_src { get => GetEnumValue<USBSource>(); set => SetEnumValue(value); }
+        public int sd_src { get => (int)GetValue(); set => SetValue(value); }
         #region EQ
         [RouteValue("eq/eqallon")] public bool eq_on { get { return GetBoolean(); } set { SetBoolean(value); } }
         [RouteValue("eq/eqbandon1")] public bool eq_bandon1 { get { return GetBoolean(); } set { SetBoolean(value); } }
@@ -34,10 +35,10 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq2")] public float eq_q2 { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq3")] public float eq_q3 { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(0.1f, 10, Enums.Unit.octave)][RouteValue("eq/eqq4")] public float eq_q4 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq1")] public float eq_freq1 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq2")] public float eq_freq2 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq3")] public float eq_freq3 { get => GetValue(); set => SetValue(value); }
-        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq4")] public float eq_freq4 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq1")] public float eq_freq1 { get => GetFrequency(); set => SetFrequency(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq2")] public float eq_freq2 { get => GetFrequency(); set => SetFrequency(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq3")] public float eq_freq3 { get => GetFrequency(); set => SetFrequency(value); }
+        [RouteValueRange(36, 18000, Enums.Unit.hz)][RouteValue("eq/eqfreq4")] public float eq_freq4 { get => GetFrequency(); set => SetFrequency(value); }
         #endregion
     }
 }

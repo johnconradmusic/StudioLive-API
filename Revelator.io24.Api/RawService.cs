@@ -1,5 +1,6 @@
 ﻿using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Scene;
+using Presonus.UC.Api.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -172,7 +173,12 @@ namespace Presonus.StudioLive32.Api
                     var value = element.GetSingle();
                     //Serilog.Log.Information(path + ": " + element.GetSingle().ToString());
                     _propertyValueRanges.TryGetValue(path, out var range);
-
+                    if (path.Contains("freq"))
+                    {
+                        value = Util.GetFloatFromFrequency(value);
+                        _values[path] = value;
+                        return;
+                    }
                     if (range != null)
                     {
                         var topOfRange = range.Max - range.Min;

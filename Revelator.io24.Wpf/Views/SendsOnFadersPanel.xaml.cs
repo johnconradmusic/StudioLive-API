@@ -1,4 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.StudioLive32.Api;
+using Presonus.StudioLive32.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +19,14 @@ using System.Windows.Shapes;
 namespace Presonus.StudioLive32.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for AuxSendsView.xaml
+    /// Interaction logic for SendsOnFadersPanel.xaml
     /// </summary>
-    public partial class AuxSendsView : Window
+    public partial class SendsOnFadersPanel : Window
     {
-        public AuxSendsView(ChannelBase channel)
+        public SendsOnFadersPanel(ChannelBase channel, Device device)
         {
             InitializeComponent();
-            DataContext = channel;
+            DataContext = new SendsOnFadersViewModel(channel, device);
         }
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

@@ -62,6 +62,15 @@
                 <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:BusSource}}}"
                           SelectedItem="{Binding Path=bussrc, Mode=TwoWay}" AutomationProperties.Name="Digital Send Option"
                           IsEnabled="{Binding Path=bussrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:ADCSource}}}"
+                          SelectedItem="{Binding Path=adc_src, Mode=TwoWay}" AutomationProperties.Name="Physical Input Source"
+                          IsEnabled="{Binding Path=adc_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:AVBSource}}}"
+                          SelectedItem="{Binding Path=avb_src, Mode=TwoWay}" AutomationProperties.Name="AVB Network Input Source"
+                          IsEnabled="{Binding Path=avb_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:USBSource}}}"
+                          SelectedItem="{Binding Path=usb_src, Mode=TwoWay}" AutomationProperties.Name="USB Input Source"
+                          IsEnabled="{Binding Path=usb_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
             </StackPanel>
             <StackPanel Margin="5">
                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Path=clip, Mode=TwoWay}" AutomationProperties.Name="Clip Indicator"/>
