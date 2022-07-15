@@ -65,7 +65,7 @@ namespace Presonus.StudioLive32.Wpf
 			if (peer != null)
 			{
 				peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-				//Console.WriteLine("SCREENREADER: " + text);
+				Console.WriteLine("SCREENREADER: " + text);
 			}
 		}
 		protected override void OnClosed(EventArgs e)
@@ -201,7 +201,7 @@ namespace Presonus.StudioLive32.Wpf
 			{
 				if (e.Key == Key.Delete)
 				{
-					slider.Value = 0;
+					slider.Value = GetDefaultValueProperty(slider);
 				}
 			}
 		}
@@ -221,17 +221,74 @@ namespace Presonus.StudioLive32.Wpf
 		{
 			if (e.Key == Key.OemPlus)
 			{
-				ChannelList.SelectedIndex = ChannelList.Items.IndexOf(ChannelList.SelectedItem) + 1;
+				int next = ChannelList.Items.IndexOf(ChannelList.SelectedItem) + 1;
+				if (next > ChannelList.Items.Count - 1) return;
+				ChannelList.SelectedIndex = next;
 				var chan = ChannelList.SelectedItem as ChannelBase;
 				ReadTextToScreenReader(chan.username);
 			}
 			if (e.Key == Key.OemMinus)
 			{
-				ChannelList.SelectedIndex = ChannelList.Items.IndexOf(ChannelList.SelectedItem) - 1;
+				int prev = ChannelList.Items.IndexOf(ChannelList.SelectedItem) - 1;
+				if (prev < 0) return;
+				ChannelList.SelectedIndex = prev;
 				var chan = ChannelList.SelectedItem as ChannelBase;
 				ReadTextToScreenReader(chan.username);
 			}
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				if (e.Key == Key.D1)
+				{
+					MainTabs.SelectedIndex = 0;
+				}
+				if (e.Key == Key.D2)
+				{
+					MainTabs.SelectedIndex = 1;
+				}
+				if (e.Key == Key.D3)
+				{
+					MainTabs.SelectedIndex = 2;
+				}
+				if (e.Key == Key.D4)
+				{
+					MainTabs.SelectedIndex = 3;
+				}
+				if (e.Key == Key.D5)
+				{
+					MainTabs.SelectedIndex = 4;
+				}
+				if (e.Key == Key.D6)
+				{
+					MainTabs.SelectedIndex = 5;
+				}
+				if (e.Key == Key.T)
+				{
+					Trim.Focus();
+				}
+				if (e.Key == Key.C)
+					ChannelList.Focus();
+				if (e.Key == Key.L || e.Key == Key.V)
+					Level.Focus();
+				if (e.Key == Key.H)
+				{
+					MainTabs.SelectedIndex = 0;
+					hiPassSlider.Focus();
+				}
+			}
 		}
+		public static float GetDefaultValueProperty(DependencyObject obj)
+		{
+			return (float)obj.GetValue(DefaultValueProperty);
+		}
+
+		public static void SetDefaultValueProperty(DependencyObject obj, float value)
+		{
+			obj.SetValue(DefaultValueProperty, value);
+		}
+
+		// Using a DependencyPropertyExample as the backing store for MyProperty.  This enables animation, styling, binding, etc...  
+		public static readonly DependencyProperty DefaultValueProperty =
+			DependencyProperty.RegisterAttached("DefaultValue", typeof(float), typeof(Mixer), new PropertyMetadata((float)0));
 	}
 
 

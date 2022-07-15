@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.Views" 
         xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
-        mc:Ignorable="d" Style="{DynamicResource ResourceKey=SkinWindowStyle}"
+        mc:Ignorable="d" 
         Title="AuxSendsView" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <converters:AlwaysVisibleConverter x:Key="AlwaysVisibleConverter"/>

@@ -4,47 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf"
-        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
-        mc:Ignorable="d"
+        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" 
+        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"   mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
-        Title="Mixer" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus" PreviewKeyDown="Window_PreviewKeyDown">
+        Title="Mixer" Loaded="Window_Loaded" SizeToContent="WidthAndHeight" FocusManager.GotFocus="Window_GotFocus" PreviewKeyDown="Window_PreviewKeyDown" Background="Gray">
     <Window.Resources>
-        <converters:AlwaysVisibleConverter x:Key="alwaysVisibleConverter"/>
+        <converters:AlwaysVisibleConverter x:Key="AlwaysVisibleConverter"/>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
-        <Style x:Key="muteButton" TargetType="{x:Type ToggleButton}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border HorizontalAlignment="Center" Margin="5" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="2" Background="#FFEAEAEA" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="#FFC31010"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="soloButton" TargetType="{x:Type ToggleButton}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border HorizontalAlignment="Center" Margin="5" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="2" Background="#FFEAEAEA" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="#FFC3A410"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <Style TargetType="Control">
+            <Setter Property="Background" Value="gray"/>
         </Style>
         <Style TargetType="Slider">
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="10"/>
             <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
             <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
             <EventSetter Event="PreviewKeyDown" Handler="Slider_PreviewKeyDown"/>
@@ -75,31 +46,292 @@
             </local:MyList>
 
             <StackPanel Orientation="Vertical" Width="60">
-                <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
-                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
+                <Slider local:Mixer.DefaultValueProperty="10" x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
                 <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
                 <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
                 <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding pan}" Orientation="Horizontal" Width="40"
                         IsEnabled="{Binding IsMono}"/>
-                <Slider Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding stereopan}" Orientation="Horizontal" Width="40"
+                <Slider local:Mixer.DefaultValueProperty="100" Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding stereopan}" Orientation="Horizontal" Width="40"
                         IsEnabled="{Binding LinkMaster}" />
                 <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding volume}" Orientation="Vertical" Height="80"/>
 
             </StackPanel>
-            <TabControl Width="500">
+            <TabControl x:Name="MainTabs" Width="500">
+                <TabItem Header="Channel Tools">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <WrapPanel VerticalAlignment="Center">
+                            <Slider x:Name="hiPassSlider" Tag="hz" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
+                            <StackPanel Margin="5">
+                                <TextBox Text="{Binding username, Mode=TwoWay}" AutomationProperties.Name="Channel Name"/>
+                                <CheckBox Content="Phantom" IsChecked="{Binding Path=phantom, Mode=TwoWay}" AutomationProperties.Name="Phantom"
+                          IsEnabled="{Binding phantom, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Stereo Link" IsChecked="{Binding Path=link, Mode=TwoWay}" AutomationProperties.Name="Stereo Link"
+                          IsEnabled="{Binding link, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Line Level" IsChecked="{Binding Path=preampmode, Mode=TwoWay}" AutomationProperties.Name="Line Level"
+                          IsEnabled="{Binding preampmode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+
+                            </StackPanel>
+                            <StackPanel Margin="5">
+                                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
+                                <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="level_meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Dynamics">
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <GroupBox Margin="5" Header="Gate">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
+                                <CheckBox AutomationProperties.Name="Gate On" Margin="5"  IsChecked="{Binding Path=gate_on, Mode=TwoWay}">Gate On</CheckBox>
+                                <WrapPanel>
+                                    <Slider Tag="db" AutomationProperties.Name="Gate Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-84" Maximum="0" Value="{Binding Path=gate_threshold, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider Tag="db" AutomationProperties.Name="Gate Range" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-84" Maximum="0" Value="{Binding Path=gate_range, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Range"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider Tag="ms" AutomationProperties.Name="Gate Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="0.02" Maximum="500" Value="{Binding Path=gate_attack, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider Tag="ms" AutomationProperties.Name="Gate Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="50" Maximum="2000" Value="{Binding Path=gate_release, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
+                                </WrapPanel>
+                                <CheckBox AutomationProperties.Name="Expander" Margin="5"  IsChecked="{Binding Path=gate_expander, Mode=TwoWay}">Expander</CheckBox>
+
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Margin="5" Header="Compressor">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
+                                <CheckBox Margin="5" AutomationProperties.Name="Compressor On" IsChecked="{Binding Path=comp_on, Mode=TwoWay}">Compressor On</CheckBox>
+                                <WrapPanel>
+                                    <Slider local:Mixer.DefaultValueProperty="-20"  Tag="db"  AutomationProperties.Name="Compressor Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-56" Maximum="0" Value="{Binding Path=comp_threshold, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider local:Mixer.DefaultValueProperty="4" Tag="to 1"  AutomationProperties.Name="Compressor Ratio" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="1"  Maximum="18" Value="{Binding Path=comp_ratio, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Ratio"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider local:Mixer.DefaultValueProperty="50"  Tag="ms"  AutomationProperties.Name="Compressor Attack" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".20"  Maximum="150" Value="{Binding Path=comp_attack, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Attack"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider local:Mixer.DefaultValueProperty="5" Tag="ms"  AutomationProperties.Name="Compressor Release" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="2.5"  Maximum="900" Value="{Binding Path=comp_release, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Release"/>
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <Slider  Tag="db"  AutomationProperties.Name="Compressor Makeup Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="0" Maximum="28" Value="{Binding Path=comp_gain, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Makeup Gain"/>
+                                </WrapPanel>
+                                <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding Path=comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
+                                <CheckBox AutomationProperties.Name="Compressor Auto Time" Margin="5" IsChecked="{Binding Path=comp_automode, Mode=TwoWay}">Auto Mode</CheckBox>
+
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Margin="5" Header="Limiter">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
+                                <CheckBox AutomationProperties.Name="Limiter On" Margin="5"  IsChecked="{Binding Path=limiter_on, Mode=TwoWay}">Limiter On</CheckBox>
+
+                                <WrapPanel>
+                                    <Slider Tag="db" AutomationProperties.Name="Limiter Threshold" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-28" Maximum="0" Value="{Binding Path=limiter_threshold, Mode=TwoWay}"/>
+                                    <TextBlock Margin="5" VerticalAlignment="Center" Text="Threshold"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </WrapPanel>
+                </TabItem>
+                <TabItem Header="EQ">
+                    <StackPanel Margin="5">
+                        <CheckBox AutomationProperties.Name="EQ On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_on, Mode=TwoWay}">EQ On</CheckBox>
+                        <GroupBox Header="Hi Pass Filter">
+                            <Slider Tag="hz" Margin="5" Width="20" Height="40" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
+                        </GroupBox>
+                        <GroupBox Header="Band 1">
+                            <WrapPanel>
+                                <CheckBox AutomationProperties.Name="EQ Band 1 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon1, Mode=TwoWay}">On</CheckBox>
+                                <Slider local:Mixer.DefaultValueProperty="60" Tag="hz" AutomationProperties.Name="EQ Band 1 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="1" LargeChange="20" Maximum="18000" Value="{Binding Path=eq_freq1, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                                <Slider Tag="db"  AutomationProperties.Name="EQ Band 1 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain1, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                                <Slider Tag="octave"  AutomationProperties.Name="EQ Band 1 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q1, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                                <CheckBox AutomationProperties.Name="EQ Band 1 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandop1, Mode=TwoWay}">Shelf</CheckBox>
+                            </WrapPanel>
+                        </GroupBox>
+                        <GroupBox Header="Band 2">
+                            <WrapPanel>
+                                <CheckBox AutomationProperties.Name="EQ Band 2 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon2, Mode=TwoWay}">On</CheckBox>
+                                <Slider local:Mixer.DefaultValueProperty="800" Tag="hz" AutomationProperties.Name="EQ Band 2 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="20" Maximum="18000" Value="{Binding Path=eq_freq2, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                                <Slider  Tag="db"  AutomationProperties.Name="EQ Band 2 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain2, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                                <Slider  Tag="octave"  AutomationProperties.Name="EQ Band 2 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q2, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                            </WrapPanel>
+                        </GroupBox>
+                        <GroupBox Header="Band 3">
+                            <WrapPanel>
+                                <CheckBox AutomationProperties.Name="EQ Band 3 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon3, Mode=TwoWay}">On</CheckBox>
+                                <Slider local:Mixer.DefaultValueProperty="2600" Tag="hz" AutomationProperties.Name="EQ Band 3 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="50" Maximum="18000" Value="{Binding Path=eq_freq3, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                                <Slider  Tag="db"  AutomationProperties.Name="EQ Band 3 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain3, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                                <Slider  Tag="octave"  AutomationProperties.Name="EQ Band 3 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q3, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                            </WrapPanel>
+                        </GroupBox>
+                        <GroupBox Header="Band 4">
+                            <WrapPanel>
+                                <CheckBox AutomationProperties.Name="EQ Band 4 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon4, Mode=TwoWay}">On</CheckBox>
+                                <Slider local:Mixer.DefaultValueProperty="8000" Tag="hz" AutomationProperties.Name="EQ Band 4 Frequency" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="36" SmallChange="100" Maximum="18000" Value="{Binding Path=eq_freq4, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Frequency"/>
+                                <Slider  Tag="db"  AutomationProperties.Name="EQ Band 4 Gain" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain4, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Gain"/>
+                                <Slider  Tag="octave"  AutomationProperties.Name="EQ Band 4 Q" Margin="5" HorizontalAlignment="Center" Height="40" Orientation="Vertical" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q4, Mode=TwoWay}"/>
+                                <TextBlock Margin="5" VerticalAlignment="Center" Text="Q"/>
+                                <CheckBox AutomationProperties.Name="EQ Band 4 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandop4, Mode=TwoWay}">Shelf</CheckBox>
+                            </WrapPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Aux Sends">
+                    <StackPanel MinWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                        <WrapPanel>
+                            <StackPanel HorizontalAlignment="Center">
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 1"/>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Center">
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 2"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 3"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 4"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 5"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux6, Mode=TwoWay}" AutomationProperties.Name="Aux 6"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 6"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux7, Mode=TwoWay}" AutomationProperties.Name="Aux 7"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 7"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux8, Mode=TwoWay}" AutomationProperties.Name="Aux 8"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 8"/>
+                            </StackPanel>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <StackPanel HorizontalAlignment="Center">
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux9, Mode=TwoWay}" AutomationProperties.Name="Aux 1"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 9"/>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Center">
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux10, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 10"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux11, Mode=TwoWay}" AutomationProperties.Name="Aux 3"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 11"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux12, Mode=TwoWay}" AutomationProperties.Name="Aux 4"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 12"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux13, Mode=TwoWay}" AutomationProperties.Name="Aux 5"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 13"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux14, Mode=TwoWay}" AutomationProperties.Name="Aux 6"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 14"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux15, Mode=TwoWay}" AutomationProperties.Name="Aux 7"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 15"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux16, Mode=TwoWay}" AutomationProperties.Name="Aux 8"/>
+                                <TextBlock HorizontalAlignment="Center" Text="Aux 16"/>
+                            </StackPanel>
+                        </WrapPanel>
+                        <Button Margin="5" x:Name="sendsOnFadersPanelButton" Content="Sends On Faders" Height="30" Width="140" Click="sendsOnFadersPanelButton_Click"/>
+                    </StackPanel>
+                </TabItem>
                 <TabItem Header="Routing">
-                    
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <WrapPanel VerticalAlignment="Center">
+                            <StackPanel Margin="5">
+
+                                <CheckBox Content="Send To Main" IsChecked="{Binding Path=lr, Mode=TwoWay}" AutomationProperties.Name="Send to Main"
+                          IsEnabled="{Binding lr, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Subgroup A" IsChecked="{Binding Path=sub1, Mode=TwoWay}" AutomationProperties.Name="Subgroup A"
+                          IsEnabled="{Binding sub1, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Subgroup B" IsChecked="{Binding Path=sub2, Mode=TwoWay}" AutomationProperties.Name="Subgroup B"
+                          IsEnabled="{Binding sub2, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Subgroup C" IsChecked="{Binding Path=sub3, Mode=TwoWay}" AutomationProperties.Name="Subgroup C"
+                          IsEnabled="{Binding sub3, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <CheckBox Content="Subgroup D" IsChecked="{Binding Path=sub4, Mode=TwoWay}" AutomationProperties.Name="Subgroup D"
+                          IsEnabled="{Binding sub4, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                            </StackPanel>
+                            <StackPanel Margin="5">
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:BusChannelRoutingMode}}}"
+                          SelectedItem="{Binding Path=auxpremode, Mode=TwoWay}" AutomationProperties.Name="Aux Routing Mode"
+                          IsEnabled="{Binding Path=auxpremode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:ReturnInputSource}}}"
+                          SelectedItem="{Binding Path=returninputsrc, Mode=TwoWay}" AutomationProperties.Name="Input Source"
+                          IsEnabled="{Binding Path=returninputsrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:LineInputSource}}}"
+                          SelectedItem="{Binding Path=lineinputsrc, Mode=TwoWay}" AutomationProperties.Name="Input Source"
+                          IsEnabled="{Binding Path=lineinputsrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:DawPostDsp}}}"
+                          SelectedItem="{Binding Path=dawpostdsp, Mode=TwoWay}" AutomationProperties.Name="Digital Send Option"
+                          IsEnabled="{Binding Path=dawpostdsp, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:BusSource}}}"
+                          SelectedItem="{Binding Path=bussrc, Mode=TwoWay}" AutomationProperties.Name="Digital Send Option"
+                          IsEnabled="{Binding Path=bussrc, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:ADCSource}}}"
+                          SelectedItem="{Binding Path=adc_src, Mode=TwoWay}" AutomationProperties.Name="Physical Input Source"
+                          IsEnabled="{Binding Path=adc_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:AVBSource}}}"
+                          SelectedItem="{Binding Path=avb_src, Mode=TwoWay}" AutomationProperties.Name="AVB Network Input Source"
+                          IsEnabled="{Binding Path=avb_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                                <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:USBSource}}}"
+                          SelectedItem="{Binding Path=usb_src, Mode=TwoWay}" AutomationProperties.Name="USB Input Source"
+                          IsEnabled="{Binding Path=usb_src, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                            </StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Global">
+                    <StackPanel>
+                        <Button Content="Load Scene..."/>
+                        <Button Content="Save Scene..."/>
+                        <CheckBox Content="Automatic Clip Protection" IsChecked="{Binding Path=AutoClipAvoidance, Mode=TwoWay}" AutomationProperties.Name="Automatically reduce gain when possible to avoid clipping."/>
+                    </StackPanel>
                 </TabItem>
             </TabControl>
-            <StackPanel Margin="5" VerticalAlignment="Center">
+            <!--<StackPanel Margin="5" VerticalAlignment="Center">
                 <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
                 <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
                 <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
-                <Button Margin="5" x:Name="sendsOnFadersPanelButton" Content="Sends On Faders" Height="30" Width="140" Click="sendsOnFadersPanelButton_Click"/>
-            </StackPanel>
+            </StackPanel>-->
         </WrapPanel>
-        <StatusBar Height="30" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
+        <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
             <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
         </StatusBar>
     </StackPanel>
+    <!--test-->
 </Window>
