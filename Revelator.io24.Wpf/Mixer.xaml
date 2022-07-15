@@ -32,7 +32,7 @@
     </Window.Resources>
     <StackPanel DataContext="{Binding Device.Channels}">
         <WrapPanel Margin="5">
-            <local:MyList IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}">
+            <local:MyList SelectionMode="Single" IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}">
                 <local:MyList.ItemTemplate>
                     <DataTemplate>
                         <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
@@ -320,6 +320,9 @@
                         <Button Content="Load Scene..."/>
                         <Button Content="Save Scene..."/>
                         <CheckBox Content="Automatic Clip Protection" IsChecked="{Binding Path=AutoClipAvoidance, Mode=TwoWay}" AutomationProperties.Name="Automatically reduce gain when possible to avoid clipping."/>
+                        <TextBox Margin="10" x:Name="testBox" Width="200"/>
+                        
+                        <Button Margin="10" x:Name="sendBtn" Content="Test" Width="200" Click="sendBtn_Click"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>

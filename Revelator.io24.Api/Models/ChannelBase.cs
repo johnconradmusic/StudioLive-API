@@ -24,7 +24,7 @@ namespace Presonus.StudioLive32.Api.Models
         {
         }
 
-        public ChannelBase() { }
+        //public ChannelBase() { }
 
         [RouteValueRange(-72, 0, Enums.Unit.db)]
         public float level_meter { get => GetValue(); set => SetValue(value); }

@@ -18,6 +18,12 @@ namespace Presonus.StudioLive32.Wpf
 			device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
 		}
 
+		public MainViewModel(Studio1824C device)
+		{
+			Device = device;
+			device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
+		}
+
 		public MainViewModel() { }
 
 		public void OnPropertyChanged(string? name = null)

@@ -1,7 +1,6 @@
 ﻿using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Inputs;
-using Presonus.StudioLive32.Wpf.Views;
 using Presonus.UC.Api.Sound;
 using System;
 using System.Collections.Generic;
@@ -21,15 +20,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace Presonus.StudioLive32.Wpf
+namespace Presonus.Studio1824C.Wpf
 {
     /// <summary>
     /// Interaction logic for Mixer.xaml
     /// </summary>
-    public partial class Mixer : Window
+    public partial class Mixer1824 : Window
     {
         MainViewModel vm;
-        public Mixer(MainViewModel viewModel)
+        public Mixer1824(MainViewModel viewModel)
         {
             DataContext = vm = viewModel;
 
@@ -113,38 +112,7 @@ namespace Presonus.StudioLive32.Wpf
             ChannelList.Focus();
         }
 
-        private void eqPanelButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ChannelList.SelectedItem is ChannelBase channel)
-            {
-                new EQ_Panel(channel).ShowDialog();
-            }
-        }
 
-        private void channelToolsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ChannelList.SelectedItem is ChannelBase channel)
-            {
-                new ChannelTools(channel).ShowDialog();
-            }
-            ChannelList.Items.Refresh();
-        }
-
-        private void auxPanelButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ChannelList.SelectedItem is ChannelBase channel)
-            {
-                new AuxSendsView(channel).ShowDialog();
-            }
-        }
-
-        private void compPanelButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ChannelList.SelectedItem is ChannelBase channel)
-            {
-                new DynamicsPanel(channel).ShowDialog();
-            }
-        }
 
         private void Slider_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -166,7 +134,7 @@ namespace Presonus.StudioLive32.Wpf
             {
                 if (listBox.SelectedItem is ChannelBase channel)
                 {
-                    vm.SelectedChannel = channel;
+                    //vm.SelectedChannel = channel;
                 }
             }
         }
@@ -207,13 +175,9 @@ namespace Presonus.StudioLive32.Wpf
         }
         private void sendsOnFadersPanelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ChannelList.SelectedItem is Api.Models.Auxes.BusChannel channel)
+            if (ChannelList.SelectedItem is StudioLive32.Api.Models.Auxes.BusChannel channel)
             {
-                new SendsOnFadersPanel(channel, vm.Device).ShowDialog();
-            }
-            if (ChannelList.SelectedItem is InputChannel inputChannel)
-            {
-                new AuxSendsView(inputChannel).ShowDialog();
+                //new SendsOnFadersPanel(channel, vm.Device).ShowDialog();
             }
         }
 
@@ -261,19 +225,12 @@ namespace Presonus.StudioLive32.Wpf
                 {
                     MainTabs.SelectedIndex = 5;
                 }
-                if (e.Key == Key.T)
-                {
-                    Trim.Focus();
-                }
+
                 if (e.Key == Key.C)
                     ChannelList.Focus();
                 if (e.Key == Key.L || e.Key == Key.V)
                     Level.Focus();
-                if (e.Key == Key.H)
-                {
-                    MainTabs.SelectedIndex = 0;
-                    hiPassSlider.Focus();
-                }
+
             }
         }
         public static float GetDefaultValueProperty(DependencyObject obj)
@@ -288,16 +245,18 @@ namespace Presonus.StudioLive32.Wpf
 
         // Using a DependencyPropertyExample as the backing store for MyProperty.  This enables animation, styling, binding, etc...  
         public static readonly DependencyProperty DefaultValueProperty =
-            DependencyProperty.RegisterAttached("DefaultValue", typeof(float), typeof(Mixer), new PropertyMetadata((float)0));
+            DependencyProperty.RegisterAttached("DefaultValue", typeof(float), typeof(Mixer1824), new PropertyMetadata((float)0));
 
-        private void sendBtn_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            vm.Device._rawService.SetValue(testBox.Text, 1);
+            if (sender is CheckBox checkBox)
+            {
+                var state = checkBox.IsChecked.Value;
+                Console.WriteLine(state);
+                vm.Device.Global.globalmute = state;
+            }
         }
     }
-
-
-
     public class MyList : ListView
     {
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
@@ -318,6 +277,7 @@ namespace Presonus.StudioLive32.Wpf
             });
         }
     }
+
 }
 
 

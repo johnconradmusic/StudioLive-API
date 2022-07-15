@@ -133,7 +133,7 @@ namespace Presonus.StudioLive32.Api
 
         public void JSON()
         {
-            var sceneFile = File.ReadAllText("F:\\Development\\Scene.scn");
+            var sceneFile = File.ReadAllText("C:\\Dev\\Scene.scn");
             SyncronizeState(sceneFile);
         }
         private void Traverse(JsonElement element, string path)

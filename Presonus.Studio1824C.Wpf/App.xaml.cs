@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Configuration;
 using Presonus.StudioLive32.Api.Services;
@@ -9,7 +8,7 @@ using Serilog.Sinks.SystemConsole.Themes;
 using System.IO;
 using System.Windows;
 
-namespace Presonus.StudioLive32.Wpf
+namespace Presonus.Studio1824C.Wpf
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
@@ -36,10 +35,10 @@ namespace Presonus.StudioLive32.Wpf
 
 			//API:
 			serviceCollection.AddSingleton<RawService>();
-			serviceCollection.AddSingleton<StudioLive32R>();
-			//serviceCollection.AddSingleton<Studio1824C>();
-			serviceCollection.AddSingleton<Mixer>();
-			serviceCollection.AddSingleton<MainViewModel>();
+			//serviceCollection.AddSingleton<StudioLive32R>();
+			serviceCollection.AddSingleton<Presonus.UC.Api.Devices.Studio1824C>(); //Device
+			serviceCollection.AddSingleton<Mixer1824>(); //window
+			serviceCollection.AddSingleton<MainViewModel>(); //viewmodel
 
 			var serviceProvider = serviceCollection.BuildServiceProvider();
 			//serviceProvider.GetRequiredService<RawService>().JSON();
@@ -49,7 +48,7 @@ namespace Presonus.StudioLive32.Wpf
 			// serviceProvider.StartRevelatorAPI();
 
 			//Run application:
-			var mainWindow = serviceProvider.GetRequiredService<Mixer>();
+			var mainWindow = serviceProvider.GetRequiredService<Mixer1824>();
 			mainWindow.Show();
 			Log.Information("Application ready.");
 		}

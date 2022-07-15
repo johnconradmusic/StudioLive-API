@@ -11,10 +11,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 {
     public class InputChannel : ChannelBase, INotifyPropertyChanged
     {
-        public InputChannel()
-        {
-
-        }
+        
         public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
         public DawPostDsp dawpostdsp { get => GetEnumValue<DawPostDsp>(); set => SetEnumValue(value); }
         public USBSource usb_src { get => GetEnumValue<USBSource>(); set => SetEnumValue(value); }
