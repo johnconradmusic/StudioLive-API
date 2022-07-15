@@ -1,5 +1,5 @@
-﻿using Presonus.StudioLive32.Api;
-using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.StudioLive32.Api.Models;
+using Presonus.UC.Api.Devices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +18,10 @@ using System.Windows.Shapes;
 
 namespace Presonus.StudioLive32.Wpf.Views
 {
-    /// <summary>
-    /// Interaction logic for SendsOnFadersPanel.xaml
-    /// </summary>
-    public partial class SendsOnFadersPanel : Window
+	/// <summary>
+	/// Interaction logic for SendsOnFadersPanel.xaml
+	/// </summary>
+	public partial class SendsOnFadersPanel : Window
     {
         public SendsOnFadersPanel(ChannelBase channel, Device device)
         {

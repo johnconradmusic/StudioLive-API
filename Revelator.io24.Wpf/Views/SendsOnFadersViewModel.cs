@@ -1,6 +1,6 @@
-﻿using Presonus.StudioLive32.Api;
-using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Auxes;
+using Presonus.UC.Api.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace Presonus.StudioLive32.Wpf.Views
 {
-    public class SendsOnFadersViewModel : INotifyPropertyChanged
+	public class SendsOnFadersViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

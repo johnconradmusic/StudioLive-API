@@ -1,6 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Extensions;
 using Presonus.StudioLive32.Api.Helpers;
-using Presonus.StudioLive32.Api.Models.Monitor;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -12,112 +11,101 @@ using System.Threading;
 
 namespace Presonus.StudioLive32.Api.Services
 {
-    /// <summary>
-    /// This service is used to receive UDP packages containing monitorin data.
-    /// Examples of this is the mic/volume meters, and FX meters.
-    /// </summary>
-    public class MonitorService : IDisposable
-    {
-        private readonly UdpClient _udpClient;
-        private readonly Thread _thread;
-        private readonly FatChannelMonitorModel _fatChannel;
-        private readonly ValuesMonitorModel _values;
-        private readonly RawService _rawService;
-        public ushort Port { get; }
+	/// <summary>
+	/// This service is used to receive UDP packages containing monitorin data.
+	/// Examples of this is the mic/volume meters, and FX meters.
+	/// </summary>
+	public class MonitorService : IDisposable
+	{
+		private readonly UdpClient _udpClient;
+		private readonly Thread _thread;
 
-        public MonitorService(
-            FatChannelMonitorModel fatChannelMonitorModel,
-            ValuesMonitorModel valuesMonitorModel,
-            RawService rawService)
-        {
-            this._rawService = rawService;
-            _udpClient = new UdpClient(0);
-            var ipEndpoint = _udpClient.Client.LocalEndPoint as IPEndPoint;
-            if (ipEndpoint is null)
-                throw new InvalidOperationException("Failed to start UDP server.");
+		private readonly RawService _rawService;
+		public ushort Port { get; }
 
-            Port = (ushort)ipEndpoint.Port;
+		public MonitorService(			RawService rawService)
+		{
+			this._rawService = rawService;
+			_udpClient = new UdpClient(0);
+			var ipEndpoint = _udpClient.Client.LocalEndPoint as IPEndPoint;
+			if (ipEndpoint is null)
+				throw new InvalidOperationException("Failed to start UDP server.");
 
-            _thread = new Thread(Listener) { IsBackground = true };
-            _thread.Start();
+			Port = (ushort)ipEndpoint.Port;
 
-            _fatChannel = fatChannelMonitorModel;
-            _values = valuesMonitorModel;
-        }
+			_thread = new Thread(Listener) { IsBackground = true };
+			_thread.Start();
 
-        private void Listener()
-        {
-            while (true)
-            {
-                try
-                {
-                    IPEndPoint endPoint = null;
-                    var data = _udpClient.Receive(ref endPoint);
-                    //Log.Information("received on udp");
-                    var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
-                    if (!isUcNetPackage)
-                        continue;
+		}
 
-                    var messageType = PackageHelper.GetMessageType(data);
-                    //Log.Information("[{className}] {messageType}", nameof(MonitorService), messageType);
+		private void Listener()
+		{
+			while (true)
+			{
+				try
+				{
+					IPEndPoint endPoint = null;
+					var data = _udpClient.Receive(ref endPoint);
+					//Log.Information("received on udp");
+					var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
+					if (!isUcNetPackage)
+						continue;
 
-                    if (messageType != "MS")
-                    {
-                        Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
-                        continue;
-                    }
+					var messageType = PackageHelper.GetMessageType(data);
+					//Log.Information("[{className}] {messageType}", nameof(MonitorService), messageType);
 
-                    Analyze(data);
-                }
-                catch (Exception exception)
-                {
-                    Log.Error("[{className}] {exception}", nameof(MonitorService), exception);
-                }
-            }
-        }
+					if (messageType != "MS")
+					{
+						Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
+						continue;
+					}
 
-        private Dictionary<string, int> _count = new Dictionary<string, int>();
+					Analyze(data);
+				}
+				catch (Exception exception)
+				{
+					Log.Error("[{className}] {exception}", nameof(MonitorService), exception);
+				}
+			}
+		}
 
-        /// <summary>
-        /// This Package type is used for real time monitoring.
-        /// </summary>
-        /// <param name="data"></param>
-        private void Analyze(byte[] data)
-        {
-            //TODO: Add back... When the whole range thing is figured out.
-            //return;
-            
-            var header = Encoding.ASCII.GetString(data.Range(0, 4)); //UC01
-            var unknownValue = BitConverter.ToUInt16(data.Range(4, 6), 0); //always: 0x6C, 0xDB : 108, 219: 56172 (27867 inversed)
-            var type = Encoding.ASCII.GetString(data.Range(6, 8)); //MS: Monitor Status?
-            var from = data.Range(8, 10);
-            var to = data.Range(10, 12);
-            var msg = Encoding.ASCII.GetString(data.Range(12, 16));
-            //Log.Information(msg);
+		private Dictionary<string, int> _count = new Dictionary<string, int>();
 
-            switch (msg)
-            {
-                case "levl":
-                    for (int i = 0; i < 32; i++)
-                    {
-                        var val = BitConverter.ToUInt16(data, 20 + (i * 2));
-                        //Log.Information("meter: " + (i + 1).ToString() + " - " + val.ToString());
-                        float normalizedValue = (float)val / (float)ushort.MaxValue;
-                        //Log.Information(normalizedValue.ToString());
-                        _values.Line[i] = normalizedValue;
-                        _rawService.SetValue("line/ch" + (i + 1).ToString() + "/level_meter", normalizedValue);
-                    }
-                    _values.RaiseModelUpdated();
-                    break;
-                case "redu":
-                    break;
-            }
-            return;
-        }
+		/// <summary>
+		/// This Package type is used for real time monitoring.
+		/// </summary>
+		/// <param name="data"></param>
+		private void Analyze(byte[] data)
+		{
+			var header = Encoding.ASCII.GetString(data.Range(0, 4)); //UC01
+			var unknownValue = BitConverter.ToUInt16(data.Range(4, 6), 0); //always: 0x6C, 0xDB : 108, 219: 56172 (27867 inversed)
+			var type = Encoding.ASCII.GetString(data.Range(6, 8)); //MS: Meter Status?
+			var from = data.Range(8, 10);
+			var to = data.Range(10, 12);
+			var msg = Encoding.ASCII.GetString(data.Range(12, 16));
 
-        public void Dispose()
-        {
-            _udpClient.Dispose();
-        }
-    }
+			switch (msg)
+			{
+				case "levl":
+					for (int i = 0; i < 32; i++)
+					{
+						var val = BitConverter.ToUInt16(data, 20 + (i * 2));
+						float normalizedValue = (float)val / (float)ushort.MaxValue;
+						//_values.Line[i] = normalizedValue;
+						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/level_meter", normalizedValue);
+					}
+					//_values.RaiseModelUpdated();
+					break;
+				case "redu":
+
+					break;
+			}
+			return;
+		}
+
+		public void Dispose()
+		{
+			_udpClient.Dispose();
+		}
+	}
 }

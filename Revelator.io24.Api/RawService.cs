@@ -1,5 +1,4 @@
 ﻿using Presonus.StudioLive32.Api.Models;
-using Presonus.StudioLive32.Api.Scene;
 using Presonus.UC.Api.Helpers;
 using System;
 using System.Collections.Generic;
@@ -134,7 +133,7 @@ namespace Presonus.StudioLive32.Api
 
         public void JSON()
         {
-            var sceneFile = File.ReadAllText("C:\\Dev\\Scene.scn");
+            var sceneFile = File.ReadAllText("F:\\Development\\Scene.scn");
             SyncronizeState(sceneFile);
         }
         private void Traverse(JsonElement element, string path)

@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
-        Title="Mixer" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus">
+        Title="Mixer" Loaded="Window_Loaded" FocusManager.GotFocus="Window_GotFocus" PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <converters:AlwaysVisibleConverter x:Key="alwaysVisibleConverter"/>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
@@ -59,15 +59,9 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
-    <StackPanel>
-        <Menu IsMainMenu="True">
-            <MenuItem Header="File">
-                <MenuItem Header="Save Scene..." Click="saveScene"/>
-                <MenuItem Header="Load Scene..." Click="loadScene"/>
-            </MenuItem>
-        </Menu>
+    <StackPanel DataContext="{Binding Device.Channels}">
         <WrapPanel Margin="5">
-            <local:MyList IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding Path=Device.Channels}">
+            <local:MyList IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}">
                 <local:MyList.ItemTemplate>
                     <DataTemplate>
                         <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
@@ -81,17 +75,22 @@
             </local:MyList>
 
             <StackPanel Orientation="Vertical" Width="60">
-                <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.preampgain}" Orientation="Vertical" Height="30"/>
+                <Slider x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
-                <ToggleButton Style="{StaticResource soloButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
-                <ToggleButton Style="{StaticResource muteButton}" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
-                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.pan}" Orientation="Horizontal" Width="40"
-                        IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.IsMono, Converter={StaticResource alwaysVisibleConverter}}"/>
-                <Slider Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.stereopan}" Orientation="Horizontal" Width="40"
-                        IsEnabled="{Binding ElementName=ChannelList, Path=SelectedItem.LinkMaster, Converter={StaticResource alwaysVisibleConverter}, FallbackValue=False}" />
-                <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding ElementName=ChannelList, Path=SelectedItem.volume}" Orientation="Vertical" Height="80"/>
+                <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
+                <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
+                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding pan}" Orientation="Horizontal" Width="40"
+                        IsEnabled="{Binding IsMono}"/>
+                <Slider Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding stereopan}" Orientation="Horizontal" Width="40"
+                        IsEnabled="{Binding LinkMaster}" />
+                <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding volume}" Orientation="Vertical" Height="80"/>
 
             </StackPanel>
+            <TabControl Width="500">
+                <TabItem Header="Routing">
+                    
+                </TabItem>
+            </TabControl>
             <StackPanel Margin="5" VerticalAlignment="Center">
                 <Button Margin="5" x:Name="channelToolsButton" Content="Channel Tools Panel" Height="30" Width="140" Click="channelToolsButton_Click" />
                 <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>

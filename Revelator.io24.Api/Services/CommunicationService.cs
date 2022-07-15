@@ -2,7 +2,6 @@
 using Presonus.StudioLive32.Api.Helpers;
 using Presonus.StudioLive32.Api.Messages;
 using Presonus.StudioLive32.Api.Messages.Readers;
-using Presonus.StudioLive32.Api.Scene;
 using Serilog;
 using System;
 using System.Collections.Generic;

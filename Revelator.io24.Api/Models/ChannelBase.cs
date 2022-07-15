@@ -33,8 +33,16 @@ namespace Presonus.StudioLive32.Api.Models
         public string AutomationId => _routePrefix + username;
         public bool LinkSlave => !(link && !linkmaster);
         public bool LinkMaster => link && linkmaster;
-        public bool IsMono => !link;
-        public string username { get => GetString(); set => SetString(value); }
+		public bool IsMono
+		{
+			get
+			{
+				Console.WriteLine("is mono? " + !link);
+				return !link;
+			}
+		}
+
+		public string username { get => GetString(); set => SetString(value); }
         public bool solo { get => GetBoolean(); set => SetBoolean(value); }
         public int color { get => (int)GetValue(); set => SetValue(value); }
         public float volume { get => GetVolume(); set => SetVolume(value); }

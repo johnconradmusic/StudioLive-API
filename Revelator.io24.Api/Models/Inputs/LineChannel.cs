@@ -1,5 +1,4 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
-using Presonus.StudioLive32.Api.Scene;
 using Presonus.UC.Api.Enums;
 using System;
 using System.ComponentModel;
