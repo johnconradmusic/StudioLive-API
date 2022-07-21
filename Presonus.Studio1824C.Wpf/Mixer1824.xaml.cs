@@ -42,9 +42,7 @@ namespace Presonus.Studio1824C.Wpf
         {
             if (sender is Slider slider && slider.IsFocused)
             {
-                //Console.WriteLine("SLIDER VALUE CHANGE: {0} - {1} ", e.OldValue, e.NewValue);
-
-                ReportValueOfControl(slider);
+	            ReportValueOfControl(slider);
             }
         }
 
@@ -64,7 +62,6 @@ namespace Presonus.Studio1824C.Wpf
             if (peer != null)
             {
                 peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-                Console.WriteLine("SCREENREADER: " + text);
             }
         }
         protected override void OnClosed(EventArgs e)
@@ -155,11 +152,9 @@ namespace Presonus.Studio1824C.Wpf
             //vm.Device.RawService.SetValue("presets/scn", 0);
             for (float i = 0; i < 1; i += 0.1f)
             {
-                Console.WriteLine(i + " - DB from float - " + UC.Api.Helpers.Util.GetDBFromFloat(i));
             }
             for (int i = -84; i < 10; i += 5)
             {
-                Console.WriteLine(i + " - float from DB - " + UC.Api.Helpers.Util.GetFloatFromDB(i));
             }
         }
 
@@ -252,7 +247,6 @@ namespace Presonus.Studio1824C.Wpf
             if (sender is CheckBox checkBox)
             {
                 var state = checkBox.IsChecked.Value;
-                Console.WriteLine(state);
                 vm.Device.Global.globalmute = state;
             }
         }

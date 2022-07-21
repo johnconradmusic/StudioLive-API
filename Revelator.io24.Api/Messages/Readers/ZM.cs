@@ -1,10 +1,10 @@
-﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Presonus.StudioLive32.Api.Extensions;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using Presonus.StudioLive32.Api.Extensions;
 
-namespace Presonus.StudioLive32.Api.Messages.Readers
+namespace Presonus.UC.Api.Messages.Readers
 {
     public static class ZM
     {
@@ -22,15 +22,13 @@ namespace Presonus.StudioLive32.Api.Messages.Readers
             var size = BitConverter.ToInt32(data.Range(12, 16), 0);
 
             //ZLib Message:
-            using (var compressedStream = new MemoryStream(data.Range(16)))
-            using (var inputStream = new InflaterInputStream(compressedStream))
-            using (var outputStream = new MemoryStream())
-            {
-                inputStream.CopyTo(outputStream);
-                outputStream.Position = 0;
+            using var compressedStream = new MemoryStream(data.Range(16));
+            using var inputStream = new InflaterInputStream(compressedStream);
+            using var outputStream = new MemoryStream();
+            inputStream.CopyTo(outputStream);
+            outputStream.Position = 0;
 
-                return Encoding.ASCII.GetString(outputStream.ToArray());
-            }
+            return Encoding.ASCII.GetString(outputStream.ToArray());
         }
     }
 }

@@ -41,7 +41,6 @@ namespace Presonus.StudioLive32.Api.Helpers
             if (data is null || data.Length - index < 4)
                 return false;
             
-            //Serilog.Log.Information("is ucnet package!");
             return data[index] == 85 && data[index + 1] == 67 && data[index + 2] == 0 && data[index + 3] == 1;
         }
 

@@ -42,7 +42,7 @@ namespace Presonus.StudioLive32.Wpf
 			serviceCollection.AddSingleton<MainViewModel>();
 
 			var serviceProvider = serviceCollection.BuildServiceProvider();
-			//serviceProvider.GetRequiredService<RawService>().JSON();
+			serviceProvider.GetRequiredService<RawService>().JSON();
 			serviceProvider
 				.GetRequiredService<BroadcastService>()
 				.StartReceive();
@@ -51,7 +51,6 @@ namespace Presonus.StudioLive32.Wpf
 			//Run application:
 			var mainWindow = serviceProvider.GetRequiredService<Mixer>();
 			mainWindow.Show();
-			Log.Information("Application ready.");
 		}
 
 		[System.Runtime.InteropServices.DllImport("kernel32.dll")]

@@ -5,6 +5,55 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Parameters\AdvancedSceneFilters.cs" />
+    <Compile Remove="Components\Parameters\AVBStageboxChannel.cs" />
+    <Compile Remove="Components\Parameters\AVBStageboxGlobal.cs" />
+    <Compile Remove="Components\Parameters\Bluetooth.cs" />
+    <Compile Remove="Components\Parameters\Channel.cs" />
+    <Compile Remove="Components\Parameters\ChannelDCA.cs" />
+    <Compile Remove="Components\Parameters\ChannelFilters.cs" />
+    <Compile Remove="Components\Parameters\ConsolesGlobal.cs" />
+    <Compile Remove="Components\Parameters\DAWUserFunctions.cs" />
+    <Compile Remove="Components\Parameters\EarmixSetup.cs" />
+    <Compile Remove="Components\Parameters\FatChannelMeters.cs" />
+    <Compile Remove="Components\Parameters\FilterGroup.cs" />
+    <Compile Remove="Components\Parameters\GEQUI.cs" />
+    <Compile Remove="Components\Parameters\Global.cs" />
+    <Compile Remove="Components\Parameters\InputChannel.cs" />
+    <Compile Remove="Components\Parameters\LCDScreens.cs" />
+    <Compile Remove="Components\Parameters\LinkOptions.cs" />
+    <Compile Remove="Components\Parameters\Mapping.cs" />
+    <Compile Remove="Components\Parameters\MasterLevelControl.cs" />
+    <Compile Remove="Components\Parameters\MicLineInput.cs" />
+    <Compile Remove="Components\Parameters\MuteGroups.cs" />
+    <Compile Remove="Components\Parameters\NetworkSetup.cs" />
+    <Compile Remove="Components\Parameters\OutputBus.cs" />
+    <Compile Remove="Components\Parameters\OutputDACChannel.cs" />
+    <Compile Remove="Components\Parameters\OutputPatchRouter.cs" />
+    <Compile Remove="Components\Parameters\Permissions.cs" />
+    <Compile Remove="Components\Parameters\PluginFX.cs" />
+    <Compile Remove="Components\Parameters\Presets.cs" />
+    <Compile Remove="Components\Parameters\ProjectFilters.cs" />
+    <Compile Remove="Components\Parameters\RackMasterSection.cs" />
+    <Compile Remove="Components\Parameters\RoutableChannel.cs" />
+    <Compile Remove="Components\Parameters\SDCard.cs" />
+    <Compile Remove="Components\Parameters\SDRecorder.cs" />
+    <Compile Remove="Components\Parameters\SDRecorderChannel.cs" />
+    <Compile Remove="Components\Parameters\SDSession.cs" />
+    <Compile Remove="Components\Parameters\SDTransport.cs" />
+    <Compile Remove="Components\Parameters\SignalGen.cs" />
+    <Compile Remove="Components\Parameters\SoftPower.cs" />
+    <Compile Remove="Components\Parameters\StageboxSetup.cs" />
+    <Compile Remove="Components\Parameters\StereoLineInput.cs" />
+    <Compile Remove="Components\Parameters\UserEncoders.cs" />
+    <Compile Remove="Components\Parameters\UserFunctions.cs" />
+    <Compile Remove="Components\Parameters\UserLayer.cs" />
+    <Compile Remove="Components\Parameters\UserPermissionsParams.cs" />
+    <Compile Remove="Components\Parameters\UserProfileParams.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
@@ -13,6 +62,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Parameters\" />
     <Folder Include="Models\Monitor\" />
   </ItemGroup>
 

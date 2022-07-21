@@ -1,7 +1,6 @@
 ﻿using Presonus.StudioLive32.Api.Extensions;
 using Presonus.StudioLive32.Api.Helpers;
 using Presonus.StudioLive32.Api.Messages;
-using Presonus.StudioLive32.Api.Messages.Readers;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using Presonus.UC.Api.Messages.Readers;
 
 namespace Presonus.StudioLive32.Api.Services
 {
@@ -135,7 +135,6 @@ namespace Presonus.StudioLive32.Api.Services
                     foreach (var chunk in chunks)
                     {
                         var messageType = PackageHelper.GetMessageType(chunk);
-                        Log.Information(messageType);
                         switch (messageType)
                         {
                             case "BO":
@@ -166,7 +165,6 @@ namespace Presonus.StudioLive32.Api.Services
                                 PS(chunk);
                                 break;
                             case "MS":
-                                Log.Information("ms");
                                 break;
                             default:
                                 break;
@@ -188,20 +186,17 @@ namespace Presonus.StudioLive32.Api.Services
             var to = data.Range(10, 12);
 
             var str = Encoding.ASCII.GetString(data.Range(12));
-            Log.Information("CK: " + str);
         }
 
 
         private void Json(string json)
         {
 
-            //Log.Information("JSON: " + json);
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(json);
             if (!jsonElement.TryGetProperty("id", out var idProperty))
                 return;
 
             var id = idProperty.GetString();
-
             switch (id)
             {
                 case "SynchronizePart":
@@ -222,7 +217,6 @@ namespace Presonus.StudioLive32.Api.Services
                     //logged in
                     return;
                 case "RecalledPreset":
-                    Console.WriteLine(jsonElement.ToString());
                     return;
                 default:
                     Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
@@ -239,7 +233,6 @@ namespace Presonus.StudioLive32.Api.Services
             var to = data.Range(10, 12);
 
             var str = Encoding.ASCII.GetString(data.Range(12));
-            //Log.Information("BO: " + str);
         }
 
         /// <summary>
@@ -262,10 +255,7 @@ namespace Presonus.StudioLive32.Api.Services
             //0x0A (\n): List delimiter
             //Last char is a 0x00 (\0)
             var list = Encoding.ASCII.GetString(data.Range((i + 7), -1)).Split('\n');
-            foreach(var preset in list)
-            {
-                Console.WriteLine(preset);
-            }
+
             //if (!route.EndsWith("/presets/preset"))
             //{
             //    Log.Warning("[{className}] PL unknown list on route {route}", nameof(CommunicationService), route);
@@ -289,7 +279,6 @@ namespace Presonus.StudioLive32.Api.Services
             var route = Encoding.ASCII.GetString(data.Range(12, -7));
             var emptyBytes = data.Range(-7, -4);
             var state = BitConverter.ToSingle(data.Range(-4), 0);
-
             _rawService.UpdateValueState(route, state);
         }
 
@@ -307,6 +296,7 @@ namespace Presonus.StudioLive32.Api.Services
 
             //Ex. "line/ch1/preset_name\0\0\0Slap Echo\0"
             var str = Encoding.ASCII.GetString(data.Range(12));
+
             var split = str.Split('\0');
             var route = split[0];
             var value = split[3];
@@ -328,9 +318,6 @@ namespace Presonus.StudioLive32.Api.Services
             var writer = new TcpMessageWriter(_deviceId);
             var data = writer.CreateRouteValueUpdate(route, value);
 
-            //Serilog.Log.Information("set value: " + route + " - " + value.ToString());
-
-
             SendMessage(data);
             _rawService.UpdateValueState(route, value);
         }
@@ -349,13 +336,11 @@ namespace Presonus.StudioLive32.Api.Services
                 var emptyBytes = message.Range(-7, -4);
                 var state = BitConverter.ToSingle(message.Range(-4), 0);
 
-                //Log.Information(route + " - " + state.ToString());
                 var networkStream = GetNetworkStream();
                 if (networkStream is null)
                     return false;
 
                 networkStream.Write(message, 0, message.Length);
-                //Log.Information("success");
 
                 return true;
             }

@@ -8,6 +8,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\slider_thumb.png" />
+    <None Remove="Images\slider_track.png" />
+    <None Remove="Images\window_bg.png" />
+    <None Remove="slider_thumb.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\slider_thumb.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\slider_track.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\window_bg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="7.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
@@ -15,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Presonus.Theme\Presonus.Theme.csproj" />
     <ProjectReference Include="..\Revelator.io24.Api\Presonus.UC.Api.csproj" />
   </ItemGroup>
 

@@ -67,13 +67,11 @@ namespace Presonus.StudioLive32.Api.Services
                 {
                     IPEndPoint endPoint = null;
                     var data = _udpClient.Receive(ref endPoint);
-                    //Console.WriteLine("broadcast message");
                     var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
                     if (!isUcNetPackage)
                         continue;
 
                     var messageType = PackageHelper.GetMessageType(data);
-                    //Console.WriteLine("[{0}] {1}", nameof(BroadcastService), messageType);
 
                     //DA is udp broadcast message from PreSonusHardwareAccessService.exe
                     //NO is udp broadcast message sent from the UC Surface App

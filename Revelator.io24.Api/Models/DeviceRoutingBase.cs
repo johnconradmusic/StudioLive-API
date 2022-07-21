@@ -33,9 +33,7 @@ namespace Presonus.StudioLive32.Api.Models
             _rawService.StringsStateUpdated += StringsStateUpdated;
             InitMapRoutes();
         }
-
-        //public DeviceRoutingBase() { }
-
+        
         protected abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
 
         //TODO: Add GetStringRoute and GetStringsRoute? Could be refactored to be isolated away from each other.
@@ -142,7 +140,6 @@ namespace Presonus.StudioLive32.Api.Models
             if (value is null)
                 return;
 
-            Console.WriteLine("Device routing base set string: value:" + propertyName + " : " + value);
             if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
                 return;
             _rawService.SetString(route, value);
@@ -150,7 +147,6 @@ namespace Presonus.StudioLive32.Api.Models
 
         protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
         {
-            Console.WriteLine(propertyName + ": " + value);
             if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
                 return;
             var floatValue = value ? 1.0f : 0.0f;
@@ -279,7 +275,6 @@ namespace Presonus.StudioLive32.Api.Models
                 value = (value - range.Min) / topOfRange;
 
             }
-            Console.WriteLine("set value " + propertyName + " : " + value);
             _rawService.SetValue(route, value);
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }

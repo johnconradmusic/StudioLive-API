@@ -46,17 +46,14 @@ namespace Presonus.StudioLive32.Api.Services
 				{
 					IPEndPoint endPoint = null;
 					var data = _udpClient.Receive(ref endPoint);
-					//Log.Information("received on udp");
 					var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
 					if (!isUcNetPackage)
 						continue;
 
 					var messageType = PackageHelper.GetMessageType(data);
-					//Log.Information("[{className}] {messageType}", nameof(MonitorService), messageType);
 
 					if (messageType != "MS")
 					{
-						//Log.Information("[{className}] {messageType} not MS", nameof(MonitorService), messageType);
 						continue;
 					}
 
@@ -91,8 +88,7 @@ namespace Presonus.StudioLive32.Api.Services
 					{
 						var val = BitConverter.ToUInt16(data, 20 + (i * 2));
 						float normalizedValue = (float)val / (float)ushort.MaxValue;
-						//_values.Line[i] = normalizedValue;
-						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/level_meter", normalizedValue);
+						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/meter", normalizedValue);
 					}
 					//_values.RaiseModelUpdated();
 					break;

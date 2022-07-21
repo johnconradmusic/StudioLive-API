@@ -14,7 +14,6 @@ namespace Presonus.Studio1824C.Wpf
 
         public MainViewModel(Presonus.UC.Api.Devices.Studio1824C device)
         {
-            System.Console.WriteLine("created viewmodel");
             Device = device;
             device.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Device));
         }

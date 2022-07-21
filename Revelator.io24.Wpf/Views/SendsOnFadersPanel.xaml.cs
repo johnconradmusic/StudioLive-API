@@ -32,8 +32,6 @@ namespace Presonus.StudioLive32.Wpf.Views
         {
             if (sender is Slider slider && slider.IsFocused)
             {
-                Console.WriteLine("SLIDER VALUE CHANGE: {0} - {1} ", e.OldValue, e.NewValue);
-
                 ReportValueOfControl(slider);
             }
 
@@ -64,7 +62,6 @@ namespace Presonus.StudioLive32.Wpf.Views
             var peer = UIElementAutomationPeer.FromElement(screenReaderText);
             if (peer == null) peer = UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
             peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-            //Console.WriteLine("SCREENREADER: " + text);
 
         }
 

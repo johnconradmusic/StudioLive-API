@@ -8,6 +8,26 @@ namespace Presonus.UC.Api.Helpers
 {
     public static class Util
     {
+	    public static float ExpGainFromPercentage(float value)
+	    {
+            //y = -84 - (-275.8358/2.746098)*(1 - e^(-2.746098*x)) if x is 0, y is -84... so x is the input, return y
+            //y = 1.104845*e^(-(x - 20.43999)^2/(2*23.37904^2))
+            var y = -84 - (-275.8358 / 2.746098) * (1 - MathF.Pow(MathF.E, (-2.746098f * value)));
+		    return (float)y;
+	    }
+
+	    public static float ExpPercentageFromGain(float value)
+	    {
+            //y = 0.6966281 - (-0.02541004 / -0.03445755) * (1 - e ^ (+0.03445755 * x))
+            //y = 0.7139366 - (-0.02374415/-0.03123236)*(1 - e^(+0.03123236*x))
+            //y = 0.7136343 - (-0.02364481/-0.03173249)*(1 - e^(+0.03173249*x))
+            //y = 0.7020919 - (-0.02303014 / -0.03140568) * (1 - e ^ (+0.03140568 * x))
+            //y = 16.44643 - 100.4464*e^(-2.746098*x)
+            var y = 0.7020919 - (-0.02303014 / -0.03140568) * (1 - MathF.Pow(MathF.E, (0.03140568f * value)));
+            //var y = 16.44643 - 100.4464 * MathF.Pow(MathF.E, -2.746098f * value);
+		    return (float)y;
+	    }
+
         public static float Map(float oldRangeMin, float oldRangeMax, float newRangeMin, float newRangeMax, float value)
         {
             //convert initial value within old range to percentage

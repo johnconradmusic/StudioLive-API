@@ -7,57 +7,105 @@
         xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" 
         xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"   mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
-        Title="Mixer" Loaded="Window_Loaded" SizeToContent="WidthAndHeight" FocusManager.GotFocus="Window_GotFocus" PreviewKeyDown="Window_PreviewKeyDown" Background="Gray">
+        Style="{StaticResource WindowTheme}" WindowStartupLocation="CenterScreen" 
+        Title="Mixer" Loaded="Window_Loaded"  FocusManager.GotFocus="Window_GotFocus" 
+        PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <converters:AlwaysVisibleConverter x:Key="AlwaysVisibleConverter"/>
         <converters:BooleanInverterConverter x:Key="booleanInverterConverter" />
-        <Style TargetType="Control">
-            <Setter Property="Background" Value="gray"/>
+
+        <Style x:Key="SliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Rectangle Height="48" Width="24">
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="/Images/slider_thumb.png"></ImageBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <!--<TextBlock Width="64" Height="64" Foreground="Black" Margin="0,0,0,0"  Text="{Binding Value, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Slider}}}"/>-->
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+
+            </Setter>
         </Style>
-        <Style TargetType="Slider">
-            <Setter Property="Margin" Value="10"/>
+
+        <ControlTemplate x:Key="Slider"  TargetType="Slider">
+            <Grid Height="{TemplateBinding Height}" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition MinWidth="{TemplateBinding MinWidth}" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!--<Border x:Name="TrackBackground" VerticalAlignment="Center" Margin="0" BorderBrush="LightGray" Background="SlateGray"  Height="{TemplateBinding Height}" Grid.Column="1"  BorderThickness="4">-->
+                <!--<TickBar TickFrequency="12" Ticks="0" x:Name="TopTick"  Fill="LightGray" HorizontalAlignment="Center" SnapsToDevicePixels="True" Grid.Column="1" Placement="Left"  Width="34" Visibility="Visible"/>-->
+                <Track HorizontalAlignment="Center" Grid.Column="1" x:Name="PART_Track" Margin="-22,0,0,0" Height="{TemplateBinding Height}" >
+                    <Track.Thumb>
+                        <Thumb HorizontalAlignment="Center" Style="{StaticResource SliderThumb}" />
+                    </Track.Thumb>
+                </Track>
+                <Grid.Background>
+                    <ImageBrush ImageSource="/Images/slider_track.png"/>
+                </Grid.Background>
+                <!--</Border>-->
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="mixerSlider" TargetType="Slider">
             <EventSetter Event="ValueChanged" Handler="Slider_ValueChanged"/>
             <EventSetter Event="GotFocus" Handler="Slider_GotFocus"/>
             <EventSetter Event="PreviewKeyDown" Handler="Slider_PreviewKeyDown"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="Orientation" Value="Vertical"/>
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="MinHeight" Value="600" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Template" Value="{StaticResource Slider}" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="/Images/slider_track.png"/>
+                </Setter.Value>
+            </Setter>
         </Style>
-        <Style TargetType="ToggleButton">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="GroupBox">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
+
+
+
     </Window.Resources>
-    <StackPanel DataContext="{Binding Device.Channels}">
-        <WrapPanel Margin="5">
-            <local:MyList SelectionMode="Single" IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}">
-                <local:MyList.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock AutomationProperties.Name="{Binding username}" Text="{Binding username}"/>
-                    </DataTemplate>
-                </local:MyList.ItemTemplate>
-                <local:MyList.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="IsEnabled" Value="{Binding LinkSlave}"/>
-                    </Style>
-                </local:MyList.ItemContainerStyle>
-            </local:MyList>
+    <Border Style="{StaticResource BorderTheme}">
+        <Grid DataContext="{Binding Console.line}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="200"/>
+                <RowDefinition/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Border Background="#FF101D37" Grid.Row="0" Grid.ColumnSpan="4"/>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="4" Grid.Row="0" FontSize="14" Foreground="White" Text="Presonus Universal Control (v1.0b)"/>
+            <local:MyList Grid.RowSpan="2" Grid.Row="1" Style="{StaticResource ListTheme}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}"/>
 
-            <StackPanel Orientation="Vertical" Width="60">
-                <Slider local:Mixer.DefaultValueProperty="10" x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
-                <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
-                <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
-                <Slider Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding pan}" Orientation="Horizontal" Width="40"
+            <Slider Grid.Column="1" local:Mixer.DefaultValueProperty="10" x:Name="Trim" Tag="db" Minimum="0" Maximum="60" HorizontalAlignment="Center" Value="{Binding preampgain}" Orientation="Vertical" Height="30"/>
+            <CheckBox Grid.Column="1" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
+            <CheckBox Grid.Column="1" IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
+            <Slider Grid.Column="1" Tag="percent" x:Name="Pan" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding pan}" Orientation="Horizontal" Width="40"
                         IsEnabled="{Binding IsMono}"/>
-                <Slider local:Mixer.DefaultValueProperty="100" Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding stereopan}" Orientation="Horizontal" Width="40"
+            <Slider Grid.Column="1" local:Mixer.DefaultValueProperty="100" Tag="percent" x:Name="StereoWidth" Minimum="-100" Maximum="100" HorizontalAlignment="Center" Value="{Binding stereopan}" Orientation="Horizontal" Width="40"
                         IsEnabled="{Binding LinkMaster}" />
-                <Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding volume}" Orientation="Vertical" Height="80"/>
+            <!--<Slider Tag="db" x:Name="Level" Minimum="-84" Maximum="10" HorizontalAlignment="Center" Value="{Binding volume}" Orientation="Vertical" Height="80"/>-->
+            <Slider Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" x:Name="Level" VerticalAlignment="Center" Orientation="Vertical" Height="600" Width="64" Minimum="-84" Maximum="10" Value="{Binding volume.Value}" Style="{StaticResource mixerSlider}"/>
 
-            </StackPanel>
-            <TabControl x:Name="MainTabs" Width="500">
-                <TabItem Header="Channel Tools">
+            <TabControl Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Background="Transparent" BorderThickness="2" x:Name="MainTabs">
+                <TabItem BorderThickness="0" Background="Transparent" Header="Channel Tools">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                         <WrapPanel VerticalAlignment="Center">
                             <Slider x:Name="hiPassSlider" Tag="hz" Margin="5" Width="20" Height="80" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
@@ -321,7 +369,9 @@
                         <Button Content="Save Scene..."/>
                         <CheckBox Content="Automatic Clip Protection" IsChecked="{Binding Path=AutoClipAvoidance, Mode=TwoWay}" AutomationProperties.Name="Automatically reduce gain when possible to avoid clipping."/>
                         <TextBox Margin="10" x:Name="testBox" Width="200"/>
-                        
+                        <TextBox x:Name="testvalue" Width="200"/>
+                        <Slider Maximum="10" Minimum="-84" Tag="db" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                   AncestorType=Window}, Path=DataContext.Console.mastersection.solo_level.Value}" />
                         <Button Margin="10" x:Name="sendBtn" Content="Test" Width="200" Click="sendBtn_Click"/>
                     </StackPanel>
                 </TabItem>
@@ -331,10 +381,10 @@
                 <Button Margin="5" x:Name="eqPanelButton" Content="EQ Panel" Height="30" Width="140" Click="eqPanelButton_Click"/>
                 <Button Margin="5" x:Name="compPanelButton" Content="Dynamics Panel" Height="30" Width="140" Click="compPanelButton_Click"/>
             </StackPanel>-->
-        </WrapPanel>
-        <StatusBar Width="auto" VerticalAlignment="Bottom" Background="DarkGray" BorderThickness="1" BorderBrush="Gray">
-            <TextBlock AutomationProperties.Name="" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
-        </StatusBar>
-    </StackPanel>
+            <Border  Grid.Row="3" Grid.ColumnSpan="3" Background="#FF101D37" BorderThickness="1">
+                <TextBlock HorizontalAlignment="Center" AutomationProperties.Name=""  FontWeight="Thin" Foreground="white" x:Name="screenReaderText" Height="20" AutomationProperties.LiveSetting="Assertive" Text="Values"/>
+            </Border>
+        </Grid>
+    </Border>
     <!--test-->
 </Window>

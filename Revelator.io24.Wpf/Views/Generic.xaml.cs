@@ -30,8 +30,6 @@ namespace Presonus.StudioLive32.Wpf.Views
         {
             if (sender is Slider slider && slider.IsFocused)
             {
-                //Console.WriteLine("SLIDER VALUE CHANGE: {0} - {1} ", e.OldValue, e.NewValue);
-
                 ReportValueOfControl(slider);
             }
         }

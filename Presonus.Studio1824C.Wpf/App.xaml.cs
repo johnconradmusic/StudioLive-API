@@ -50,7 +50,6 @@ namespace Presonus.Studio1824C.Wpf
 			//Run application:
 			var mainWindow = serviceProvider.GetRequiredService<Mixer1824>();
 			mainWindow.Show();
-			Log.Information("Application ready.");
 		}
 
 		[System.Runtime.InteropServices.DllImport("kernel32.dll")]

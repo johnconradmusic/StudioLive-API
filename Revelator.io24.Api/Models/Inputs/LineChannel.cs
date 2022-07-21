@@ -10,10 +10,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         override public event PropertyChangedEventHandler PropertyChanged;
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
         {
-            if (eventArgs.PropertyName == "level_meter")
-            {
-                //Console.WriteLine(username + " " + level_meter);
-            }
+
             PropertyChanged?.Invoke(this, eventArgs);
         }
 
@@ -51,17 +48,14 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         bool canAdjustTrim = true;
         public void AutoAdjustTrim()
         {
-            // Console.WriteLine("AUTOADJUST TRIM: allowed? " + canAdjustTrim.ToString());
             if (canAdjustTrim)
             {
-                //Console.WriteLine("handling clip : old value is " + preampgain);
 
                 preampgain -= 1;
                 clip = false;
-                //Console.WriteLine("handling clip: new value is " + preampgain);
                 canAdjustTrim = false;
                 System.Timers.Timer timer = new System.Timers.Timer(100);
-                timer.Elapsed += (s, e) => { canAdjustTrim = true; Console.WriteLine("allowed again"); };
+                timer.Elapsed += (s, e) => { canAdjustTrim = true; };
                 timer.AutoReset = false;
                 timer.Start();
             }
@@ -72,7 +66,6 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         {
             get
             {
-                Console.WriteLine(preampmode);
                 var newValue = GetValue();
                 if (preampmode)
                 { //line level
