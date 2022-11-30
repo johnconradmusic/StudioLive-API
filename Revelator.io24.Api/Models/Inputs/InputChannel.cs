@@ -1,4 +1,6 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Newtonsoft.Json;
+using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Devices;
 using Presonus.UC.Api.Enums;
 using System;
 using System.Collections.Generic;
@@ -11,10 +13,21 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 {
     public class InputChannel : ChannelBase, INotifyPropertyChanged
     {
-        
-        public InputChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
+
+        public InputChannel(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService, device) { }
+
         public DawPostDsp dawpostdsp { get => GetEnumValue<DawPostDsp>(); set => SetEnumValue(value); }
-        public USBSource usb_src { get => GetEnumValue<USBSource>(); set => SetEnumValue(value); }
+        public USBSource usb_src
+        {
+            get => GetEnumValue<USBSource>(); set
+            {
+                if (LinkMaster && device.Channels[device.Channels.IndexOf(this) + 1] is InputChannel next)
+                    next.usb_src = value + 1;
+                SetEnumValue(value); usb_src2 = value + 1;
+            }
+        }
+        public USBSource usb_src2 { get => GetEnumValue<USBSource>(); set => SetEnumValue(value); }
+
         public int sd_src { get => (int)GetValue(); set => SetValue(value); }
         #region EQ
         [RouteValue("eq/eqallon")] public bool eq_on { get { return GetBoolean(); } set { SetBoolean(value); } }
@@ -24,7 +37,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         [RouteValue("eq/eqbandon4")] public bool eq_bandon4 { get { return GetBoolean(); } set { SetBoolean(value); } }
         [RouteValue("eq/eqbandop1")] public bool eq_bandop1 { get { return GetBoolean(); } set { SetBoolean(value); } }
         [RouteValue("eq/eqbandop4")] public bool eq_bandop4 { get { return GetBoolean(); } set { SetBoolean(value); } }
-        [RouteValueRange(-15,15,Enums.Unit.db)][RouteValue("eq/eqgain1")] public float eq_gain1 { get => GetValue(); set => SetValue(value); }
+        [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain1")] public float eq_gain1 { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain2")] public float eq_gain2 { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain3")] public float eq_gain3 { get => GetValue(); set => SetValue(value); }
         [RouteValueRange(-15, 15, Enums.Unit.db)][RouteValue("eq/eqgain4")] public float eq_gain4 { get => GetValue(); set => SetValue(value); }

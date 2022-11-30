@@ -1,7 +1,9 @@
-﻿using Presonus.StudioLive32.Api;
+﻿using Microsoft.Win32;
+using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Inputs;
 using Presonus.StudioLive32.Wpf.Views;
+using Presonus.UC.Api.Devices;
 using Presonus.UC.Api.Sound;
 using System;
 using System.Collections.Generic;
@@ -32,12 +34,29 @@ namespace Presonus.StudioLive32.Wpf
         public Mixer(MainViewModel viewModel)
         {
             DataContext = vm = viewModel;
+            if (RawService.Instance == null) RawService.Instance = vm.Device._rawService;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             InitializeComponent();
-
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
+        protected override async void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            RawService.Instance.JSON();
+            while (!RawService.Instance.ConnectionEstablished)
+                await Task.Delay(100);
+            var task = Task.Run(() => LoadLastUsedScene());
+            var dialog = new LoadingDialog();
+            task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => dialog.Close()));
+            dialog.ShowDialog();
+        }
+
+        public void LoadLastUsedScene()
+        {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\PreSonus\\Mixer\\current.scn";
+            RawService.Instance.TryLoadScene(path);
+        }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -70,10 +89,12 @@ namespace Presonus.StudioLive32.Wpf
         }
         protected override void OnClosed(EventArgs e)
         {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\PreSonus\\Mixer\\current.scn";
+            RawService.Instance.TrySaveScene(path);
             base.OnClosed(e);
             Application.Current.Shutdown();
 #if DEBUG
-			Environment.Exit(0);
+            Environment.Exit(0);
 #endif
         }
 
@@ -84,6 +105,10 @@ namespace Presonus.StudioLive32.Wpf
             {
                 BindingExpression be = BindingOperations.GetBindingExpression(slider, (Slider.ValueProperty));
                 string Name = slider.Name;
+                if (Name == null || Name == string.Empty)
+                {
+                    Name = AutomationProperties.GetName(slider);
+                }
                 if (includeNameFirst)
                     ReadTextToScreenReader(Name + " " + Math.Round(slider.Value, 2) + slider.Tag?.ToString());
                 else
@@ -98,6 +123,8 @@ namespace Presonus.StudioLive32.Wpf
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
 
             UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
             foreach (var ctrl in this.GetChildren())
@@ -173,26 +200,29 @@ namespace Presonus.StudioLive32.Wpf
 
         private void saveScene(object sender, RoutedEventArgs e)
         {
-            //Presonus.UC.Api.Services.Serializer.Serialize(vm.Device);
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Custom Scene File (.scn) | *.scn";
+            saveFileDialog.DefaultExt = ".scn";
+            saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.InitialDirectory = "C:\\Dev\\Scenes\\";
+            saveFileDialog.Title = "Save Scene File...";
+            var res = saveFileDialog.ShowDialog();
+            if (res.HasValue && res.Value == true)
+                RawService.Instance.TrySaveScene(saveFileDialog.FileName);
         }
 
         private void loadScene(object sender, RoutedEventArgs e)
         {
-            //string jsonString = UC.Api.Services.Serializer.Deserialize("C:\\Dev\\scenefile.scene");
-            //vm.Device.SetStateFromLoadedSceneFile(jsonString);
-        }
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Custom Scene File (.scn) | *.scn";
+            openFileDialog.DefaultExt = ".scn";
+            openFileDialog.Multiselect = false;
+            openFileDialog.InitialDirectory = "C:\\Dev\\Scenes\\";
+            openFileDialog.Title = "Load Scene File...";
+            var res = openFileDialog.ShowDialog();
+            if (res.Value == false || res.HasValue == false) return;
 
-        private void recallScene_Click(object sender, RoutedEventArgs e)
-        {
-            //vm.Device.RawService.SetValue("presets/scn", 0);
-            for (float i = 0; i < 1; i += 0.1f)
-            {
-                Console.WriteLine(i + " - DB from float - " + UC.Api.Helpers.Util.GetDBFromFloat(i));
-            }
-            for (int i = -84; i < 10; i += 5)
-            {
-                Console.WriteLine(i + " - float from DB - " + UC.Api.Helpers.Util.GetFloatFromDB(i));
-            }
+            RawService.Instance.TryLoadScene(openFileDialog.FileName);
         }
 
         private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -203,7 +233,18 @@ namespace Presonus.StudioLive32.Wpf
                 {
                     slider.Value = GetDefaultValueProperty(slider);
                 }
+                if (e.Key == Key.PageUp)
+                {
+                    slider.Value *= 1.1f;
+                    e.Handled = true;
+                }
+                if (e.Key == Key.PageDown)
+                {
+                    slider.Value *= 0.9;
+                    e.Handled = true;
+                }
             }
+
         }
         private void sendsOnFadersPanelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -290,9 +331,27 @@ namespace Presonus.StudioLive32.Wpf
         public static readonly DependencyProperty DefaultValueProperty =
             DependencyProperty.RegisterAttached("DefaultValue", typeof(float), typeof(Mixer), new PropertyMetadata((float)0));
 
-        private void sendBtn_Click(object sender, RoutedEventArgs e)
+
+        private void resetEQ_Click(object sender, RoutedEventArgs e)
         {
-            vm.Device._rawService.SetValue(testBox.Text, 1);
+            if (vm.SelectedChannel is InputChannel chan)
+            {
+                chan.eq_bandon1 = true;
+                chan.eq_bandon2 = true;
+                chan.eq_bandon3 = true;
+                chan.eq_freq1 = 80;
+                chan.eq_freq2 = 400;
+                chan.eq_freq3 = 2000;
+                chan.eq_freq4 = 8000;
+                chan.eq_gain1 = 0;
+                chan.eq_gain2 = 0;
+                chan.eq_gain3 = 0;
+                chan.eq_gain4 = 0;
+                chan.eq_q1 = 2;
+                chan.eq_q2 = 2;
+                chan.eq_q3 = 2;
+                chan.eq_q4 = 2;
+            }
         }
     }
 

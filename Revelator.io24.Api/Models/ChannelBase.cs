@@ -8,11 +8,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Presonus.UC.Api.Devices;
 
 namespace Presonus.StudioLive32.Api.Models
 {
+    [JsonObject(MemberSerialization = MemberSerialization.OptOut)]
     public class ChannelBase : DeviceRoutingBase, INotifyPropertyChanged
     {
+        protected Device device;
         public override event PropertyChangedEventHandler PropertyChanged;
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
@@ -20,29 +25,48 @@ namespace Presonus.StudioLive32.Api.Models
             PropertyChanged?.Invoke(this, eventArgs);
         }
 
-        public ChannelBase(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
+        public ChannelBase(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService)
         {
+            this.device = device;
         }
+
 
         //public ChannelBase() { }
 
+        [JsonIgnore]
         [RouteValueRange(-72, 0, Enums.Unit.db)]
-        public float level_meter { get => GetValue(); set => SetValue(value); }
+        public float meter { get => GetValue(); set => SetValue(value); }
+        [JsonIgnore]
+        public float meterpeak { get => GetValue(); set => SetValue(value); }
 
+        [JsonIgnore]
         public string AutomationName => username;
+        [JsonIgnore]
         public string AutomationId => _routePrefix + username;
-        public bool LinkSlave => !(link && !linkmaster);
-        public bool LinkMaster => link && linkmaster;
-		public bool IsMono
-		{
-			get
-			{
-				Console.WriteLine("is mono? " + !link);
-				return !link;
-			}
-		}
+        [JsonIgnore]
+        public bool LinkSlave
+        {
+            get
+            {
+                var val = !(link && !linkmaster);
+                //Console.WriteLine(username + " linkslave = " + val);
+                return val; //inverted
+            }
+        }
 
-		public string username { get => GetString(); set => SetString(value); }
+        [JsonIgnore]
+        public bool LinkMaster => link && linkmaster;
+        [JsonIgnore]
+        public bool IsMono
+        {
+            get
+            {
+                // Console.WriteLine("is mono? " + !link);
+                return !link;
+            }
+        }
+
+        public string username { get => GetString(); set => SetString(value); }
         public bool solo { get => GetBoolean(); set => SetBoolean(value); }
         public int color { get => (int)GetValue(); set => SetValue(value); }
         public float volume { get => GetVolume(); set => SetVolume(value); }
@@ -132,11 +156,18 @@ namespace Presonus.StudioLive32.Api.Models
         public int insertslot { get => (int)GetValue(); set => SetValue(value); }
         public int insertprepost { get => (int)GetValue(); set => SetValue(value); }
 
-        public AVBSource avb_src { get => GetEnumValue<AVBSource>(); set => SetEnumValue(value); }
-        public int adc_src2 { get => (int)GetValue(); set => SetValue(value); }
-        public int avb_src2 { get => (int)GetValue(); set => SetValue(value); }
-        public int usb_src2 { get => (int)GetValue(); set => SetValue(value); }
-        public int sd_src2 { get => (int)GetValue(); set => SetValue(value); }
+
+        public AVBSource avb_src
+        {
+            get => GetEnumValue<AVBSource>(); set
+            {
+                if (LinkMaster && device.Channels[device.Channels.IndexOf(this) + 1] is ChannelBase next)
+                    next.avb_src = value + 1;
+                SetEnumValue(value); avb_src2 = value + 1;
+            }
+        }
+        public AVBSource avb_src2 { get => GetEnumValue<AVBSource>(); set => SetEnumValue(value); }
+
 
         #region Compressor
         [RouteValue("comp/on")] public bool comp_on { get => GetBoolean(); set => SetBoolean(value); }

@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf"
-        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" 
-        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"   mc:Ignorable="d"
+        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api" x:Name="window"
+        xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:devices="clr-namespace:Presonus.UC.Api.Devices;assembly=Presonus.UC.Api" mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
         Title="Mixer" Loaded="Window_Loaded" SizeToContent="WidthAndHeight" FocusManager.GotFocus="Window_GotFocus" PreviewKeyDown="Window_PreviewKeyDown" Background="Gray">
     <Window.Resources>
@@ -31,6 +31,12 @@
         </Style>
     </Window.Resources>
     <StackPanel DataContext="{Binding Device.Channels}">
+        <Menu>
+            <MenuItem Header="Scenes">
+                <MenuItem Click="loadScene" Header="Load Scene..."/>
+                <MenuItem Click="saveScene" Header="Save Scene..."/>
+            </MenuItem>
+        </Menu>
         <WrapPanel Margin="5">
             <local:MyList SelectionMode="Single" IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" Height="300" Width="150" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}">
                 <local:MyList.ItemTemplate>
@@ -73,7 +79,7 @@
                             </StackPanel>
                             <StackPanel Margin="5">
                                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}"/>
-                                <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="level_meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=level_meter, Mode=TwoWay}"/>
+                                <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=TwoWay}"/>
                             </StackPanel>
                         </WrapPanel>
                     </StackPanel>
@@ -146,6 +152,7 @@
                 <TabItem Header="EQ">
                     <StackPanel Margin="5">
                         <CheckBox AutomationProperties.Name="EQ On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_on, Mode=TwoWay}">EQ On</CheckBox>
+                        <Button Content="Reset EQ" x:Name="resetEQ" Click="resetEQ_Click" Width="80"/>
                         <GroupBox Header="Hi Pass Filter">
                             <Slider Tag="hz" Margin="5" Width="20" Height="40" Orientation="Vertical" Minimum="0" Maximum="1000" Value="{Binding hipass, Mode=TwoWay}" AutomationProperties.Name="Hi Pass Filter"/>
                         </GroupBox>
@@ -205,7 +212,7 @@
                                 <TextBlock HorizontalAlignment="Center" Text="Aux 1"/>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Center">
-                                <Slider Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
+                                <Slider IsEnabled="{Binding Path=DataContext.Device.Buses[0].LinkSlave, ElementName=window}" Tag="db" Width="20" Height="80" Orientation="Vertical" Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2"/>
                                 <TextBlock HorizontalAlignment="Center" Text="Aux 2"/>
                             </StackPanel>
                             <StackPanel>
@@ -317,12 +324,14 @@
                 </TabItem>
                 <TabItem Header="Global">
                     <StackPanel>
-                        <Button Content="Load Scene..."/>
-                        <Button Content="Save Scene..."/>
+                        <ComboBox Width="100" ItemsSource="{Binding Source={converters:EnumBindingSource {x:Type enums:HeadphoneSource}}}"
+                          SelectedItem="{Binding Path=DataContext.Device.Mastersection.phones_list, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, 
+AncestorType={x:Type Window}}}" AutomationProperties.Name="Headphone Source"
+                          IsEnabled="{Binding Path=DataContext.Device.Mastersection.phones_list,RelativeSource={RelativeSource FindAncestor, 
+AncestorType={x:Type Window}}, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}"/>
+                        <Button Content="Load Scene..." Click="loadScene"/>
+                        <Button Content="Save Scene..." Click="saveScene"/>
                         <CheckBox Content="Automatic Clip Protection" IsChecked="{Binding Path=AutoClipAvoidance, Mode=TwoWay}" AutomationProperties.Name="Automatically reduce gain when possible to avoid clipping."/>
-                        <TextBox Margin="10" x:Name="testBox" Width="200"/>
-                        
-                        <Button Margin="10" x:Name="sendBtn" Content="Test" Width="200" Click="sendBtn_Click"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>

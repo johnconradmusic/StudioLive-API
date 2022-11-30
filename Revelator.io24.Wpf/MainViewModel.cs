@@ -9,7 +9,11 @@ namespace Presonus.StudioLive32.Wpf
 	{
 		public event PropertyChangedEventHandler? PropertyChanged;
 
-		public Device Device { get; }
+		public Device Device 
+		{
+			get;
+			set;
+		}
 		public ChannelBase SelectedChannel { get; set; }
 
 		public MainViewModel(StudioLive32R device)

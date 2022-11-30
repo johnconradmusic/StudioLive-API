@@ -1,4 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Newtonsoft.Json;
+using Presonus.StudioLive32.Api.Attributes;
 using Presonus.StudioLive32.Api.Models.Inputs;
 using Presonus.UC.Api.Helpers;
 using System;
@@ -10,10 +11,10 @@ using System.Runtime.CompilerServices;
 
 namespace Presonus.StudioLive32.Api.Models
 {
-    [Serializable]
+    [JsonObject(MemberSerialization = MemberSerialization.OptOut)]
     public abstract class DeviceRoutingBase : INotifyPropertyChanged
     {
-        private readonly RawService _rawService;
+        [JsonIgnore] private readonly RawService _rawService;
 
         public readonly Dictionary<string, string> _propertyValueNameRoute = new Dictionary<string, string>();
         public readonly Dictionary<string, string> _propertyStringNameRoute = new Dictionary<string, string>();
@@ -23,8 +24,10 @@ namespace Presonus.StudioLive32.Api.Models
 
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
+        public static bool loadingFromScene = false;
         public DeviceRoutingBase(string routePrefix, RawService rawService)
         {
+            if (rawService == null) rawService = RawService.Instance;
             _rawService = rawService;
             _routePrefix = routePrefix;
             _rawService.Syncronized += Syncronized;
@@ -98,17 +101,37 @@ namespace Presonus.StudioLive32.Api.Models
                 if (routeValue != null || property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float) || property.PropertyType.IsEnum)
                 {
                     var route = routeValue != null ? $"{_routePrefix}/{routeValue.RouteValueName}" : $"{_routePrefix}/{property.Name}";
-                                        
+
                     _propertyValueNameRoute[property.Name.ToLower()] = route;
                     var range = property.GetCustomAttribute<RouteValueRangeAttribute>();
+                    if (property.PropertyType.IsEnum)
+                    {
+                        var enumtype = property.PropertyType;
+                        var length = Enum.GetNames(enumtype).Length;
+                        //var enumVals = Enum.GetValues(enumtype);
+
+                        //float enumVal = 0;
+
+                        ////if (Enum.IsDefined(enumtype, 0))
+                        ////{//is zero-based?
+                        ////    enumVal = enumVals.IndexOf(value);
+                        ////}
+                        ////else
+                        ////{
+                        ////    enumVal = enumVals.IndexOf(value) + 1;
+                        ////}
+
+                        //float floatValue = enumVal / length;
+                        var rangeValue = new ValueRange(0, length, Enums.Unit.none);
+                        _rawService._propertyValueRanges[route] = rangeValue;
+                    }
+
                     if (range != null)
                     {
                         _rawService._propertyValueRanges[route] = new ValueRange(range.Min, range.Max, range.Unit);
                     }
                     continue;
                 }
-
-
 
                 var routeString = property.GetCustomAttribute<RouteStringAttribute>();
                 if (routeString != null || property.PropertyType == typeof(string))
@@ -142,7 +165,7 @@ namespace Presonus.StudioLive32.Api.Models
             if (value is null)
                 return;
 
-            Console.WriteLine("Device routing base set string: value:" + propertyName + " : " + value);
+            //Console.WriteLine("Device routing base set string: value:" + propertyName + " : " + value);
             if (!_propertyStringNameRoute.TryGetValue(propertyName, out var route))
                 return;
             _rawService.SetString(route, value);
@@ -150,7 +173,7 @@ namespace Presonus.StudioLive32.Api.Models
 
         protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
         {
-            Console.WriteLine(propertyName + ": " + value);
+            //Console.WriteLine(propertyName + ": " + value);
             if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
                 return;
             var floatValue = value ? 1.0f : 0.0f;
@@ -174,6 +197,7 @@ namespace Presonus.StudioLive32.Api.Models
                 return default;
 
             var floatValue = _rawService.GetValue(route);
+            //if (loadingFromScene) return floatValue;
             return Util.GetDBFromFloat(floatValue);
         }
 
@@ -183,6 +207,7 @@ namespace Presonus.StudioLive32.Api.Models
                 return;
 
             var floatValue = Util.GetFloatFromDB(value);
+            //if (loadingFromScene) floatValue = value;
             _rawService.SetValue(route, floatValue);
         }
 
@@ -192,6 +217,8 @@ namespace Presonus.StudioLive32.Api.Models
                 return default;
 
             var floatValue = _rawService.GetValue(route);
+            //if (loadingFromScene) return floatValue;
+
             return Util.GetFrequencyFromFloat(floatValue);
         }
 
@@ -201,6 +228,8 @@ namespace Presonus.StudioLive32.Api.Models
                 return;
 
             var floatValue = Util.GetFloatFromFrequency(value);
+            //if (loadingFromScene) floatValue = value;
+
             _rawService.SetValue(route, floatValue);
         }
         protected float GetValue([CallerMemberName] string propertyName = "", bool useRange = true)
@@ -211,9 +240,11 @@ namespace Presonus.StudioLive32.Api.Models
             _rawService._propertyValueRanges.TryGetValue(route, out var range);
 
             var value = _rawService.GetValue(route);
+            //if (loadingFromScene) return value;
             if (range != null && useRange == true)
             {
                 var topOfRange = range.Max - range.Min;
+                // if (value > 1f || value < 0f) return value;
                 value = (value * topOfRange) + range.Min;
             }
             return value;
@@ -221,7 +252,7 @@ namespace Presonus.StudioLive32.Api.Models
 
         protected T GetEnumValue<T>([CallerMemberName] string propertyName = "") where T : Enum
         {
-            var length = Enum.GetNames(typeof(T)).Length-1;
+            var length = Enum.GetNames(typeof(T)).Length - 1;
             IList<T> enumVals = (IList<T>)Enum.GetValues(typeof(T));
             if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
                 return default;
@@ -231,16 +262,19 @@ namespace Presonus.StudioLive32.Api.Models
 
             if (Enum.IsDefined(typeof(T), 0))
             {//is zero-based?
-                return enumVals[(int)(value * length)];
+             //if (value < 1 && value > 0)//must be a float 
+                 return enumVals[(int)(value * length)];
+             //else 
+                //return enumVals[(int)value];
             }
             else
             {
-                if (value > 1) return enumVals[(int)value + 1];
-                else
-                {
+                //if (value > 1) return enumVals[(int)value];
+                //else
+                //{
                     var res = enumVals[(int)(value * length)];
                     return res;
-                }
+                //}
             }
 
         }
@@ -249,6 +283,8 @@ namespace Presonus.StudioLive32.Api.Models
         {
             if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
                 return;
+
+
             var length = Enum.GetNames(typeof(T)).Length;
             IList<T> enumVals = (IList<T>)Enum.GetValues(typeof(T));
 
@@ -257,6 +293,7 @@ namespace Presonus.StudioLive32.Api.Models
             if (Enum.IsDefined(typeof(T), 0))
             {//is zero-based?
                 enumVal = enumVals.IndexOf(value);
+                length--;
             }
             else
             {
@@ -264,6 +301,7 @@ namespace Presonus.StudioLive32.Api.Models
             }
 
             float floatValue = enumVal / length;
+
             _rawService.SetValue(route, floatValue);
         }
 
@@ -272,14 +310,21 @@ namespace Presonus.StudioLive32.Api.Models
             if (!_propertyValueNameRoute.TryGetValue(propertyName, out var route))
                 return;
             _rawService._propertyValueRanges.TryGetValue(route, out var range);
+            if (route.Contains("eqgain"))
+            {
+
+            }
 
             if (range != null && useRange == true)
             {
                 var topOfRange = range.Max - range.Min;
                 value = (value - range.Min) / topOfRange;
-
             }
-            Console.WriteLine("set value " + propertyName + " : " + value);
+
+            else
+            {
+                Serilog.Log.Information("scene set value " + propertyName + " : " + value);
+            }
             _rawService.SetValue(route, value);
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }

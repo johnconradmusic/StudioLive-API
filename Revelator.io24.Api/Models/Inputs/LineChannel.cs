@@ -1,4 +1,6 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Newtonsoft.Json;
+using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UC.Api.Devices;
 using Presonus.UC.Api.Enums;
 using System;
 using System.ComponentModel;
@@ -17,16 +19,24 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
             PropertyChanged?.Invoke(this, eventArgs);
         }
 
-        public LineChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
+        public LineChannel(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService, device)
         {
 
         }
 
-        public ADCSource adc_src { get => GetEnumValue<ADCSource>(); set => SetEnumValue(value); }
-        public bool sub1 { get => GetBoolean(); set => SetBoolean(value); }
-        public bool sub2 { get => GetBoolean(); set => SetBoolean(value); }
-        public bool sub3 { get => GetBoolean(); set => SetBoolean(value); }
-        public bool sub4 { get => GetBoolean(); set => SetBoolean(value); }
+        public ADCSource adc_src
+        {
+            get => GetEnumValue<ADCSource>();
+            set
+            {
+                if (LinkMaster &&  device.Channels[device.Channels.IndexOf(this) + 1] is LineChannel next)
+                    next.adc_src = value + 1;
+                SetEnumValue(value); adc_src2 = value + 1;
+            }
+        }
+        public ADCSource adc_src2 { get => GetEnumValue<ADCSource>(); set => SetEnumValue(value); }
+
+
         public bool preampmode { get => GetBoolean(); set => SetBoolean(value); }
         public bool lr { get => GetBoolean(); set => SetBoolean(value); }
 
@@ -72,7 +82,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         {
             get
             {
-                Console.WriteLine(preampmode);
+                //Console.WriteLine(preampmode);
                 var newValue = GetValue();
                 if (preampmode)
                 { //line level

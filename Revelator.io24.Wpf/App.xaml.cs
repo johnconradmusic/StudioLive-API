@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Configuration;
+using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Services;
 using Presonus.UC.Api.Devices;
 using Serilog;
@@ -29,7 +30,6 @@ namespace Presonus.StudioLive32.Wpf
 #endif
 
 			var serviceCollection = new ServiceCollection();
-			//serviceCollection.AddUCNetAPI();
 			serviceCollection.AddSingleton<BroadcastService>();
 			serviceCollection.AddSingleton<CommunicationService>();
 			serviceCollection.AddSingleton<MonitorService>();
@@ -41,11 +41,13 @@ namespace Presonus.StudioLive32.Wpf
 			serviceCollection.AddSingleton<Mixer>();
 			serviceCollection.AddSingleton<MainViewModel>();
 
+			DeviceRoutingBase.loadingFromScene = true;
+
 			var serviceProvider = serviceCollection.BuildServiceProvider();
-			//serviceProvider.GetRequiredService<RawService>().JSON();
 			serviceProvider
 				.GetRequiredService<BroadcastService>()
 				.StartReceive();
+			//serviceProvider.GetRequiredService<RawService>().JSON();
 			// serviceProvider.StartRevelatorAPI();
 
 			//Run application:

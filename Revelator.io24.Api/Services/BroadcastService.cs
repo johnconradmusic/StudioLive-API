@@ -2,6 +2,7 @@
 using Presonus.StudioLive32.Api.Helpers;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -67,16 +68,12 @@ namespace Presonus.StudioLive32.Api.Services
                 {
                     IPEndPoint endPoint = null;
                     var data = _udpClient.Receive(ref endPoint);
-                    //Console.WriteLine("broadcast message");
                     var isUcNetPackage = PackageHelper.IsUcNetPackage(data);
                     if (!isUcNetPackage)
                         continue;
 
                     var messageType = PackageHelper.GetMessageType(data);
-                    //Console.WriteLine("[{0}] {1}", nameof(BroadcastService), messageType);
 
-                    //DA is udp broadcast message from PreSonusHardwareAccessService.exe
-                    //NO is udp broadcast message sent from the UC Surface App
                     if (messageType != "DA")
                     {
                         //Known type:
@@ -87,31 +84,6 @@ namespace Presonus.StudioLive32.Api.Services
                         continue;
                     }
 
-                    var deviceString = Encoding.UTF8.GetString(data.Range(32));
-                    //var segments = deviceString.Split('\0');
-                    //var deviceName = segments[0].Split('/')[0]; //"Revelator IO 24" or "Revelator IO 44"
-                    //var firmware = segments[0].Split('/')[1]; //289
-                    //var deviceType = segments[1]; //AUD
-                    //var serialNumber = segments[2]; //AB1234567890
-
-                    Log.Debug(deviceString);
-                    //try
-                    //{
-                    //    var deviceString = Encoding.UTF8.GetString(data.Range(32));
-                    //    var segments = deviceString.Split('\0');
-                    //    var deviceName = segments[0].Split('/')[0]; //"Revelator IO 24" or "Revelator IO 44"
-                    //    var firmware = segments[0].Split('/')[1]; //289
-                    //    var deviceType = segments[1]; //AUD
-                    //    var serialNumber = segments[2]; //AB1234567890
-
-                    //    if (deviceName != "Revelator IO 44")
-                    //        continue;
-                    //}
-                    //catch (Exception)
-                    //{
-                    //    continue;
-                    //}
-
                     if (!_communicationService.IsConnected)
                     {
                         var deviceId = BitConverter.ToUInt16(data.Range(8, 10), 0);
@@ -119,10 +91,6 @@ namespace Presonus.StudioLive32.Api.Services
                         _communicationService.Connect(deviceId, tcpPort);
                     }
 
-                    //1.19 -> 281:
-                    //1.21 -> 289:
-                    //Revelator IO 24/281 AUD <serialnr>
-                    //Revelator IO 24/289 AUD <serialnr>
                 }
                 catch (Exception exception)
                 {

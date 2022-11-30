@@ -6,6 +6,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -39,14 +40,14 @@ namespace Presonus.StudioLive32.Api.Services
             _rawService.SetStringMethod = SetStringValue;
 
             _listeningThread = new Thread(Listener) { IsBackground = true };
-            _listeningThread.Start();
 
             _writingThread = new Thread(KeepAlive) { IsBackground = true };
-            _writingThread.Start();
         }
 
         public void Connect(ushort deviceId, int tcpPort)
         {
+            _listeningThread.Start();
+            _writingThread.Start();
             _tcpClient?.Dispose();
 
             _deviceId = deviceId;
@@ -142,6 +143,7 @@ namespace Presonus.StudioLive32.Api.Services
                                 BO(chunk);
                                 break;
                             case "CK":
+                                CK(chunk);
                                 break;
                             case "PL":
                                 //PL List:
@@ -186,9 +188,8 @@ namespace Presonus.StudioLive32.Api.Services
             var messageType = data.Range(6, 8);
             var from = data.Range(8, 10);
             var to = data.Range(10, 12);
-
             var str = Encoding.ASCII.GetString(data.Range(12));
-            Log.Information("CK: " + str);
+
         }
 
 
@@ -213,7 +214,8 @@ namespace Presonus.StudioLive32.Api.Services
                     _rawService.Syncronize(json);
                     return;
                 case "SubscriptionReply":
-                    //We now have communication.
+                    Serilog.Log.Information("Connection established.");
+                    _rawService.ConnectionEstablished = true;
                     return;
                 case "SubscriptionLost":
                     RequestCommunicationMessage();
@@ -222,7 +224,7 @@ namespace Presonus.StudioLive32.Api.Services
                     //logged in
                     return;
                 case "RecalledPreset":
-                    Console.WriteLine(jsonElement.ToString());
+                    //Console.WriteLine(jsonElement.ToString());
                     return;
                 default:
                     Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
@@ -262,7 +264,7 @@ namespace Presonus.StudioLive32.Api.Services
             //0x0A (\n): List delimiter
             //Last char is a 0x00 (\0)
             var list = Encoding.ASCII.GetString(data.Range((i + 7), -1)).Split('\n');
-            foreach(var preset in list)
+            foreach (var preset in list)
             {
                 Console.WriteLine(preset);
             }
@@ -314,24 +316,32 @@ namespace Presonus.StudioLive32.Api.Services
             _rawService.UpdateStringState(route, value);
         }
 
-        public void SetStringValue(string route, string value)
+        public void SetStringValue(string route, string value, bool broadcast)
         {
-            var writer = new TcpMessageWriter(_deviceId);
-            var data = writer.CreateRouteStringUpdate(route, value);
+            if (broadcast)
+            {
+                var writer = new TcpMessageWriter(_deviceId);
+                var data = writer.CreateRouteStringUpdate(route, value);
 
-            SendMessage(data);
+                SendMessage(data);
+            }
             _rawService.UpdateStringState(route, value);
         }
 
-        public void SetRouteValue(string route, float value)
+        public void SetRouteValue(string route, float value, bool broadcast)
         {
-            var writer = new TcpMessageWriter(_deviceId);
-            var data = writer.CreateRouteValueUpdate(route, value);
+            if (broadcast)
+            {
+                if (!route.Contains("meter")) //never broadcast meter changes.
+                {
+                    var writer = new TcpMessageWriter(_deviceId);
+                    var data = writer.CreateRouteValueUpdate(route, value);
 
-            //Serilog.Log.Information("set value: " + route + " - " + value.ToString());
+                    Serilog.Log.Information("BROADCASTING value: " + route + " - " + value.ToString());
 
-
-            SendMessage(data);
+                    SendMessage(data);
+                }
+            }
             _rawService.UpdateValueState(route, value);
         }
 

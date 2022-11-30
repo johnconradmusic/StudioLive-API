@@ -46,12 +46,12 @@ namespace Presonus.UC.Api.Models.Global
         {
             get
             {
-                Console.WriteLine("get phantom");
+                //Console.WriteLine("get phantom");
                 return GetBoolean();
             }
             set
             {
-                Console.WriteLine("SET PHANTOM ");
+                //Console.WriteLine("SET PHANTOM ");
                 SetBoolean(value);
             }
         }
@@ -59,7 +59,7 @@ namespace Presonus.UC.Api.Models.Global
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
         {
-            Console.WriteLine(eventArgs.PropertyName + " CHANGED?");
+            //Console.WriteLine(eventArgs.PropertyName + " CHANGED?");
             PropertyChanged?.Invoke(this, eventArgs);
         }
 

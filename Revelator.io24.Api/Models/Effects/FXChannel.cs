@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Models;
+using Presonus.UC.Api.Devices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Presonus.StudioLive32.Api.Models
 {
 	public class FXChannel : ChannelBase
 	{
-		public FXChannel(string routingPrefix, RawService rawService) : base(routingPrefix, rawService) { }
+		public FXChannel(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService, device) { }
 
 		public float type { get => GetValue(); set => SetValue(value); }
 		public float predelay { get => GetValue(); set => SetValue(value); }
