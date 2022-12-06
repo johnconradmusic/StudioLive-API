@@ -212,10 +212,8 @@ namespace Presonus.StudioLive32.Api
 
         public void JSON()
         {
-            //DeviceRoutingBase.loadingFromScene = true;
-            var sceneFile = File.ReadAllText("C:\\Dev\\new-scene.scn");
-            SyncronizeState(sceneFile);
-            //DeviceRoutingBase.loadingFromScene = false;
+           // var sceneFile = File.ReadAllText("C:\\Dev\\new-scene.scn");
+            //SyncronizeState(sceneFile);
         }
         private void Traverse(JsonElement element, string path)
         {
