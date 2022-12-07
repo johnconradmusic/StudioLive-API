@@ -64,6 +64,14 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			base.OnApplyTemplate();
 		}
 
+		public static readonly RoutedEvent FocusedEvent
+	= EventManager.RegisterRoutedEvent("Focused", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Fader));
+		public event RoutedEventHandler Focused
+		{
+			add { AddHandler(FocusedEvent, value); }
+			remove { RemoveHandler(FocusedEvent, value); }
+		}
+
 		public static readonly RoutedEvent ValueChangedEvent
 			= EventManager.RegisterRoutedEvent("ValueChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Fader));
 		public event RoutedEventHandler ValueChanged

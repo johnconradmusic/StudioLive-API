@@ -100,7 +100,19 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		{
 			get
 			{
-				var val = (double)GetValue(ValueProperty);
+				return (double)GetValue(ValueProperty);
+			}
+			set
+			{
+				if (value > Maximum) value = Maximum;
+
+				if (value < Minimum) value = Minimum;
+				int val = Convert.ToInt32( value);
+				if (val == 0)
+				{
+					RightSideValue = 0;
+					LeftSideValue = 0;
+				}
 				if (val < 0)
 				{
 					LeftSideValue = Math.Abs(val);
@@ -111,26 +123,9 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 					RightSideValue = Math.Abs(val);
 					LeftSideValue = 0;
 				}
-				return val;
-			}
-			set
-			{
-				if (value > Maximum) value = Maximum;
-
-				if (value < Minimum) value = Minimum;
-				RightSideValue = 0;
-				LeftSideValue = 0;
+				SetValue(ValueProperty, value);
 				RoutedEventArgs args = new RoutedEventArgs(ValueChangedEvent);
 				RaiseEvent(args);
-				if (value < 0)
-				{
-					LeftSideValue = Math.Abs(value);
-				}
-				if (value > 0)
-				{
-					RightSideValue = Math.Abs(value);
-				}
-				SetValue(ValueProperty, value);
 			}
 		}
 

@@ -26,6 +26,7 @@ namespace Presonus.StudioLive32.Wpf
 			viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
 			InitializeComponent();
+			ScreenReaderText = screenReaderText;
 		}
 
 		protected override async void OnInitialized(EventArgs e)
@@ -67,14 +68,18 @@ namespace Presonus.StudioLive32.Wpf
 		private void test_Click(object sender, RoutedEventArgs e)
 		{
 		}
-		public void ReadTextToScreenReader(string text)
+
+		public static AutomationPeer AutomationPeer;
+		public static TextBlock ScreenReaderText;
+
+		public static void ReadTextToScreenReader(string text)
 		{
 			//if (oldText == text) return;
-			screenReaderText.Text = text;
-			var peer = UIElementAutomationPeer.FromElement(screenReaderText);
-			if (peer != null)
+			ScreenReaderText.Text = text;
+			AutomationPeer = UIElementAutomationPeer.FromElement(ScreenReaderText);
+			if (AutomationPeer != null)
 			{
-				peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+				AutomationPeer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
 				Console.WriteLine("SCREENREADER: " + text);
 			}
 		}
@@ -89,7 +94,7 @@ namespace Presonus.StudioLive32.Wpf
 #endif
 		}
 
-		public void ReportValueOfControl(Control control, bool includeNameFirst = false)
+		public static void ReportValueOfControl(Control control, bool includeNameFirst = false)
 		{
 
 			if (control is Slider slider)
@@ -119,11 +124,28 @@ namespace Presonus.StudioLive32.Wpf
 				}
 				if (includeNameFirst)
 				{
-					ReadTextToScreenReader(Name + " " + Math.Round(fader.Value, 2) + fader.Unit?.ToString());
+					ReadTextToScreenReader(Name + " " + Math.Round(fader.Value, 2) + " " + fader.Unit?.ToString());
 				}
 				else
 				{
-					ReadTextToScreenReader(Math.Round(fader.Value, 2) + fader.Unit?.ToString());
+					ReadTextToScreenReader(Math.Round(fader.Value, 2) + " " + fader.Unit?.ToString());
+				}
+			}
+			if (control is PanPot panpot)
+			{
+				BindingExpression be = BindingOperations.GetBindingExpression(panpot, PanPot.ValueProperty);
+				string Name = panpot.Name;
+				if (Name == null || Name == string.Empty)
+				{
+					Name = AutomationProperties.GetName(panpot);
+				}
+				if (includeNameFirst)
+				{
+					ReadTextToScreenReader(Name + " " + Math.Round(panpot.Value, 2) + " " + panpot.Unit?.ToString());
+				}
+				else
+				{
+					ReadTextToScreenReader(Math.Round(panpot.Value, 2) + " " + panpot.Unit?.ToString());
 				}
 			}
 		}
@@ -137,6 +159,11 @@ namespace Presonus.StudioLive32.Wpf
 			UIElementAutomationPeer.CreatePeerForElement(screenReaderText);
 			foreach (var ctrl in this.GetChildren())
 			{
+				if (ctrl is Fader fader)
+				{
+					UIElementAutomationPeer.CreatePeerForElement(fader);
+				}
+
 				if (ctrl is Slider slider)
 				{
 					UIElementAutomationPeer.CreatePeerForElement(slider);

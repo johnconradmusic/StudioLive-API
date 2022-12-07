@@ -75,7 +75,7 @@
                             </TextBlock.LayoutTransform>
                         </TextBlock>
                         <StackPanel VerticalAlignment="Bottom" Grid.Column="1"  x:Name="ChannelStrip" Orientation="Vertical">
-                            <usercontrols:Fader Default="10" x:Name="Trim" Tag="db" Minimum="0" Maximum="60" Value="{Binding preampgain}"/>
+                            <usercontrols:Fader Default="10" x:Name="Trim" Unit="db" Minimum="0" Maximum="60" Value="{Binding preampgain}"/>
                             <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.solo}" Content="Solo"/>
                             <CheckBox IsChecked="{Binding ElementName=ChannelList, Path=SelectedItem.mute}" Content="Mute"/>
                             <usercontrols:PanPot Unit="percent" Default="0" x:Name="Pan" HorizontalAlignment="Center" Value="{Binding pan}" IsEnabled="{Binding IsMono}"/>
