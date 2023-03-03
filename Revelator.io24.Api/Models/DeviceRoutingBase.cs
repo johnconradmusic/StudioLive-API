@@ -261,10 +261,10 @@ namespace Presonus.StudioLive32.Api.Models
 
 
             if (Enum.IsDefined(typeof(T), 0))
-            {//is zero-based?
+            {//is zero-based
              //if (value < 1 && value > 0)//must be a float 
-                 return enumVals[(int)(value * length)];
-             //else 
+                return enumVals[(int)(value * length)];
+                //else 
                 //return enumVals[(int)value];
             }
             else
@@ -272,8 +272,9 @@ namespace Presonus.StudioLive32.Api.Models
                 //if (value > 1) return enumVals[(int)value];
                 //else
                 //{
-                    var res = enumVals[(int)(value * length)];
-                    return res;
+                if (Enum.IsDefined(typeof(T), 1)) length++;
+                var res = enumVals[(int)(value * length)];
+                return res;
                 //}
             }
 
