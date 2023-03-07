@@ -123,6 +123,7 @@ namespace Presonus.StudioLive32.Api
             //Thread.Sleep(10);
 
             //TODO: Refactor... We will need to split listen and send for that to work.
+            //Serilog.Log.Information("Set Value: " + route);
             SetValueMethod?.Invoke(route, value, true);
         }
 
@@ -212,8 +213,8 @@ namespace Presonus.StudioLive32.Api
 
         public void JSON()
         {
-            //var sceneFile = File.ReadAllText("C:\\Dev\\new-scene.scn");
-            //SyncronizeState(sceneFile);
+            var sceneFile = File.ReadAllText("C:\\Dev\\new-scene.scn");
+            SyncronizeState(sceneFile);
         }
         private void Traverse(JsonElement element, string path)
         {

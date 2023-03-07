@@ -93,6 +93,7 @@ namespace Presonus.StudioLive32.Api.Services
                         float normalizedValue = (float)val / (float)ushort.MaxValue;
                         //_values.Line[i] = normalizedValue;
                         _rawService.SetValue("line/ch" + (i + 1).ToString() + "/meter", normalizedValue);
+
                     }
                     //_values.RaiseModelUpdated();
                     break;

@@ -30,9 +30,11 @@ namespace Presonus.UC.Api.Devices
                 return Channels.Any((c) => c.meter > -3);
             }
         }
+
         public RawService _rawService;
         public Mastersection Mastersection { get; set; }
         public Global Global { get; set; }
+        public Models.GEQ GEQ { get; set; }
         public List<ChannelBase> Channels { get; set; } = new List<ChannelBase>();
         public List<BusChannel> Buses { get; set; } = new List<BusChannel>();
         public Device(RawService rawService, int lineChannels, int returnChannels, int auxChannels, int fxReturns)
@@ -64,6 +66,8 @@ namespace Presonus.UC.Api.Devices
             var main = new BusChannel("main/ch1", rawService, this);
             Channels.Add(main);
             Buses.Add(main);
+
+            GEQ = new Models.GEQ("geq/ch7", rawService);
 
             Global = new Global("global", rawService);
             Mastersection = new Mastersection("mastersection", rawService);

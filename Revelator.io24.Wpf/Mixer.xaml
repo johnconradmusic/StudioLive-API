@@ -98,7 +98,7 @@
                             </StackPanel>
                             <StackPanel Margin="5">
                                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}" />
-                                <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
+                                <ProgressBar AutomationProperties.LiveSetting="Polite" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
                             </StackPanel>
                         </WrapPanel>
                     </TabItem>
@@ -153,34 +153,34 @@
                             <TabItem Header="Low Band">
                                 <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <CheckBox AutomationProperties.Name="EQ Band 1 On" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon1, Mode=TwoWay}">On</CheckBox>
-                                    <usercontrols:Fader Caption="Frequency"  Default="60" Unit="hz" AutomationProperties.Name="EQ Band 1 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq1, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Frequency" Fine="True"  Default="60" Unit="hz" AutomationProperties.Name="EQ Band 1 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq1, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Gain"  Unit="db"  AutomationProperties.Name="EQ Band 1 Gain" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain1, Mode=TwoWay}" />
-                                    <usercontrols:Fader Caption="Q"  Unit="octave"  AutomationProperties.Name="EQ Band 1 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q1, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Q" Default="5" Unit="octave"  AutomationProperties.Name="EQ Band 1 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q1, Mode=TwoWay}" />
                                     <CheckBox AutomationProperties.Name="EQ Band 1 Shelf" VerticalAlignment="Center" IsChecked="{Binding Path=eq_bandop1, Mode=TwoWay}">Shelf</CheckBox>
                                 </WrapPanel>
                             </TabItem>
                             <TabItem Header="Low Mid Band">
                                 <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <CheckBox AutomationProperties.Name="EQ Band 2 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon2, Mode=TwoWay}">On</CheckBox>
-                                    <usercontrols:Fader Caption="Frequency"  Default="800" Unit="hz" AutomationProperties.Name="EQ Band 2 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq2, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Frequency"  Fine="True" Default="800" Unit="hz" AutomationProperties.Name="EQ Band 2 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq2, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Gain"  Unit="db"  AutomationProperties.Name="EQ Band 2 Gain" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain2, Mode=TwoWay}" />
-                                    <usercontrols:Fader Caption="Q"  Unit="octave"  AutomationProperties.Name="EQ Band 2 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q2, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Q" Default="5"  Unit="octave"  AutomationProperties.Name="EQ Band 2 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q2, Mode=TwoWay}" />
                                 </WrapPanel>
                             </TabItem>
                             <TabItem Header="High Mid Band">
                                 <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <CheckBox AutomationProperties.Name="EQ Band 3 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon3, Mode=TwoWay}">On</CheckBox>
-                                    <usercontrols:Fader Caption="Frequency"  Default="2600" Unit="hz" AutomationProperties.Name="EQ Band 3 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq3, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Frequency"  Fine="True" Default="2600" Unit="hz" AutomationProperties.Name="EQ Band 3 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq3, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Gain"  Unit="db"  AutomationProperties.Name="EQ Band 3 Gain" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain3, Mode=TwoWay}" />
-                                    <usercontrols:Fader Caption="Q"  Unit="octave"  AutomationProperties.Name="EQ Band 3 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q3, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Q" Default="5"  Unit="octave"  AutomationProperties.Name="EQ Band 3 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q3, Mode=TwoWay}" />
                                 </WrapPanel>
                             </TabItem>
                             <TabItem Header="High Band">
                                 <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <CheckBox AutomationProperties.Name="EQ Band 4 On" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandon4, Mode=TwoWay}">On</CheckBox>
-                                    <usercontrols:Fader Caption="Frequency"  Default="8000" Unit="hz" AutomationProperties.Name="EQ Band 4 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq4, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Frequency"  Fine="True" Default="8000" Unit="hz" AutomationProperties.Name="EQ Band 4 Frequency" Minimum="36" Maximum="18000" Value="{Binding Path=eq_freq4, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Gain"  Unit="db"  AutomationProperties.Name="EQ Band 4 Gain" Minimum="-15"  Maximum="15" Value="{Binding Path=eq_gain4, Mode=TwoWay}" />
-                                    <usercontrols:Fader Caption="Q"  Unit="octave"  AutomationProperties.Name="EQ Band 4 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q4, Mode=TwoWay}" />
+                                    <usercontrols:Fader Caption="Q" Default="5"  Unit="octave"  AutomationProperties.Name="EQ Band 4 Q" Minimum=".1"  Maximum="10" Value="{Binding Path=eq_q4, Mode=TwoWay}" />
                                     <CheckBox AutomationProperties.Name="EQ Band 4 Shelf" Margin="5" VerticalAlignment="Center"  IsChecked="{Binding Path=eq_bandop4, Mode=TwoWay}">Shelf</CheckBox>
                                 </WrapPanel>
                             </TabItem>
@@ -258,37 +258,68 @@
                     <TabItem Header="Graphic EQ">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <WrapPanel VerticalAlignment="Center">
-                                <usercontrols:Fader Unit="db" Value="{Binding geq1, Mode=TwoWay}" AutomationProperties.Name="20 Hz" Width="50" x:Name="GEQBand1Gain" Caption="20 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq2, Mode=TwoWay}" AutomationProperties.Name="25 Hz" Width="50" x:Name="GEQBand2Gain" Caption="25 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq3, Mode=TwoWay}" AutomationProperties.Name="32 Hz" Width="50" x:Name="GEQBand3Gain" Caption="32 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq4, Mode=TwoWay}" AutomationProperties.Name="40 Hz" Width="50" x:Name="GEQBand4Gain" Caption="40 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq5, Mode=TwoWay}" AutomationProperties.Name="50 Hz" Width="50" x:Name="GEQBand5Gain" Caption="50 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq6, Mode=TwoWay}" AutomationProperties.Name="63 Hz" Width="50" x:Name="GEQBand6Gain" Caption="63 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq7, Mode=TwoWay}" AutomationProperties.Name="80 Hz" Width="50" x:Name="GEQBand7Gain" Caption="80 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq8, Mode=TwoWay}" AutomationProperties.Name="100 Hz" Width="50" x:Name="GEQBand8Gain" Caption="100 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq9, Mode=TwoWay}" AutomationProperties.Name="125 Hz" Width="50" x:Name="GEQBand9Gain" Caption="125 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq10, Mode=TwoWay}" AutomationProperties.Name="160 Hz" Width="50" x:Name="GEQBand10Gain" Caption="160 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq11, Mode=TwoWay}" AutomationProperties.Name="200 Hz" Width="50" x:Name="GEQBand11Gain" Caption="200 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq12, Mode=TwoWay}" AutomationProperties.Name="250 Hz" Width="50" x:Name="GEQBand12Gain" Caption="250 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq13, Mode=TwoWay}" AutomationProperties.Name="315 Hz" Width="50" x:Name="GEQBand13Gain" Caption="315 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq14, Mode=TwoWay}" AutomationProperties.Name="400 Hz" Width="50" x:Name="GEQBand14Gain" Caption="400 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq15, Mode=TwoWay}" AutomationProperties.Name="500 Hz" Width="50" x:Name="GEQBand15Gain" Caption="500 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq16, Mode=TwoWay}" AutomationProperties.Name="630 Hz" Width="50" x:Name="GEQBand16Gain" Caption="630 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq17, Mode=TwoWay}" AutomationProperties.Name="800 Hz" Width="50" x:Name="GEQBand17Gain" Caption="800 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq18, Mode=TwoWay}" AutomationProperties.Name="1 kHz" Width="50" x:Name="GEQBand18Gain" Caption="1 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq19, Mode=TwoWay}" AutomationProperties.Name="1.25 kHz" Width="50" x:Name="GEQBand19Gain" Caption="1.25 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq20, Mode=TwoWay}" AutomationProperties.Name="1.6 kHz" Width="50" x:Name="GEQBand20Gain" Caption="1.6 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq21, Mode=TwoWay}" AutomationProperties.Name="2 kHz" Width="50" x:Name="GEQBand21Gain" Caption="2 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq22, Mode=TwoWay}" AutomationProperties.Name="2.5 kHz" Width="50" x:Name="GEQBand22Gain" Caption="2.5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq23, Mode=TwoWay}" AutomationProperties.Name="3.15 kHz" Width="50" x:Name="GEQBand23Gain" Caption="3.15 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq24, Mode=TwoWay}" AutomationProperties.Name="4 kHz" Width="50" x:Name="GEQBand24Gain" Caption="4 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq25, Mode=TwoWay}" AutomationProperties.Name="5 kHz" Width="50" x:Name="GEQBand25Gain" Caption="5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq26, Mode=TwoWay}" AutomationProperties.Name="6.3 kHz" Width="50" x:Name="GEQBand26Gain" Caption="6.3 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq27, Mode=TwoWay}" AutomationProperties.Name="8 kHz" Width="50" x:Name="GEQBand27Gain" Caption="8 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq28, Mode=TwoWay}" AutomationProperties.Name="10 kHz" Width="50" x:Name="GEQBand28Gain" Caption="10 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq29, Mode=TwoWay}" AutomationProperties.Name="12.5 kHz" Width="50" x:Name="GEQBand29Gain" Caption="12.5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq30, Mode=TwoWay}" AutomationProperties.Name="16 kHz" Width="50" x:Name="GEQBand30Gain" Caption="16 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
-                                <usercontrols:Fader Unit="db" Value="{Binding geq31, Mode=TwoWay}" AutomationProperties.Name="20 kHz" Width="50" x:Name="GEQBand31Gain" Caption="20 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain1, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="20 Hz" Width="50" x:Name="GEQBand1Gain" Caption="20 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain2, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="25 Hz" Width="50" x:Name="GEQBand2Gain" Caption="25 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain3, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="32 Hz" Width="50" x:Name="GEQBand3Gain" Caption="32 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain4, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="40 Hz" Width="50" x:Name="GEQBand4Gain" Caption="40 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain5, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="50 Hz" Width="50" x:Name="GEQBand5Gain" Caption="50 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain6, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="63 Hz" Width="50" x:Name="GEQBand6Gain" Caption="63 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain7, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="80 Hz" Width="50" x:Name="GEQBand7Gain" Caption="80 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain8, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="100 Hz" Width="50" x:Name="GEQBand8Gain" Caption="100 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain9, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="125 Hz" Width="50" x:Name="GEQBand9Gain" Caption="125 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain10, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="160 Hz" Width="50" x:Name="GEQBand10Gain" Caption="160 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain11, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="200 Hz" Width="50" x:Name="GEQBand11Gain" Caption="200 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain12, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="250 Hz" Width="50" x:Name="GEQBand12Gain" Caption="250 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain13, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="315 Hz" Width="50" x:Name="GEQBand13Gain" Caption="315 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain14, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="400 Hz" Width="50" x:Name="GEQBand14Gain" Caption="400 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain15, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="500 Hz" Width="50" x:Name="GEQBand15Gain" Caption="500 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain16, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="630 Hz" Width="50" x:Name="GEQBand16Gain" Caption="630 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain17, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="800 Hz" Width="50" x:Name="GEQBand17Gain" Caption="800 Hz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain18, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="1 kHz" Width="50" x:Name="GEQBand18Gain" Caption="1 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain19, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="1.25 kHz" Width="50" x:Name="GEQBand19Gain" Caption="1.25 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain20, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="1.6 kHz" Width="50" x:Name="GEQBand20Gain" Caption="1.6 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain21, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="2 kHz" Width="50" x:Name="GEQBand21Gain" Caption="2 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain22, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="2.5 kHz" Width="50" x:Name="GEQBand22Gain" Caption="2.5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain23, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="3.15 kHz" Width="50" x:Name="GEQBand23Gain" Caption="3.15 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain24, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="4 kHz" Width="50" x:Name="GEQBand24Gain" Caption="4 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain25, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="5 kHz" Width="50" x:Name="GEQBand25Gain" Caption="5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain26, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="6.3 kHz" Width="50" x:Name="GEQBand26Gain" Caption="6.3 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain27, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="8 kHz" Width="50" x:Name="GEQBand27Gain" Caption="8 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain28, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="10 kHz" Width="50" x:Name="GEQBand28Gain" Caption="10 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain29, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="12.5 kHz" Width="50" x:Name="GEQBand29Gain" Caption="12.5 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain30, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="16 kHz" Width="50" x:Name="GEQBand30Gain" Caption="16 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
+                                <usercontrols:Fader Unit="db" Value="{Binding Path=DataContext.Device.GEQ.gain31, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor,
+                            AncestorType={x:Type Window}}}" AutomationProperties.Name="20 kHz" Width="50" x:Name="GEQBand31Gain" Caption="20 kHz" Minimum="-12.0" Maximum="12.0" Default="0.0" />
                             </WrapPanel>
                         </StackPanel>
                     </TabItem>

@@ -6,12 +6,14 @@ using Presonus.StudioLive32.Wpf.UserControls;
 using Presonus.StudioLive32.Wpf.Views;
 using System;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Presonus.StudioLive32.Wpf
 {
@@ -40,9 +42,19 @@ namespace Presonus.StudioLive32.Wpf
 
             var task = Task.Run(() => LoadLastUsedScene());
             var dialog = new LoadingDialog();
-            task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => dialog.Close()));
+
+            task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => { dialog.Close(); DeviceRoutingBase.loadingFromScene = false; }));
             dialog.ShowDialog();
+            timer = new() { Interval = TimeSpan.FromSeconds(1) };
+            timer.Tick += Timer_Tick;
         }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            if (isReadingMeter)
+                ReportValueOfControl(meter);
+        }
+
 
         public void LoadLastUsedScene()
         {
@@ -96,7 +108,10 @@ namespace Presonus.StudioLive32.Wpf
 
         public static void ReportValueOfControl(Control control, bool includeNameFirst = false)
         {
-
+            if(control is ProgressBar progressBar)
+            {
+                ReadTextToScreenReader(Math.Round(progressBar.Value, 2) + " db");
+            }
             if (control is Slider slider)
             {
                 BindingExpression be = BindingOperations.GetBindingExpression(slider, Slider.ValueProperty);
@@ -429,6 +444,23 @@ namespace Presonus.StudioLive32.Wpf
 
         private void Fader_TextChanged(object sender, RoutedEventArgs e)
         {
+
+        }
+        bool isReadingMeter = false;
+        private DispatcherTimer timer;
+
+        private void meter_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ReadTextToScreenReader("Channel meter");
+            isReadingMeter = true;
+            timer.Start();
+
+        }
+
+        private void meter_LostFocus(object sender, RoutedEventArgs e)
+        {
+            isReadingMeter = false;
+            timer.Stop();
 
         }
     }
