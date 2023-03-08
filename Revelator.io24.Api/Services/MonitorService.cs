@@ -83,7 +83,7 @@ namespace Presonus.StudioLive32.Api.Services
             var from = data.Range(8, 10);
             var to = data.Range(10, 12);
             var msg = Encoding.ASCII.GetString(data.Range(12, 16));
-            //Console.WriteLine(msg);
+            //Console.WriteLine(data.Length);
             switch (msg)
             {
                 case "levl":
@@ -98,7 +98,27 @@ namespace Presonus.StudioLive32.Api.Services
                     //_values.RaiseModelUpdated();
                     break;
                 case "redu":
-
+                    for (int i = 0; i < 32; i++)
+                    {
+                        var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
+                        float normalizedValue = (float)valu / (float)ushort.MaxValue;
+                        if (normalizedValue < 0.95f) 
+                        Serilog.Log.Information($"gate reduction: channel {i} {normalizedValue} ");
+                    }
+                    for (int i = 32; i < 64; i++)
+                    {
+                        var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
+                        float normalizedValue = (float)valu / (float)ushort.MaxValue;
+                        if (normalizedValue < 0.95f)
+                            Serilog.Log.Information($"compressor reduction: {i-32} {normalizedValue} ");
+                    }
+                    for (int i = 64; i < 96; i++)
+                    {
+                        var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
+                        float normalizedValue = (float)valu / (float)ushort.MaxValue;
+                        if (normalizedValue < 0.95f)
+                            Serilog.Log.Information($"limiter reduction: {i - 64} {normalizedValue} ");
+                    }
                     break;
             }
             return;

@@ -213,11 +213,5 @@ namespace Presonus.StudioLive32.Wpf.UserControls
             else if (sign < 0) Value -= GetIncrement / 2;
             base.OnMouseWheel(e);
         }
-
-        public override void OnApplyTemplate()
-        {
-            Value = Default;
-            base.OnApplyTemplate();
-        }
     }
 }

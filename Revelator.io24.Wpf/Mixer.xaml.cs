@@ -45,7 +45,7 @@ namespace Presonus.StudioLive32.Wpf
 
             task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => { dialog.Close(); DeviceRoutingBase.loadingFromScene = false; }));
             dialog.ShowDialog();
-            timer = new() { Interval = TimeSpan.FromSeconds(1) };
+            timer = new() { Interval = TimeSpan.FromSeconds(2) };
             timer.Tick += Timer_Tick;
         }
 
