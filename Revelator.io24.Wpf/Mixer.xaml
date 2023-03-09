@@ -187,29 +187,49 @@
                         </TabControl>
                     </TabItem>
                     <TabItem Header="Aux Sends">
-                        <StackPanel MinWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-                            <WrapPanel>
-                                <usercontrols:Fader Unit="db"  Caption="Aux 1" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1" />
-                                <usercontrols:Fader Caption="Aux 2"  IsEnabled="{Binding Path=DataContext.Device.Buses[0].LinkSlave, ElementName=window}" Unit="db"   Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 3"   Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 4"  Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 5"  Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 6"  Minimum="-84" Maximum="10" Value="{Binding aux6, Mode=TwoWay}" AutomationProperties.Name="Aux 6" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 7"  Minimum="-84" Maximum="10" Value="{Binding aux7, Mode=TwoWay}" AutomationProperties.Name="Aux 7" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 8"   Minimum="-84" Maximum="10" Value="{Binding aux8, Mode=TwoWay}" AutomationProperties.Name="Aux 8" />
-                            </WrapPanel>
-                            <WrapPanel>
-                                <usercontrols:Fader Unit="db" Caption="Aux 9"  Minimum="-84" Maximum="10" Value="{Binding aux9, Mode=TwoWay}" AutomationProperties.Name="Aux 9Hz" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 10"   Minimum="-84" Maximum="10" Value="{Binding aux10, Mode=TwoWay}" AutomationProperties.Name="Aux 10" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 11"   Minimum="-84" Maximum="10" Value="{Binding aux11, Mode=TwoWay}" AutomationProperties.Name="Aux 11" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 12"   Minimum="-84" Maximum="10" Value="{Binding aux12, Mode=TwoWay}" AutomationProperties.Name="Aux 12" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 13"  Minimum="-84" Maximum="10" Value="{Binding aux13, Mode=TwoWay}" AutomationProperties.Name="Aux 13" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 14"  Minimum="-84" Maximum="10" Value="{Binding aux14, Mode=TwoWay}" AutomationProperties.Name="Aux 14" />
-                                <usercontrols:Fader Unit="db"  Caption="Aux 15"  Minimum="-84" Maximum="10" Value="{Binding aux15, Mode=TwoWay}" AutomationProperties.Name="Aux 15" />
-                                <usercontrols:Fader Unit="db" Caption="Aux 16"   Minimum="-84" Maximum="10" Value="{Binding aux16, Mode=TwoWay}" AutomationProperties.Name="Aux 16" />
-                            </WrapPanel>
-                            <Button Margin="5" x:Name="sendsOnFadersPanelButton" Content="Sends On Faders" Height="30" Width="140" Click="sendsOnFadersPanelButton_Click" />
-                        </StackPanel>
+                        <TabControl Margin="5" Background="{StaticResource PanelBGBrush}" BorderThickness="2" BorderBrush="{StaticResource BorderBrush}" TabStripPlacement="Bottom" x:Name="auxTabs">
+                            <TabItem Header="Level">
+                                <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <WrapPanel>
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 1" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1" />
+                                        <usercontrols:Fader Caption="Aux 2"  IsEnabled="{Binding Path=DataContext.Device.Buses[0].LinkSlave, ElementName=window}" Unit="db"   Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 3"   Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 4"  Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 5"  Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 6"  Minimum="-84" Maximum="10" Value="{Binding aux6, Mode=TwoWay}" AutomationProperties.Name="Aux 6" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 7"  Minimum="-84" Maximum="10" Value="{Binding aux7, Mode=TwoWay}" AutomationProperties.Name="Aux 7" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 8"   Minimum="-84" Maximum="10" Value="{Binding aux8, Mode=TwoWay}" AutomationProperties.Name="Aux 8" />
+                                    </WrapPanel>
+                                    <WrapPanel>
+                                        <usercontrols:Fader Unit="db" Caption="Aux 9"  Minimum="-84" Maximum="10" Value="{Binding aux9, Mode=TwoWay}" AutomationProperties.Name="Aux 9Hz" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 10"   Minimum="-84" Maximum="10" Value="{Binding aux10, Mode=TwoWay}" AutomationProperties.Name="Aux 10" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 11"   Minimum="-84" Maximum="10" Value="{Binding aux11, Mode=TwoWay}" AutomationProperties.Name="Aux 11" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 12"   Minimum="-84" Maximum="10" Value="{Binding aux12, Mode=TwoWay}" AutomationProperties.Name="Aux 12" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 13"  Minimum="-84" Maximum="10" Value="{Binding aux13, Mode=TwoWay}" AutomationProperties.Name="Aux 13" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 14"  Minimum="-84" Maximum="10" Value="{Binding aux14, Mode=TwoWay}" AutomationProperties.Name="Aux 14" />
+                                        <usercontrols:Fader Unit="db"  Caption="Aux 15"  Minimum="-84" Maximum="10" Value="{Binding aux15, Mode=TwoWay}" AutomationProperties.Name="Aux 15" />
+                                        <usercontrols:Fader Unit="db" Caption="Aux 16"   Minimum="-84" Maximum="10" Value="{Binding aux16, Mode=TwoWay}" AutomationProperties.Name="Aux 16" />
+                                    </WrapPanel>
+                                    <!--<Button Margin="5" x:Name="sendsOnFadersPanelButton" Content="Sends On Faders" Height="30" Width="140" Click="sendsOnFadersPanelButton_Click" />-->
+                                </WrapPanel>
+                            </TabItem>
+                            <TabItem Header="Pan">
+                                <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <WrapPanel>
+                                        <usercontrols:PanPot Caption="Aux 1/2 Pan" Unit="percent" Default="0" x:Name="Aux12Pan" HorizontalAlignment="Center" Value="{Binding aux12_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 3/4 Pan" Unit="percent" Default="0" x:Name="Aux34Pan" HorizontalAlignment="Center" Value="{Binding aux34_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 5/6 Pan" Unit="percent" Default="0" x:Name="Aux56Pan" HorizontalAlignment="Center" Value="{Binding aux56_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 7/8 Pan" Unit="percent" Default="0" x:Name="Aux78Pan" HorizontalAlignment="Center" Value="{Binding aux78_pan}" />
+                                    </WrapPanel>
+                                    <WrapPanel>
+                                        <usercontrols:PanPot Caption="Aux 9/10 Pan" Unit="percent" Default="0" x:Name="Aux910Pan" HorizontalAlignment="Center" Value="{Binding aux910_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 11/12 Pan" Unit="percent" Default="0" x:Name="Aux1112Pan" HorizontalAlignment="Center" Value="{Binding aux1112_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 13/14 Pan" Unit="percent" Default="0" x:Name="Aux1314Pan" HorizontalAlignment="Center" Value="{Binding aux1314_pan}" />
+                                        <usercontrols:PanPot Caption="Aux 15/16 Pan" Unit="percent" Default="0" x:Name="Aux1516Pan" HorizontalAlignment="Center" Value="{Binding aux1516_pan}" />
+                                    </WrapPanel>
+                                </WrapPanel>
+                            </TabItem>
+                        </TabControl>
                     </TabItem>
                     <TabItem Header="Routing">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">

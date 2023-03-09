@@ -129,7 +129,20 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
         [RouteValueRange(50, 2000, Enums.Unit.ms)][RouteValue("gate/release")] public float gate_release { get => GetValue(); set => SetValue(value); }
         [RouteValue("gate/on")] public bool gate_on { get => GetBoolean(); set => SetBoolean(value); }
         [RouteValue("gate/expander")] public bool gate_expander { get => GetBoolean(); set => SetBoolean(value); }
-        #endregion
 
-    }
+		[JsonIgnore]
+		[RouteValueRange(-84, 0, Enums.Unit.db)]
+		[RouteValue("gate/reduction")]
+		public float gate_reduction
+		{
+			get
+			{
+				var val = GetValue();
+				gateMeter.AddSample(val);
+				return (float)gateMeter.GetPeakValue();
+			}
+		}
+		#endregion
+
+	}
 }
