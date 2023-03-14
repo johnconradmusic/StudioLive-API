@@ -97,8 +97,8 @@
                                                   IsEnabled="{Binding preampmode, Converter={StaticResource AlwaysVisibleConverter}, FallbackValue=False}" />
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding Device.IsAnyChannelClipping, Mode=OneWay}" />
-                                <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="meter" Height="120" Maximum="10" Minimum="-84" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
+                                <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding clip, Mode=OneWay}" />
+                                <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="meter" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
                             </StackPanel>
                         </WrapPanel>
                     </TabItem>
@@ -115,6 +115,7 @@
                                         <usercontrols:Fader Unit="db" Caption="Range" AutomationProperties.Name="Gate Range" Default="-84" Minimum="-84" Maximum="0" Value="{Binding Path=gate_range, Mode=TwoWay}" />
                                         <usercontrols:Fader Unit="ms" Caption="Attack" AutomationProperties.Name="Gate Attack" Minimum="0.02" Maximum="500" Value="{Binding Path=gate_attack, Mode=TwoWay}" />
                                         <usercontrols:Fader Unit="ms" Caption="Release" AutomationProperties.Name="Gate Release" Minimum="50" Maximum="2000" Value="{Binding Path=gate_release, Mode=TwoWay}" />
+                                        <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="gateReduction" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=gate_reduction, Mode=OneWay}" />
                                     </WrapPanel>
 
                                     <CheckBox AutomationProperties.Name="Expander" Margin="5"  IsChecked="{Binding Path=gate_expander, Mode=TwoWay}">Expander</CheckBox>
@@ -124,11 +125,11 @@
                                 <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
                                     <CheckBox Margin="5" AutomationProperties.Name="Compressor On" IsChecked="{Binding Path=comp_on, Mode=TwoWay}">Compressor On</CheckBox>
                                     <usercontrols:Fader Caption="Threshold"  Default="-20"  Unit="db"  AutomationProperties.Name="Compressor Threshold" Minimum="-56" Maximum="0" Value="{Binding Path=comp_threshold, Mode=TwoWay}" />
-
                                     <usercontrols:Fader Caption="Ratio"  Default="4" Unit="to 1"  AutomationProperties.Name="Compressor Ratio" Minimum="1"  Maximum="18" Value="{Binding Path=comp_ratio, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Attack"  Default="50"  Unit="ms"  AutomationProperties.Name="Compressor Attack" Minimum=".20"  Maximum="150" Value="{Binding Path=comp_attack, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Release"  Default="5" Unit="ms"  AutomationProperties.Name="Compressor Release" Minimum="2.5"  Maximum="900" Value="{Binding Path=comp_release, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Makeup Gain"  Unit="db"  AutomationProperties.Name="Compressor Makeup Gain" Minimum="0" Maximum="28" Value="{Binding Path=comp_gain, Mode=TwoWay}" />
+                                    <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="compReduction" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=comp_reduction, Mode=OneWay}" />
                                     <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding Path=comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
                                     <CheckBox AutomationProperties.Name="Compressor Auto Time" Margin="5" IsChecked="{Binding Path=comp_automode, Mode=TwoWay}">Auto Mode</CheckBox>
                                 </WrapPanel>
@@ -137,6 +138,8 @@
                                 <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5">
                                     <CheckBox  AutomationProperties.Name="Limiter On" Margin="5"  IsChecked="{Binding Path=limiter_on, Mode=TwoWay}">Limiter On</CheckBox>
                                     <usercontrols:Fader Caption="Threshold" Unit="db" AutomationProperties.Name="Limiter Threshold" Minimum="-28" Maximum="0" Value="{Binding Path=limiter_threshold, Mode=TwoWay}" />
+                                    <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="limiterReduction" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=limiter_reduction, Mode=OneWay}" />
+
                                 </WrapPanel>
                             </TabItem>
                         </TabControl>
@@ -192,7 +195,7 @@
                                 <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <WrapPanel>
                                         <usercontrols:Fader Unit="db"  Caption="Aux 1" Minimum="-84" Maximum="10" Value="{Binding aux1, Mode=TwoWay}" AutomationProperties.Name="Aux 1" />
-                                        <usercontrols:Fader Caption="Aux 2"  IsEnabled="{Binding Path=DataContext.Device.Buses[0].LinkSlave, ElementName=window}" Unit="db"   Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2" />
+                                        <usercontrols:Fader Caption="Aux 2" IsEnabled="{Binding Path=DataContext.Device.Buses[0].LinkSlave, ElementName=window}" Unit="db"   Minimum="-84" Maximum="10" Value="{Binding aux2, Mode=TwoWay}" AutomationProperties.Name="Aux 2" />
                                         <usercontrols:Fader Unit="db" Caption="Aux 3"   Minimum="-84" Maximum="10" Value="{Binding aux3, Mode=TwoWay}" AutomationProperties.Name="Aux 3" />
                                         <usercontrols:Fader Unit="db"  Caption="Aux 4"  Minimum="-84" Maximum="10" Value="{Binding aux4, Mode=TwoWay}" AutomationProperties.Name="Aux 4" />
                                         <usercontrols:Fader Unit="db" Caption="Aux 5"  Minimum="-84" Maximum="10" Value="{Binding aux5, Mode=TwoWay}" AutomationProperties.Name="Aux 5" />

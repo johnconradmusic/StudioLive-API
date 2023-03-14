@@ -42,7 +42,29 @@
         <EventSetter Event="TextChanged" Handler="TextChanged"/>
         <EventSetter Event="GotFocus" Handler="Focused"/>
     </Style>
+    <Style x:Key="{x:Type local:AudioMeter}" TargetType="{x:Type local:AudioMeter}">
+        <Setter Property="IsTabStop" Value="True"/>
 
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:AudioMeter">
+                    <Border HorizontalAlignment="Center" Visibility="{TemplateBinding IsEnabled}" Height="90" BorderThickness="0" BorderBrush="{StaticResource BorderBrush}" Width="100">
+                        <Grid Margin="5" Background="{TemplateBinding Background}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition MinHeight="20"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <Style x:Key="{x:Type local:PanPot}" TargetType="{x:Type local:PanPot}">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Minimum" Value="-100"/>

@@ -168,7 +168,7 @@ namespace Presonus.StudioLive32.Api.Services
                                 PS(chunk);
                                 break;
                             case "MS":
-                                Log.Information("ms");
+                                //Log.Information("ms");
                                 break;
                             default:
                                 break;
@@ -332,7 +332,7 @@ namespace Presonus.StudioLive32.Api.Services
         {
             if (broadcast)
             {
-                if (!route.Contains("meter")) //never broadcast meter changes.
+                if (!route.Contains("meter") && !route.Contains("reduction")) //never broadcast meter changes.
                 {
                     var writer = new TcpMessageWriter(_deviceId);
                     var data = writer.CreateRouteValueUpdate(route, value);

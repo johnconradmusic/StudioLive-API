@@ -138,8 +138,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
 			get
 			{
 				var val = GetValue();
-				gateMeter.AddSample(val);
-				return (float)gateMeter.GetPeakValue();
+                return val;
 			}
 		}
 		#endregion

@@ -1,8 +1,13 @@
-﻿using Presonus.StudioLive32.Api.Extensions;
+﻿//------------------------------------------------------------------------------
+// The Assistant - Copyright (c) 2016-2023, John Conrad
+//------------------------------------------------------------------------------
+using Presonus.StudioLive32.Api.Extensions;
 using Presonus.StudioLive32.Api.Helpers;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,20 +16,16 @@ using System.Threading;
 
 namespace Presonus.StudioLive32.Api.Services
 {
-	/// <summary>
-	/// This service is used to receive UDP packages containing monitorin data.
-	/// Examples of this is the mic/volume meters, and FX meters.
-	/// </summary>
 	public class MonitorService : IDisposable
 	{
 		private readonly UdpClient _udpClient;
 		private readonly Thread _thread;
 
 		private readonly RawService _rawService;
-		public ushort Port { get; }
 
 		public MonitorService(RawService rawService)
 		{
+
 			this._rawService = rawService;
 			_udpClient = new UdpClient(0);
 			var ipEndpoint = _udpClient.Client.LocalEndPoint as IPEndPoint;
@@ -35,8 +36,9 @@ namespace Presonus.StudioLive32.Api.Services
 
 			_thread = new Thread(Listener) { IsBackground = true };
 			_thread.Start();
-
 		}
+
+		public ushort Port { get; }
 
 		private void Listener()
 		{
@@ -61,6 +63,8 @@ namespace Presonus.StudioLive32.Api.Services
 					}
 
 					Analyze(data);
+
+					Thread.Sleep(20);
 				}
 				catch (Exception exception)
 				{
@@ -69,60 +73,113 @@ namespace Presonus.StudioLive32.Api.Services
 			}
 		}
 
-		private Dictionary<string, int> _count = new Dictionary<string, int>();
-
-		/// <summary>
-		/// This Package type is used for real time monitoring.
-		/// </summary>
-		/// <param name="data"></param>
 		private void Analyze(byte[] data)
 		{
-			var header = Encoding.ASCII.GetString(data.Range(0, 4)); //UC01
-			var unknownValue = BitConverter.ToUInt16(data.Range(4, 6), 0); //always: 0x6C, 0xDB : 108, 219: 56172 (27867 inversed)
-			var type = Encoding.ASCII.GetString(data.Range(6, 8)); //MS: Meter Status?
-			var from = data.Range(8, 10);
-			var to = data.Range(10, 12);
 			var msg = Encoding.ASCII.GetString(data.Range(12, 16));
 			//Console.WriteLine(data.Length);
 			switch (msg)
 			{
 				case "levl":
-					for (int i = 0; i < 32; i++)
-					{
-						var val = BitConverter.ToUInt16(data, 20 + (i * 2));
-						float normalizedValue = (float)val / (float)ushort.MaxValue;
-						//_values.Line[i] = normalizedValue;
-						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/meter", normalizedValue);
-					}
-					break;
-				case "redu":
-					for (int i = 0; i < 32; i++)
-					{
-						var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
-						float normalizedValue = (float)valu / (float)ushort.MaxValue;
-						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/gate/reduction", normalizedValue);
-						if (normalizedValue < 0.95f)
-							Serilog.Log.Information($"gate reduction: channel {i} {normalizedValue} ");
-					}
-					for (int i = 32; i < 64; i++)
-					{
-						var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
-						float normalizedValue = (float)valu / (float)ushort.MaxValue;
-						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/comp/reduction", normalizedValue);
-						if (normalizedValue < 0.95f)
-							Serilog.Log.Information($"compressor reduction: {i - 32} {normalizedValue} ");
-					}
-					for (int i = 64; i < 96; i++)
-					{
-						var valu = BitConverter.ToUInt16(data, 20 + (i * 2));
-						float normalizedValue = (float)valu / (float)ushort.MaxValue;
-						_rawService.SetValue("line/ch" + (i + 1).ToString() + "/limiter/reduction", normalizedValue);
-						if (normalizedValue < 0.95f)
-							Serilog.Log.Information($"limiter reduction: {i - 64} {normalizedValue} ");
-					}
+					DoMetering(data);
 					break;
 			}
 			return;
+		}
+
+
+
+		private void DoMetering(byte[] data)
+		{
+			data = data.Skip(20).ToArray();
+
+			List<float> readValues(int count, int skipBytes = 0)
+			{
+				List<float> values = new List<float>();
+				for (int i = 0; i < count; i++)
+				{
+					float val = BitConverter.ToUInt16(data, (skipBytes + i) * 2);
+
+					values.Add(val/(ushort.MaxValue/2));
+				}
+				data = data.Skip((skipBytes + count) * 2).ToArray();
+				return values;
+			}
+
+			var Inputs = readValues(16);
+
+
+			for (int i = 0; i < Inputs.Count; i++)
+			{
+				var meter = Inputs[i];
+				_rawService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter);
+			}
+
+
+			var InputStrips = new Dictionary<string, List<float>>
+			{
+				{ "pregate", readValues(16, 3) },
+				{ "postgate", readValues(16) },
+				{ "postcomp", readValues(16) },
+				{ "posteq", readValues(16) },
+				{ "postlimiter", readValues(16) }
+			};
+
+			for (int i = 0; i < Inputs.Count; i++)
+			{
+				float chan = Inputs[i];
+
+				var gateReduction = InputStrips["pregate"][i] - InputStrips["postgate"][i];
+
+				_rawService.SetValue("line/ch" + (i + 1).ToString() + "/gate/reduction", gateReduction);
+
+				var compReduction = InputStrips["postgate"][i] - InputStrips["postcomp"][i];
+
+				_rawService.SetValue("line/ch" + (i + 1).ToString() + "/comp/reduction", compReduction);
+
+				var limiterReduction = InputStrips["postcomp"][i] - InputStrips["postlimiter"][i];
+
+				_rawService.SetValue("line/ch" + (i + 1).ToString() + "/limiter/reduction", limiterReduction);
+
+			}
+			return;
+
+			var Faders = readValues(16);
+
+			var FXReturnStrips = new Dictionary<string, List<float>>
+			{
+				{ "input", readValues(2 * 2, 8) },
+				{ "stripA", readValues(2 * 2) },
+				{ "stripB", readValues(2 * 2) },
+				{ "stripC", readValues(2 * 2) }
+			};
+
+			var Auxes = readValues(6);
+
+			var AuxStrips = new Dictionary<string, List<float>>
+			{
+				{ "stripA", readValues(6) },
+				{ "stripB", readValues(6) },
+				{ "stripC", readValues(6) },
+				{ "stripD", readValues(6) }
+			};
+
+			var FXStrips = new Dictionary<string, List<float>>
+			{
+				{ "inputs", readValues(2) },
+				{ "stripA", readValues(2) },
+				{ "stripB", readValues(2) },
+				{ "stripC", readValues(2) }
+			};
+
+			var Main = readValues(1 * 2);
+
+			var MainStrips = new Dictionary<string, List<float>>
+			{
+				{ "stageA", readValues(1 * 2) },
+				{ "stageB", readValues(1 * 2) },
+				{ "stageC", readValues(1 * 2) },
+				{ "stageD", readValues(1 * 2) }
+			};
 		}
 
 		public void Dispose()

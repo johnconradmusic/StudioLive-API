@@ -37,7 +37,6 @@ namespace Presonus.StudioLive32.Wpf
 			//API:
 			serviceCollection.AddSingleton<RawService>();
 			serviceCollection.AddSingleton<StudioLive32R>();
-			//serviceCollection.AddSingleton<Studio1824C>();
 			serviceCollection.AddSingleton<Mixer>();
 			serviceCollection.AddSingleton<MainViewModel>();
 
@@ -47,8 +46,6 @@ namespace Presonus.StudioLive32.Wpf
 			serviceProvider
 				.GetRequiredService<BroadcastService>()
 				.StartReceive();
-			//serviceProvider.GetRequiredService<RawService>().JSON();
-			// serviceProvider.StartRevelatorAPI();
 
 			//Run application:
 			var mainWindow = serviceProvider.GetRequiredService<Mixer>();

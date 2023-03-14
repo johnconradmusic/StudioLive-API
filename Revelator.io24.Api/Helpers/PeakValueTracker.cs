@@ -8,44 +8,40 @@ namespace Presonus.UC.Api.Helpers
 {
 	public class PeakValueTracker
 	{
-		private double[] buffer;
-		private int bufferIndex;
-		private int bufferLength;
-		private double maxRms;
-
-		public PeakValueTracker(int bufferSize)
+		private Queue<float> buffer;
+		private float peakValue;
+		private float decayFactor;
+		private int bufferSize;
+		public PeakValueTracker(int bufferSize = 10, float decayFactor = 0.99f)
 		{
-			buffer = new double[bufferSize];
-			bufferIndex = 0;
-			bufferLength = bufferSize;
-			maxRms = 0;
+			buffer = new Queue<float>(bufferSize);
+			this.bufferSize = bufferSize;
+			this.decayFactor = decayFactor;
 		}
 
-		public void AddSample(double sample)
+		public void AddValue(float value)
 		{
-			buffer[bufferIndex] = sample;
-			bufferIndex = (bufferIndex + 1) % bufferLength;
-
-			// Calculate the RMS value of the buffer
-			double sumOfSquares = 0;
-			for (int i = 0; i < bufferLength; i++)
+			buffer.Enqueue(value);
+			if (buffer.Count > bufferSize)
 			{
-				sumOfSquares += buffer[i] * buffer[i];
-			}
-			double meanOfSquares = sumOfSquares / bufferLength;
-			double rms = Math.Sqrt(meanOfSquares);
-
-			// Update the maximum RMS value if necessary
-			if (rms > maxRms)
-			{
-				maxRms = rms;
+				buffer.Dequeue();
 			}
 		}
 
-		public double GetPeakValue()
+		public float GetPeakValue()
 		{
-			return maxRms;
+			if (buffer.Count == 0)
+			{
+				peakValue = 0;
+			}
+			else
+			{
+				float highestInBuffer = buffer.Max();
+				peakValue = Math.Max(highestInBuffer, peakValue * decayFactor);
+			}
+			return peakValue;
 		}
 	}
+
 
 }
