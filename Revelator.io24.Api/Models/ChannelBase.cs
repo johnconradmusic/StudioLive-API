@@ -1,14 +1,8 @@
-﻿//------------------------------------------------------------------------------
-// The Assistant - Copyright (c) 2016-2023, John Conrad
-//------------------------------------------------------------------------------
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Presonus.StudioLive32.Api.Attributes;
-using Presonus.StudioLive32.Api.Enums;
-using Presonus.StudioLive32.Api.Services;
-using Presonus.UC.Api.Devices;
-using Presonus.UC.Api.Enums;
-using Presonus.UC.Api.Helpers;
-using Presonus.UC.Api.Models;
+using Presonus.UCNet.Api.Devices;
+using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.Services;
 using System.ComponentModel;
 
 namespace Presonus.StudioLive32.Api.Models
@@ -18,29 +12,20 @@ namespace Presonus.StudioLive32.Api.Models
 	{
 		protected Device device;
 
-		public ChannelBase(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService)
+		public ChannelBase(string routingPrefix, MixerStateService rawService, Device device) : base(routingPrefix, rawService)
 		{
 			this.device = device;
-		}
-
-		private void MonitorService_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			PropertyChanged?.Invoke(sender, e);
 		}
 
 		public override event PropertyChangedEventHandler PropertyChanged;
 
 		[JsonIgnore]
 		[RouteValueRange(-72, 0, Enums.Unit.db)]
-		public float meter
-		{
-			get
-			{
-				var val = GetValue();
-				return val;
-			}
-			set { SetValue(value); }
-		}
+		public float meter { get => GetValue(); set => SetValue(value); }
+
+		[JsonIgnore]
+		[RouteValueRange(-72, 0, Enums.Unit.db)]
+		public float fader { get => GetValue(); set => SetValue(value); }
 
 		//public ChannelBase() { }
 		[JsonIgnore]
@@ -266,7 +251,7 @@ namespace Presonus.StudioLive32.Api.Models
 		[RouteValueRange(0, 28, Enums.Unit.db)][RouteValue("comp/gain")] public float comp_gain { get => GetValue(); set => SetValue(value); }
 
 		[JsonIgnore]
-		[RouteValueRange(-84, 0, Enums.Unit.db)]
+		[RouteValueRange(0, 72, Enums.Unit.db)]
 		[RouteValue("comp/reduction")]
 		public float comp_reduction
 		{
@@ -291,6 +276,11 @@ namespace Presonus.StudioLive32.Api.Models
 				var val = GetValue();
 				return val;
 			}
+		}
+
+		private void MonitorService_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			PropertyChanged?.Invoke(sender, e);
 		}
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)

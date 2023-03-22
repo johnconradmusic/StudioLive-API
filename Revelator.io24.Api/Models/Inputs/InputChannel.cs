@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Presonus.StudioLive32.Api.Attributes;
-using Presonus.UC.Api.Devices;
-using Presonus.UC.Api.Enums;
+using Presonus.UCNet.Api.Devices;
+using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
     public class InputChannel : ChannelBase, INotifyPropertyChanged
     {
 
-        public InputChannel(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService, device) { }
+        public InputChannel(string routingPrefix, MixerStateService rawService, Device device) : base(routingPrefix, rawService, device) { }
 
         public DawPostDsp dawpostdsp { get => GetEnumValue<DawPostDsp>(); set => SetEnumValue(value); }
         public USBSource usb_src

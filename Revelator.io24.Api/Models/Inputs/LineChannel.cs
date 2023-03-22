@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Presonus.StudioLive32.Api.Attributes;
-using Presonus.UC.Api.Devices;
-using Presonus.UC.Api.Enums;
+using Presonus.UCNet.Api.Devices;
+using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.ComponentModel;
 
@@ -19,7 +20,7 @@ namespace Presonus.StudioLive32.Api.Models.Inputs
             PropertyChanged?.Invoke(this, eventArgs);
         }
 
-        public LineChannel(string routingPrefix, RawService rawService, Device device) : base(routingPrefix, rawService, device)
+        public LineChannel(string routingPrefix, MixerStateService rawService, Device device) : base(routingPrefix, rawService, device)
         {
 
         }

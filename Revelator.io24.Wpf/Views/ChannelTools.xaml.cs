@@ -1,6 +1,6 @@
 ﻿using Presonus.StudioLive32.Api.Models;
-using Presonus.UC.Api;
-using Presonus.UC.Api.Sound;
+using Presonus.UCNet.Api;
+using Presonus.UCNet.Api.Sound;
 using System;
 using System.Collections.Generic;
 using System.Linq;

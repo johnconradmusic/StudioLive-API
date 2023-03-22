@@ -2,7 +2,7 @@
 using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Configuration;
 using Presonus.StudioLive32.Api.Services;
-using Presonus.UC.Api.Devices;
+using Presonus.UCNet.Api.Devices;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.IO;
@@ -31,12 +31,12 @@ namespace Presonus.Studio1824C.Wpf
 			//serviceCollection.AddUCNetAPI();
 			serviceCollection.AddSingleton<BroadcastService>();
 			serviceCollection.AddSingleton<CommunicationService>();
-			serviceCollection.AddSingleton<MonitorService>();
+			serviceCollection.AddSingleton<MeterService>();
 
 			//API:
 			serviceCollection.AddSingleton<RawService>();
 			//serviceCollection.AddSingleton<StudioLive32R>();
-			serviceCollection.AddSingleton<Presonus.UC.Api.Devices.Studio1824C>(); //Device
+			serviceCollection.AddSingleton<Presonus.UCNet.Api.Devices.Studio1824C>(); //Device
 			serviceCollection.AddSingleton<Mixer1824>(); //window
 			serviceCollection.AddSingleton<MainViewModel>(); //viewmodel
 

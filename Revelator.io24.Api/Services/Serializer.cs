@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.IO;
 using Presonus.StudioLive32.Api;
 
-namespace Presonus.UC.Api.Services
+namespace Presonus.UCNet.Api.Services
 {
     public class Serializer
     {

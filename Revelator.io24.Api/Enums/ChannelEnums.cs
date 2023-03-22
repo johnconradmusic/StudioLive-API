@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presonus.UC.Api.Enums
+namespace Presonus.UCNet.Api.Enums
 {
     public enum BusChannelRoutingMode { PreFader = 0, PostFX, PostFader }
     public enum DawPostDsp { Pre = 0, Post }

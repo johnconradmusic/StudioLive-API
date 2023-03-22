@@ -1,7 +1,7 @@
 ﻿using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Inputs;
-using Presonus.UC.Api.Sound;
+using Presonus.UCNet.Api.Sound;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -155,11 +155,11 @@ namespace Presonus.Studio1824C.Wpf
             //vm.Device.RawService.SetValue("presets/scn", 0);
             for (float i = 0; i < 1; i += 0.1f)
             {
-                Console.WriteLine(i + " - DB from float - " + UC.Api.Helpers.Util.GetDBFromFloat(i));
+                Console.WriteLine(i + " - DB from float - " + UCNet.Api.Helpers.Util.GetDBFromFloat(i));
             }
             for (int i = -84; i < 10; i += 5)
             {
-                Console.WriteLine(i + " - float from DB - " + UC.Api.Helpers.Util.GetFloatFromDB(i));
+                Console.WriteLine(i + " - float from DB - " + UCNet.Api.Helpers.Util.GetFloatFromDB(i));
             }
         }
 

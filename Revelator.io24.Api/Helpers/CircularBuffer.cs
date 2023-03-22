@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presonus.UC.Api
+namespace Presonus.UCNet.Api
 {
     public class CircularBuffer<T> : IEnumerable<T>
     {

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf"
         xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
         xmlns:usercontrols="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
-        xmlns:enums="clr-namespace:Presonus.UC.Api.Enums;assembly=Presonus.UC.Api"
+        xmlns:enums="clr-namespace:Presonus.UCNet.Api.Enums;assembly=Presonus.UC.Api"
         x:Name="window"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
@@ -53,6 +53,7 @@
                     <MenuItem Header="SCENES">
                         <MenuItem Click="loadScene" Header="Load Scene..." />
                         <MenuItem Click="saveScene" Header="Save Scene..." />
+                        <MenuItem Header="Test" Click="MenuItem_Click"/>
                     </MenuItem>
                 </Menu>
                 <local:MyList Grid.Column="0" Grid.Row="1" Style="{StaticResource ListTheme}" SelectionMode="Single" SelectedIndex="0" IsSynchronizedWithCurrentItem="True" IsTextSearchEnabled="True" TextSearch.TextPath="username" Margin="5" AutomationProperties.Name="Channel Select" x:Name="ChannelList" SelectionChanged="ChannelList_SelectionChanged" ItemsSource="{Binding}" />
@@ -98,7 +99,9 @@
                             </StackPanel>
                             <StackPanel Margin="5">
                                 <CheckBox Content="Clip" Checked="ClipChecked" IsChecked="{Binding clip, Mode=OneWay}" />
-                                <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="meter" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
+                                <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="meter" Height="120" Maximum="0" Minimum="-72" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=meter, Mode=OneWay}" />
+                                <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="fader" Height="120" Maximum="10" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=fader, Mode=OneWay}" />
+
                             </StackPanel>
                         </WrapPanel>
                     </TabItem>
@@ -129,7 +132,7 @@
                                     <usercontrols:Fader Caption="Attack"  Default="50"  Unit="ms"  AutomationProperties.Name="Compressor Attack" Minimum=".20"  Maximum="150" Value="{Binding Path=comp_attack, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Release"  Default="5" Unit="ms"  AutomationProperties.Name="Compressor Release" Minimum="2.5"  Maximum="900" Value="{Binding Path=comp_release, Mode=TwoWay}" />
                                     <usercontrols:Fader Caption="Makeup Gain"  Unit="db"  AutomationProperties.Name="Compressor Makeup Gain" Minimum="0" Maximum="28" Value="{Binding Path=comp_gain, Mode=TwoWay}" />
-                                    <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="compReduction" Height="120" Maximum="56" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=comp_reduction, Mode=OneWay}" />
+                                    <ProgressBar AutomationProperties.LiveSetting="Assertive" GotFocus="meter_GotFocus" LostFocus="meter_LostFocus" Focusable="True" IsTabStop="True" x:Name="compReduction" Height="120" Maximum="72" Minimum="0" Orientation="Vertical" Margin="5" Width="10" Value="{Binding Path=comp_reduction, Mode=OneWay}" />
                                     <CheckBox AutomationProperties.Name="Compressor Soft Knee" Margin="5"  IsChecked="{Binding Path=comp_softknee, Mode=TwoWay}">Soft Knee</CheckBox>
                                     <CheckBox AutomationProperties.Name="Compressor Auto Time" Margin="5" IsChecked="{Binding Path=comp_automode, Mode=TwoWay}">Auto Mode</CheckBox>
                                 </WrapPanel>

@@ -1,4 +1,5 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.UCNet.Api.Services;
 using System.ComponentModel;
 
 namespace Presonus.StudioLive32.Api.Models.Outputs
@@ -9,12 +10,10 @@ namespace Presonus.StudioLive32.Api.Models.Outputs
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
             => PropertyChanged?.Invoke(this, eventArgs);
-        public Main(RawService rawService)
+        public Main(MixerStateService rawService)
             : base("main/ch1", rawService)
         {
             //
         }
-
-
     }
 }

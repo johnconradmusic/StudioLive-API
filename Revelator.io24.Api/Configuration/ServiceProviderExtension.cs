@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Presonus.StudioLive32.Api.Services;
-using Presonus.UC.Api.Devices;
+using Presonus.UCNet.Api.Devices;
 using System;
 
 namespace Presonus.StudioLive32.Api.Configuration
@@ -12,10 +12,10 @@ namespace Presonus.StudioLive32.Api.Configuration
             //Services:
             serviceCollection.AddSingleton<BroadcastService>();
             serviceCollection.AddSingleton<CommunicationService>();
-            serviceCollection.AddSingleton<MonitorService>();
+            serviceCollection.AddSingleton<MeterService>();
                         
             //API:
-            serviceCollection.AddSingleton<RawService>();
+            //serviceCollection.AddSingleton<RawService>();
             serviceCollection.AddSingleton<StudioLive32R>();
         }
 

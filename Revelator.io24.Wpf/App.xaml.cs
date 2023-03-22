@@ -1,20 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Presonus.StudioLive32.Api;
-using Presonus.StudioLive32.Api.Configuration;
-using Presonus.StudioLive32.Api.Models;
-using Presonus.StudioLive32.Api.Services;
-using Presonus.UC.Api.Devices;
-using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
-using System.IO;
+using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api.Models;
+using Presonus.UCNet.Api.Services;
+using Presonus.UCNet.Api;
 using System.Windows;
+using Presonus.StudioLive32.Api.Services;
+using Presonus.UCNet.Api.Devices;
+using Serilog;
 
 namespace Presonus.StudioLive32.Wpf
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
+
+
 	public partial class App : Application
 	{
 		protected override void OnStartup(StartupEventArgs e)
@@ -23,40 +20,42 @@ namespace Presonus.StudioLive32.Wpf
 
 #if DEBUG
 			Log.Logger = new LoggerConfiguration()
-				.WriteTo.Console(theme: ConsoleTheme.None)
+				.WriteTo.Console()
 				.CreateLogger();
 
 			AllocConsole();
 #endif
 
 			var serviceCollection = new ServiceCollection();
+
+			// Register the new classes and their dependencies
+			serviceCollection.AddSingleton<MixerState>();
+			serviceCollection.AddSingleton<MixerStateTraverser>();
+			serviceCollection.AddSingleton<MixerStateSynchronizer>();
+			serviceCollection.AddSingleton<MixerStateService>();
+
 			serviceCollection.AddSingleton<BroadcastService>();
 			serviceCollection.AddSingleton<CommunicationService>();
-			serviceCollection.AddSingleton<MonitorService>();
+			serviceCollection.AddSingleton<MeterService>();
 
-			//API:
-			serviceCollection.AddSingleton<RawService>();
-			serviceCollection.AddSingleton<StudioLive32R>();
-			serviceCollection.AddSingleton<Mixer>();
+			// Device model
+			//serviceCollection.AddSingleton<StudioLive32R>();
+
+			// WPF UI
 			serviceCollection.AddSingleton<MainViewModel>();
-
-			DeviceRoutingBase.loadingFromScene = true;
+			serviceCollection.AddSingleton<MixerWindow>();
 
 			var serviceProvider = serviceCollection.BuildServiceProvider();
-			serviceProvider
-				.GetRequiredService<BroadcastService>()
-				.StartReceive();
 
-			//Run application:
-			var mainWindow = serviceProvider.GetRequiredService<Mixer>();
+			serviceProvider.GetRequiredService<BroadcastService>().StartReceive();
+
+			// Run application:
+			var mainWindow = serviceProvider.GetRequiredService<MixerWindow>();
 			mainWindow.Show();
-			Log.Information("Application ready.");
 		}
 
 		[System.Runtime.InteropServices.DllImport("kernel32.dll")]
 		internal static extern bool AllocConsole();
-
-
-
 	}
+
 }

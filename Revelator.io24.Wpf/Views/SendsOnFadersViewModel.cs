@@ -1,6 +1,6 @@
 ﻿using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Auxes;
-using Presonus.UC.Api.Devices;
+using Presonus.UCNet.Api.Devices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

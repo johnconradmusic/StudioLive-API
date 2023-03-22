@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Presonus.StudioLive32.Api.Enums;
 using Newtonsoft.Json;
+using Presonus.UCNet.Api.Services;
 
-namespace Presonus.UC.Api.Models
+namespace Presonus.UCNet.Api.Models
 {
     [JsonObject(MemberSerialization = MemberSerialization.OptOut)]
     public class GEQ : DeviceRoutingBase, INotifyPropertyChanged
     {
-        public GEQ(string routePrefix, RawService rawService) : base(routePrefix, rawService)
+        public GEQ(string routePrefix, MixerStateService rawService) : base(routePrefix, rawService)
         {
 
         }

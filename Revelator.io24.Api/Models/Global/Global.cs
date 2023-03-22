@@ -1,6 +1,7 @@
 ﻿using Presonus.StudioLive32.Api;
 using Presonus.StudioLive32.Api.Attributes;
 using Presonus.StudioLive32.Api.Models;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presonus.UC.Api.Models.Global
+namespace Presonus.UCNet.Api.Models.Global
 {
     public class Global : DeviceRoutingBase, INotifyPropertyChanged
     {
 
-        public Global(string routingPrefix, RawService rawService) : base(routingPrefix, rawService)
+        public Global(string routingPrefix, MixerStateService rawService) : base(routingPrefix, rawService)
         {
             Console.WriteLine("global created");
         }

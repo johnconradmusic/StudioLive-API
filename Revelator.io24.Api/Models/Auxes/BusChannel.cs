@@ -1,6 +1,7 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
-using Presonus.UC.Api.Devices;
-using Presonus.UC.Api.Enums;
+using Presonus.UCNet.Api.Devices;
+using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ namespace Presonus.StudioLive32.Api.Models.Auxes
     {
         public BusSource bussrc { get => (BusSource)GetValue(); set => SetValue((int)value); }
         public DawPostDsp dawpostdsp { get => (DawPostDsp)GetValue(); set => SetValue((int)value); }
-        public BusChannel(string routePrefix, RawService rawService, Device device) : base(routePrefix, rawService, device) { }
+        public BusChannel(string routePrefix, MixerStateService rawService, Device device) : base(routePrefix, rawService, device) { }
         public BusChannelRoutingMode auxpremode { get => (BusChannelRoutingMode)(GetValue() * 2); set => SetValue((float)value / 2); }
         public int busmode { get => (int)GetValue(); set => SetValue(value); }
         public float busdelay { get => GetValue(); set => SetValue(value); }

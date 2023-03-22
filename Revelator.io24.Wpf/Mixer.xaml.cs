@@ -4,6 +4,7 @@ using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Inputs;
 using Presonus.StudioLive32.Wpf.UserControls;
 using Presonus.StudioLive32.Wpf.Views;
+using Presonus.UCNet.Api;
 using System;
 using System.Threading.Tasks;
 using System.Timers;
@@ -24,7 +25,6 @@ namespace Presonus.StudioLive32.Wpf
         public Mixer(MainViewModel viewModel)
         {
             DataContext = vm = viewModel;
-            RawService.Instance ??= vm.Device._rawService;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             InitializeComponent();
@@ -34,19 +34,19 @@ namespace Presonus.StudioLive32.Wpf
         protected override async void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            RawService.Instance.JSON();
-            while (!RawService.Instance.ConnectionEstablished)
-            {
-                await Task.Delay(100);
-            }
+            //RawServiceNew.Instance.JSON();
+        //    while (!RawService.ConnectionEstablished)
+        //    {
+        //        await Task.Delay(100);
+        //    }
 
-            var task = Task.Run(() => LoadLastUsedScene());
-            var dialog = new LoadingDialog();
+        //    var task = Task.Run(() => LoadLastUsedScene());
+        //    var dialog = new LoadingDialog();
 
-            task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => { dialog.Close(); DeviceRoutingBase.loadingFromScene = false; }));
-            dialog.ShowDialog();
-            timer = new() { Interval = TimeSpan.FromSeconds(2) };
-            timer.Tick += Timer_Tick;
+        //    task.ContinueWith(t => Application.Current.Dispatcher.Invoke(() => { dialog.Close(); DeviceRoutingBase.loadingFromScene = false; }));
+        //    dialog.ShowDialog();
+        //    timer = new() { Interval = TimeSpan.FromSeconds(2) };
+        //    timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -59,7 +59,7 @@ namespace Presonus.StudioLive32.Wpf
         public void LoadLastUsedScene()
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\PreSonus\\Mixer\\current.scn";
-            RawService.Instance.TryLoadScene(path);
+            //RawServiceNew.Instance.TryLoadScene(path);
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -98,7 +98,7 @@ namespace Presonus.StudioLive32.Wpf
         protected override void OnClosed(EventArgs e)
         {
             var path = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\PreSonus\\Mixer\\current.scn";
-            RawService.Instance.TrySaveScene(path);
+            //RawServiceNew.Instance.TrySaveScene(path);
             base.OnClosed(e);
             Application.Current.Shutdown();
 #if DEBUG
@@ -231,7 +231,7 @@ namespace Presonus.StudioLive32.Wpf
             {
                 if (listBox.SelectedItem is ChannelBase channel)
                 {
-                    vm.SelectedChannel = channel;
+                   // vm.SelectedChannel = channel;
                 }
             }
         }
@@ -247,7 +247,7 @@ namespace Presonus.StudioLive32.Wpf
             var res = saveFileDialog.ShowDialog();
             if (res.HasValue && res.Value == true)
             {
-                RawService.Instance.TrySaveScene(saveFileDialog.FileName);
+                //RawServiceNew.Instance.TrySaveScene(saveFileDialog.FileName);
             }
         }
 
@@ -265,7 +265,6 @@ namespace Presonus.StudioLive32.Wpf
                 return;
             }
 
-            RawService.Instance.TryLoadScene(openFileDialog.FileName);
         }
 
         private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -293,7 +292,7 @@ namespace Presonus.StudioLive32.Wpf
         {
             if (ChannelList.SelectedItem is Api.Models.Auxes.BusChannel channel)
             {
-                new SendsOnFadersPanel(channel, vm.Device).ShowDialog();
+                //new SendsOnFadersPanel(channel, vm.Device).ShowDialog();
             }
             if (ChannelList.SelectedItem is InputChannel inputChannel)
             {
@@ -391,24 +390,24 @@ namespace Presonus.StudioLive32.Wpf
 
         private void resetEQ_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.SelectedChannel is InputChannel chan)
-            {
-                chan.eq_bandon1 = true;
-                chan.eq_bandon2 = true;
-                chan.eq_bandon3 = true;
-                chan.eq_freq1 = 80;
-                chan.eq_freq2 = 400;
-                chan.eq_freq3 = 2000;
-                chan.eq_freq4 = 8000;
-                chan.eq_gain1 = 0;
-                chan.eq_gain2 = 0;
-                chan.eq_gain3 = 0;
-                chan.eq_gain4 = 0;
-                chan.eq_q1 = 2;
-                chan.eq_q2 = 2;
-                chan.eq_q3 = 2;
-                chan.eq_q4 = 2;
-            }
+            //if (vm.SelectedChannel is InputChannel chan)
+            //{
+            //    chan.eq_bandon1 = true;
+            //    chan.eq_bandon2 = true;
+            //    chan.eq_bandon3 = true;
+            //    chan.eq_freq1 = 80;
+            //    chan.eq_freq2 = 400;
+            //    chan.eq_freq3 = 2000;
+            //    chan.eq_freq4 = 8000;
+            //    chan.eq_gain1 = 0;
+            //    chan.eq_gain2 = 0;
+            //    chan.eq_gain3 = 0;
+            //    chan.eq_gain4 = 0;
+            //    chan.eq_q1 = 2;
+            //    chan.eq_q2 = 2;
+            //    chan.eq_q3 = 2;
+            //    chan.eq_q4 = 2;
+            //}
         }
 
         private void Fader_ValueChanged(object sender, RoutedEventArgs e)
@@ -462,6 +461,11 @@ namespace Presonus.StudioLive32.Wpf
             isReadingMeter = false;
             timer.Stop();
 
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿using Presonus.StudioLive32.Api.Models;
 using Presonus.StudioLive32.Api.Models.Auxes;
-using Presonus.UC.Api.Devices;
-using Presonus.UC.Api.Models.Global;
+using Presonus.UCNet.Api.Devices;
+using Presonus.UCNet.Api.Models.Global;
 using System.ComponentModel;
 
 namespace Presonus.Studio1824C.Wpf
@@ -10,9 +10,9 @@ namespace Presonus.Studio1824C.Wpf
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public UC.Api.Devices.Studio1824C Device { get; }
+        public UCNet.Api.Devices.Studio1824C Device { get; }
 
-        public MainViewModel(Presonus.UC.Api.Devices.Studio1824C device)
+        public MainViewModel(Presonus.UCNet.Api.Devices.Studio1824C device)
         {
             System.Console.WriteLine("created viewmodel");
             Device = device;
