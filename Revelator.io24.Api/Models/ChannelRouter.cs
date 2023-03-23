@@ -59,17 +59,20 @@ namespace Presonus.StudioLive32.Api.Models
 
 		private void ValueStateUpdated(object sender, ValueChangedEventArgs<float> e)
 		{
-			//OnPropertyChanged(new PropertyChangedEventArgs(_propertyValueNameRoute[e.Path]));
+			if (_propertyValueNameRoute.TryGetValue(e.Path, out var name))
+				OnPropertyChanged(new PropertyChangedEventArgs(name));
 		}
 
 		private void StringStateUpdated(object sender, ValueChangedEventArgs<string> e)
 		{
-			//OnPropertyChanged(new PropertyChangedEventArgs(_propertyValueNameRoute[e.Path]));
+			if (_propertyValueNameRoute.TryGetValue(e.Path, out var name))
+				OnPropertyChanged(new PropertyChangedEventArgs(name));
 		}
 
 		private void StringsStateUpdated(object sender, ValueChangedEventArgs<string[]> e)
 		{
-			//OnPropertyChanged(new PropertyChangedEventArgs(_propertyValueNameRoute[e.Path]));
+			if (_propertyValueNameRoute.TryGetValue(e.Path, out var name))
+				OnPropertyChanged(new PropertyChangedEventArgs(name));
 		}
 
 		protected abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
