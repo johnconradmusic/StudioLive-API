@@ -1,4 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.StudioLive32.Api.Attributes;
+using Presonus.StudioLive32.Api.Models;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;
@@ -20,13 +21,10 @@ namespace Presonus.UCNet.Api.Models
 
 		protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
 		{
-			if (eventArgs.PropertyName == "username")
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("name"));
-
-
+			Console.WriteLine("channel prop changed " + eventArgs.PropertyName);
 		}
 
-		public string Name { get => GetString("username"); set => SetString(value, "username"); }
-		public float Volume { get => GetValue("volume"); set => SetValue(value, "volume"); }
+		[ParameterPath("username")] public string Name { get => GetString(); set => SetString(value); }
+		[ParameterPath("volume")] public float Volume { get => GetValue(); set => SetValue(value); }
 	}
 }

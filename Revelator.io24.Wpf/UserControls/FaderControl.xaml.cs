@@ -18,8 +18,7 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 
 		public static readonly DependencyProperty ValueProperty =
 			DependencyProperty.Register("Value", typeof(double), typeof(FaderControl),
-				new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-					(d, e) => ((FaderControl)d).FaderSlider.Value = (double)e.NewValue));
+				new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 		public static readonly DependencyProperty PathProperty =
 	DependencyProperty.Register("Path", typeof(string), typeof(FaderControl),

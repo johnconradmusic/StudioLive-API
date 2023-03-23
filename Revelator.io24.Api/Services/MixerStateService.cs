@@ -9,12 +9,8 @@ public class MixerStateService
 	private readonly MixerState _mixerState;
 	private readonly MixerStateSynchronizer _mixerStateSynchronizer;
 
-	private readonly Dictionary<string, float> _defaultValues = new();
-	private readonly Dictionary<string, float> _midPoints = new();
-	private readonly Dictionary<string, (float min, float max)> _valueRanges = new();
-
-	internal Action<string, string, bool> SetStringMethod;
-	internal Action<string, float, bool> SetValueMethod;
+	internal Action<string, string> SendStringMethod;
+	internal Action<string, float> SendValueMethod;
 
 	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{
@@ -34,7 +30,6 @@ public class MixerStateService
 
 	public event EventHandler Synchronized;
 
-	public List<string> GetAllPaths => _mixerState.GetAllPaths();
 
 	public void Synchronize(string json)
 	{
@@ -45,7 +40,8 @@ public class MixerStateService
 	public void SetString(string route, string value, bool broadcast = true)
 	{
 		_mixerState.SetString(route, value);
-		SetStringMethod(route, value, broadcast);
+		if (broadcast)
+			SendStringMethod(route, value);
 	}
 
 	public void SetStrings(string route, string[] value, bool broadcast = true)
@@ -56,7 +52,8 @@ public class MixerStateService
 	public void SetValue(string route, float value, bool broadcast = true)
 	{
 		_mixerState.SetValue(route, value);
-		SetValueMethod(route, value, broadcast);
+		if (broadcast)
+			SendValueMethod(route, value);
 	}
 
 	public float GetValue(string route)

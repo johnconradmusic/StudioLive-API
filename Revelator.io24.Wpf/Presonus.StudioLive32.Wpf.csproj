@@ -19,6 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Theme\" />
+    <Folder Include="Views\" />
     <Folder Include="Windows\" />
   </ItemGroup>
 

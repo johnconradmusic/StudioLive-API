@@ -1,6 +1,7 @@
 ﻿using Presonus.UCNet.Api.Models;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace Presonus.UCNet.Api.Models;
 
@@ -14,26 +15,8 @@ public class MixerState
 	public event EventHandler<ValueChangedEventArgs<string>> StringChanged;
 	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
 
-	public List<string> GetAllPaths()
-	{
-		var allPaths = new List<string>();
-
-		// Add paths from the _values dictionary
-		allPaths.AddRange(_values.Keys);
-
-		// Add paths from the _strings dictionary
-		allPaths.AddRange(_strings.Keys);
-
-		// Add paths from the _stringArrays dictionary
-		allPaths.AddRange(_stringArrays.Keys);
-
-		return allPaths;
-	}
-
-
 	public void SetValue(string path, float value)
 	{
-
 		_values[path] = value;
 		ValueChanged?.Invoke(this, new ValueChangedEventArgs<float>(path, value));
 	}

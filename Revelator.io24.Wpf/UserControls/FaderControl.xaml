@@ -36,7 +36,7 @@
                 Orientation="Vertical"
                 Minimum="0"
                 Maximum="1"
-                Value="0.5"
+                Value="{Binding Value}"
                 Margin="2"
                 VerticalAlignment="Stretch"
                 Background="Transparent"

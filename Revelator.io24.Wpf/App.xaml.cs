@@ -5,7 +5,6 @@ using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Api;
 using System.Windows;
 using Presonus.StudioLive32.Api.Services;
-using Presonus.UCNet.Api.Devices;
 using Serilog;
 
 namespace Presonus.StudioLive32.Wpf

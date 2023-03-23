@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Presonus.UCNet.Api.Models;
 using Microsoft.VisualBasic;
 using System.Threading;
-using Presonus.StudioLive32.Api.Models.Outputs;
 using Presonus.UCNet.Api.Services;
 
 namespace Presonus.StudioLive32.Api.Services
@@ -110,12 +109,12 @@ namespace Presonus.StudioLive32.Api.Services
 			for (int i = 0; i < inputs.Count; i++)
 			{
 				var meter = inputs[i];
-				_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter);
+				//_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter);
 			}
 			for (int i = 0; i < fxReturnStrips.Count; i++)
 			{
 				var meter = fxReturnStrips["input"][i];
-				_mixerStateService.SetValue("fxreturn/ch" + (i + 1).ToString() + "/meter", meter);
+				//_mixerStateService.SetValue("fxreturn/ch" + (i + 1).ToString() + "/meter", meter);
 			}
 
 		}
