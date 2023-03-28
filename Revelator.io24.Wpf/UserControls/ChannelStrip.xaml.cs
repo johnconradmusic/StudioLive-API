@@ -15,11 +15,14 @@ using System.Windows.Shapes;
 
 namespace Presonus.StudioLive32.Wpf.UserControls
 {
-	public partial class ChannelStripControl : UserControl
-	{
-		public ChannelStripControl()
-		{
-			InitializeComponent();
-		}
-	}
+    /// <summary>
+    /// Interaction logic for ChannelStrip.xaml
+    /// </summary>
+    public partial class ChannelStrip : UserControl
+    {
+        public ChannelStrip()
+        {
+            InitializeComponent();
+        }
+    }
 }

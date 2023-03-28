@@ -11,15 +11,12 @@ public class MixerState
 	private readonly Dictionary<string, string> _strings = new();
 	private readonly Dictionary<string, string[]> _stringArrays = new();
 
-	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;
-	public event EventHandler<ValueChangedEventArgs<string>> StringChanged;
-	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
-
 	public void SetValue(string path, float value)
 	{
 		_values[path] = value;
-		ValueChanged?.Invoke(this, new ValueChangedEventArgs<float>(path, value));
 	}
+
+	public bool TryGetValue(string path, out float value) => _values.TryGetValue(path, out value);
 
 	public float GetValue(string path)
 	{
@@ -29,7 +26,6 @@ public class MixerState
 	public void SetString(string path, string value)
 	{
 		_strings[path] = value;
-		StringChanged?.Invoke(this, new ValueChangedEventArgs<string>(path, value));
 	}
 
 	public string GetString(string path)
@@ -40,7 +36,6 @@ public class MixerState
 	public void SetStrings(string path, string[] values)
 	{
 		_stringArrays[path] = values;
-		StringsChanged?.Invoke(this, new ValueChangedEventArgs<string[]>(path, values));
 	}
 
 	public string[] GetStrings(string path)

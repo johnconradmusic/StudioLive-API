@@ -1,5 +1,6 @@
 ﻿using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -14,7 +15,7 @@ public class MixerStateSynchronizer
 		_traverser = traverser;
 	}
 
-	public void Synchronize(string json, MixerState mixerState)
+	public void Synchronize(string json, MixerStateService mixerState)
 	{
 		var doc = JsonSerializer.Deserialize<JsonDocument>(json);
 		if (doc == null) return;
@@ -22,11 +23,6 @@ public class MixerStateSynchronizer
 		if (doc.RootElement.TryGetProperty("children", out var children))
 		{
 			_traverser.Traverse(children, string.Empty, mixerState);
-		}
-		else
-		{
-			Console.WriteLine("The 'children' property was not found.");
-			File.WriteAllText("C:\\Dev\\jsonalt.json", json);
 		}
 	}
 

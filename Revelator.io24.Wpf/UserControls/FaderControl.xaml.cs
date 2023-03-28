@@ -1,4 +1,6 @@
-﻿using Presonus.UCNet.Api.Services;
+﻿using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api.Services;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,68 +8,58 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 {
 	public partial class FaderControl : UserControl
 	{
-		private MixerStateService _mixerStateService;
+		public static readonly DependencyProperty ValueProperty =
+			DependencyProperty.Register("Value", typeof(float), typeof(FaderControl),
+				new FrameworkPropertyMetadata(0.0f, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
 		public static readonly DependencyProperty MinimumProperty =
-					DependencyProperty.Register("Minimum", typeof(double), typeof(FaderControl),
-				new PropertyMetadata(0d, (d, e) => ((FaderControl)d).FaderSlider.Minimum = (double)e.NewValue));
+			DependencyProperty.Register("Minimum", typeof(double), typeof(FaderControl),
+				new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 		public static readonly DependencyProperty MaximumProperty =
 			DependencyProperty.Register("Maximum", typeof(double), typeof(FaderControl),
-				new PropertyMetadata(1d, (d, e) => ((FaderControl)d).FaderSlider.Maximum = (double)e.NewValue));
+				new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-		public static readonly DependencyProperty ValueProperty =
-			DependencyProperty.Register("Value", typeof(double), typeof(FaderControl),
-				new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-		public static readonly DependencyProperty PathProperty =
-	DependencyProperty.Register("Path", typeof(string), typeof(FaderControl),
-		new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-			(d, e) => ((FaderControl)d).UpdateValueFromPath((string)e.NewValue)));
 
 		public FaderControl()
 		{
 			InitializeComponent();
-			FaderSlider.ValueChanged += (s, e) =>
-			{
-				SetValue(ValueProperty, e.NewValue);
-				if (Path != null)
-				{
-					_mixerStateService.SetValue(Path, (float)e.NewValue);
-				}
-			};
 		}
 
-		public string Path
+		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			get { return (string)GetValue(PathProperty); }
-			set { SetValue(PathProperty, value); }
+			var control = d as FaderControl;
+			control?.UpdateDisplay();
+		}
+
+		private void UpdateDisplay()
+		{
+			Console.WriteLine("Output: " + Math.Round(ValueTransformer.Transform(Value, 0.001, 1, CurveFormula.InverseLog),2));
+		}
+
+		public float Value
+		{
+			get => (float)GetValue(ValueProperty);
+			set => SetValue(ValueProperty, value);
 		}
 
 		public double Minimum
 		{
-			get { return (double)GetValue(MinimumProperty); }
-			set { SetValue(MinimumProperty, value); }
+			get => (double)GetValue(MinimumProperty);
+			set => SetValue(MinimumProperty, value);
 		}
 
 		public double Maximum
 		{
-			get { return (double)GetValue(MaximumProperty); }
-			set { SetValue(MaximumProperty, value); }
+			get => (double)GetValue(MaximumProperty);
+			set => SetValue(MaximumProperty, value);
 		}
 
-		public double Value
+		private void UserControl_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
 		{
-			get { return (double)GetValue(ValueProperty); }
-			set { SetValue(ValueProperty, value); }
-		}
-
-		private void UpdateValueFromPath(string path)
-		{
-			if (path != null)
-			{
-				Value = _mixerStateService.GetValue(path);
-			}
+			Value += (float)e.Delta / 120f / 50f;
+			Value = Math.Clamp(Value, 0f, 1f);
 		}
 	}
+
 }

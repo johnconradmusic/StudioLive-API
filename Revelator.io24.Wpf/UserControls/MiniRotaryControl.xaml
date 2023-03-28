@@ -10,7 +10,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <local1:RotaryKnobControl x:Name="MiniRotaryKnob" Grid.Column="0" Size="16" Value="{Binding ElementName=MiniRotaryControl, Path=Value, Mode=TwoWay}" />
+        <local1:RotaryKnobControl x:Name="MiniRotaryKnob" Grid.Column="0" Width="30" Height="30" Value="{Binding ElementName=MiniRotaryControl, Path=Value, Mode=TwoWay}" />
         <TextBlock x:Name="MiniRotaryText" Grid.Column="1" Text="{Binding ElementName=MiniRotaryControl, Path=Text}" VerticalAlignment="Center" Margin="0,0,5,0" />
     </Grid>
 </UserControl>

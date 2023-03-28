@@ -1,13 +1,28 @@
 ﻿<Window x:Class="Presonus.UCNet.Api.MixerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Presonus.UCNet.Api" xmlns:local1="clr-namespace:Presonus.UCNet.Api;assembly=Presonus.UCNet.Api" xmlns:local2="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+        xmlns:usercontrols="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+        xmlns:api="clr-namespace:Presonus.UCNet.Api"
+        xmlns:models="clr-namespace:Presonus.UCNet.Api.Models;assembly=Presonus.UCNet.Api"
+        d:DataContext="{d:DesignInstance Type=api:MainViewModel}"
         mc:Ignorable="d"
-        Title="MixerWindow" Height="900" Width="1600">
-        <StackPanel>
-        <usercontrols:FaderControl Width="50" Height="400" Value="{Binding channel1.Volume}"/>
-        <TextBlock TextAlignment="Center" Foreground="Black" Height="40" Width="200" Text="{Binding channel1.Name, FallbackValue=Name}"/>
-    </StackPanel>
+        Title="MixerWindow" Height="800" Width="1600" WindowStartupLocation="CenterScreen" Background="#2e2f31">
+    <ScrollViewer>
+        <ItemsControl ItemsSource="{Binding Channels}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:Channel}">
+                    <usercontrols:ChannelStrip Height="500" Width="100"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+
+
 </Window>

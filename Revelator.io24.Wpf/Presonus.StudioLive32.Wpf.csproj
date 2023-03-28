@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Images\black thumb.png" />
+    <None Remove="Assets\Images\gray thumb.png" />
+    <None Remove="Assets\Images\knob-big-base.png" />
+    <None Remove="Assets\Images\knob-big-indicator.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
@@ -29,9 +37,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Images\black thumb.png" />
+    <Resource Include="Assets\Images\gray thumb.png" />
+    <Resource Include="Assets\Images\knob-big-base.png" />
+    <Resource Include="Assets\Images\knob-big-indicator.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="MixerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

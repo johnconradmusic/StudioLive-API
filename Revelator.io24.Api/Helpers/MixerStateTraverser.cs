@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using Presonus.UCNet.Api.Models;
 using System.Diagnostics;
 using System.Text.Json;
+using Presonus.UCNet.Api.Services;
+using Presonus.StudioLive32.Api.Enums;
+using System.Windows.Markup;
 
 namespace Presonus.UCNet.Api.Helpers
 {
 
 	public class MixerStateTraverser
 	{
-		private void TraverseObject(JsonElement objectElement, string path, MixerState mixerState)
+		private void TraverseObject(JsonElement objectElement, string path, MixerStateService mixerState)
 		{
 			var properties = objectElement.EnumerateObject();
 			foreach (var property in properties)
@@ -36,7 +39,11 @@ namespace Presonus.UCNet.Api.Helpers
 						Traverse(property.Value, CreatePath(path), mixerState);
 						continue;
 					case "values":
+						Traverse(property.Value, CreatePath(path), mixerState);
+						continue;
 					case "ranges":
+						Traverse(property.Value, CreatePath(path), mixerState);
+						continue;
 					case "strings":
 						Traverse(property.Value, CreatePath(path), mixerState);
 						continue;
@@ -61,25 +68,50 @@ namespace Presonus.UCNet.Api.Helpers
 
 			return propertyName != null ? $"{path}/{propertyName}" : path;
 		}
+		
 
-
-		public void Traverse(JsonElement element, string path, MixerState mixerState)
+		public void Traverse(JsonElement element, string path, MixerStateService mixerState)
 		{
 			try
 			{
 				switch (element.ValueKind)
 				{
 					case JsonValueKind.Number:
-						mixerState.SetValue(path, element.GetSingle());
+						if (path.Contains("color"))
+						{
+							var data = element.GetInt64();
+							byte[] buffer = new byte[8];
+
+							if (data is long longData)
+							{
+								byte[] longBytes = BitConverter.GetBytes(longData);
+								//Array.Reverse(longBytes); // Reverse the byte order
+								Buffer.BlockCopy(longBytes, 0, buffer, 0, 8); // Copy the bytes to the buffer
+							}
+							else
+							{
+								if (data != 0)
+								buffer = BitConverter.GetBytes(data);
+							}
+
+							Array.Reverse(buffer); // Reverse the byte order
+							string hexString = BitConverter.ToString(buffer, 0, 4).Replace("-", "");
+							Console.WriteLine(hexString);
+							mixerState.SetString(path, hexString);
+						}
+						else
+						{
+							mixerState.SetValue(path, element.GetSingle(), false);
+						}
 						break;
 					case JsonValueKind.String:
-						mixerState.SetString(path, element.GetString() ?? string.Empty);
+						mixerState.SetString(path, element.GetString() ?? string.Empty, false);
 						break;
 					case JsonValueKind.Array:
 						mixerState.SetStrings(path, element.EnumerateArray()
 							.Select(item => item.GetString() ?? string.Empty)
 							.Where(str => str != string.Empty)
-							.ToArray());
+							.ToArray(), false);
 						break;
 					case JsonValueKind.Object:
 						TraverseObject(element, path, mixerState);
@@ -89,7 +121,7 @@ namespace Presonus.UCNet.Api.Helpers
 						break;
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}

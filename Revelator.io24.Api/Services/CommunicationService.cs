@@ -12,6 +12,8 @@ using Presonus.UCNet.Api.Services;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -49,6 +51,16 @@ namespace Presonus.StudioLive32.Api.Services
 
 		public static bool ConnectionEstablished { get; set; }
 		public bool IsConnected => _tcpClient?.Connected ?? false;
+
+		private static List<float> ReadValues(BinaryReader reader, int count)
+		{
+			var values = new List<float>();
+			for (int i = 0; i < count; i++)
+			{
+				values.Add(reader.ReadUInt16() / 65535f);
+			}
+			return values;
+		}
 
 		private void RequestCommunicationMessage()
 		{
@@ -149,11 +161,15 @@ namespace Presonus.StudioLive32.Api.Services
 					PL(chunk);
 					break;
 
+				case MessageCode.ParamColor:
+					ProcessColorData(chunk);
+					break;
+
 				case "PR":
 					break;
 
 				case MessageCode.ParamValue:
-					PV(chunk);
+					ProcessValue(chunk);
 					break;
 
 				case MessageCode.JSON:
@@ -184,51 +200,33 @@ namespace Presonus.StudioLive32.Api.Services
 			}
 		}
 
-		private static List<float> ReadValues(BinaryReader reader, int count)
+		private void ProcessColorData(byte[] data)
 		{
-			var values = new List<float>();
-			for (int i = 0; i < count; i++)
-			{
-				values.Add(reader.ReadUInt16() / 65535f);
-			}
-			return values;
-		}
+			data = data.Skip(12).ToArray();
 
-		public void ParseFaderData(byte[] data)
-		{
-			data = data.Skip(20).ToArray();
+			int idx = Array.IndexOf(data, (byte)0x00); // Find the NULL terminator of the key string
 
-			var order = new string[] { "LINE", "RETURN", "FXRETURN", "TALKBACK", "AUX", "FX", "MAIN" };
+			string route = Encoding.ASCII.GetString(data, 0, idx); // Convert the bytes to a string
 
-			var values = new Dictionary<string, List<float>>();
+			Console.WriteLine($"PC ({route}) {idx}");
+			byte[] newArray = new byte[data.Length - idx - 3]; // Create a new array to hold the extracted bytes
+			Array.Copy(data, idx + 3, newArray, 0, newArray.Length); // Copy the bytes to the new array
 
-			using (var stream = new MemoryStream(data))
-			using (var reader = new BinaryReader(stream))
-			{
-				for (int i = 0; i < order.Length; i++)
-				{
-					string type = order[i]; //"LINE", "RETURN", etc..
-					values[type] = ReadValues(reader, Mixer.ChannelCounts[type]);
-					for (int j = 0; j < values[type].Count; j++)
-					{
-						var count = values[type][j];
-						var chanString = ChannelUtil.GetChannelString(new((ChannelTypes)Enum.Parse(typeof(ChannelTypes), type), j + 1, null, null)) + "/volume";
-						_mixerStateService.SetValue(chanString, count, false);
-					}
-				}
-			}
+			var val = BitConverter.ToString(newArray);
+
+			var valString = val.Replace("-", "");
+
+			_mixerStateService.SetString(route, valString, false);
 		}
 
 		private void HandleZlib(byte[] chunk)
 		{
-
 			Console.WriteLine("Handling ZLib");
 			var info = DeserializeZlibBuffer(chunk);
 
 			var jsonString = JsonConvert.SerializeObject(info, Formatting.Indented);
-
+			//File.WriteAllText("C:\\Dev\\jsondump1.json", jsonString);
 			_mixerStateService.Synchronize(jsonString);
-
 		}
 
 		private void CK(byte[] data)
@@ -350,7 +348,6 @@ namespace Presonus.StudioLive32.Api.Services
 			Console.WriteLine("Preset recalled.");
 		}
 
-
 		private void PL(byte[] data)
 		{
 			var header = data.Range(0, 4);
@@ -369,7 +366,7 @@ namespace Presonus.StudioLive32.Api.Services
 			_mixerStateService.SetStrings(route, list, false);
 		}
 
-		private void PV(byte[] data)
+		private void ProcessValue(byte[] data)
 		{
 			var header = data.Range(0, 4);
 			var messageLength = data.Range(4, 6);
@@ -379,8 +376,9 @@ namespace Presonus.StudioLive32.Api.Services
 
 			var route = Encoding.ASCII.GetString(data.Range(12, -7));
 			var emptyBytes = data.Range(-7, -4);
-			var state = BitConverter.ToSingle(data.Range(-4), 0);
-			_mixerStateService.SetValue(route, state, false);
+			var value = BitConverter.ToSingle(data.Range(-4), 0);
+			Console.WriteLine($"Parameter changed: {route} ({value})");
+			_mixerStateService.SetValue(route, value, false);
 		}
 
 		private void PS(byte[] data)
@@ -422,7 +420,6 @@ namespace Presonus.StudioLive32.Api.Services
 
 		public static Dictionary<string, object> DeserializeZlibBuffer(byte[] buffer)
 		{
-			// Skip the first 16 bytes
 			using var inputStream = new MemoryStream(buffer, 0, buffer.Length);
 			using var zlibStream = new InflaterInputStream(inputStream);
 			using var outputStream = new MemoryStream();
@@ -430,7 +427,32 @@ namespace Presonus.StudioLive32.Api.Services
 			zlibStream.CopyTo(outputStream);
 
 			byte[] decompressedData = outputStream.ToArray();
-			return ZlibPayloadDeserializer.DeserializeZlibBuffer(decompressedData);
+			return ZlibPayloadDeserializer.DeserializeDecompressedBuffer(decompressedData);
+		}
+
+		public void ParseFaderData(byte[] data)
+		{
+			data = data.Skip(20).ToArray();
+
+			var order = new string[] { "LINE", "RETURN", "FXRETURN", "TALKBACK", "AUX", "FX", "MAIN" };
+
+			var values = new Dictionary<string, List<float>>();
+
+			using (var stream = new MemoryStream(data))
+			using (var reader = new BinaryReader(stream))
+			{
+				for (int i = 0; i < order.Length; i++)
+				{
+					string type = order[i]; //"LINE", "RETURN", etc..
+					values[type] = ReadValues(reader, Mixer.ChannelCounts[type]);
+					for (int j = 0; j < values[type].Count; j++)
+					{
+						var count = values[type][j];
+						var chanString = ChannelUtil.GetChannelString(new((ChannelTypes)Enum.Parse(typeof(ChannelTypes), type), j + 1, null, null)) + "/volume";
+						_mixerStateService.SetValue(chanString, count, false);
+					}
+				}
+			}
 		}
 
 		public void Connect(ushort deviceId, int tcpPort)
@@ -501,6 +523,12 @@ namespace Presonus.StudioLive32.Api.Services
 		public void Dispose()
 		{
 			_tcpClient?.Dispose();
+		}
+
+		public struct SettingType
+		{
+			public char[] name;
+			public object value;
 		}
 	}
 }

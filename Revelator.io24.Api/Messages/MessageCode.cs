@@ -17,7 +17,7 @@ namespace Presonus.UCNet.Api.Messages
 		public const string Setting = "PV";
 		public const string ParamValue = "PV";
 
-		public const string ParamChars = "PC";
+		public const string ParamColor = "PC";
 		public const string ParamString = "PS";
 
 		[Obsolete("Use ParamStrList")]

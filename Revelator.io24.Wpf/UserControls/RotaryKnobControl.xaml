@@ -3,14 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             d:DesignHeight="50" d:DesignWidth="50">
-    <Grid x:Name="LayoutRoot" Width="50" Height="50">
-        <Ellipse x:Name="Knob" Stroke="Black" StrokeThickness="1" Fill="LightGray" />
-        <Rectangle x:Name="Indicator" Fill="Black" Width="2" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Rectangle.RenderTransform>
-                <TranslateTransform X="0" Y="-4"/>
-            </Rectangle.RenderTransform>
-        </Rectangle>
+             xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+             mc:Ignorable="d" x:Name="RotaryKnob"
+             Width="80" Height="30" Margin="5" MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Assets/Images/knob-big-base.png" Width="30"/>
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Assets/Images/knob-big-indicator.png" Width="30" Height="30">
+            <Image.RenderTransform>
+                <RotateTransform x:Name="KnobRotateTransform"
+                                 Angle="30" 
+                                 CenterX="15" CenterY="15"/>
+            </Image.RenderTransform>
+        </Image>
+        <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical" Margin="5">
+            <TextBlock Text="{Binding Caption, FallbackValue=Name, RelativeSource={RelativeSource AncestorType={x:Type local:RotaryKnobControl}}}" FontSize="10"
+            Foreground="White" />
+            <TextBlock x:Name="ValueText" Text="Value" FontSize="8"
+                       Foreground="White"/>
+        </StackPanel>
     </Grid>
 </UserControl>
+
+
+
+
+

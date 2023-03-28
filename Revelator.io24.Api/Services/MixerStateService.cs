@@ -8,7 +8,7 @@ public class MixerStateService
 {
 	private readonly MixerState _mixerState;
 	private readonly MixerStateSynchronizer _mixerStateSynchronizer;
-
+	public delegate void SyncEvent();
 	internal Action<string, string> SendStringMethod;
 	internal Action<string, float> SendValueMethod;
 
@@ -16,10 +16,6 @@ public class MixerStateService
 	{
 		_mixerState = mixerState;
 		_mixerStateSynchronizer = mixerStateSynchronizer;
-
-		_mixerState.ValueChanged += (sender, args) => ValueChanged?.Invoke(sender, args);
-		_mixerState.StringChanged += (sender, args) => StringChanged?.Invoke(sender, args);
-		_mixerState.StringsChanged += (sender, args) => StringsChanged?.Invoke(sender, args);
 	}
 
 	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;
@@ -28,36 +24,56 @@ public class MixerStateService
 
 	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
 
-	public event EventHandler Synchronized;
-
 
 	public void Synchronize(string json)
 	{
-		_mixerStateSynchronizer.Synchronize(json, _mixerState);
-		Synchronized?.Invoke(this, null);
+		_mixerStateSynchronizer.Synchronize(json, this);
 	}
 
 	public void SetString(string route, string value, bool broadcast = true)
 	{
+		//Console.WriteLine($"SET STRING {route} {value}" );
 		_mixerState.SetString(route, value);
 		if (broadcast)
 			SendStringMethod(route, value);
+		StringChanged?.Invoke(this, new(route, value));
+
 	}
 
 	public void SetStrings(string route, string[] value, bool broadcast = true)
 	{
 		_mixerState.SetStrings(route, value);
+		//TODO: implement
+
+		StringsChanged?.Invoke(this, new(route, value));
+
 	}
+
+	public bool TryGetValue(string route, out float value) => _mixerState.TryGetValue(route, out value);
 
 	public void SetValue(string route, float value, bool broadcast = true)
 	{
+		if (_mixerState.TryGetValue(route + "/min", out float min))
+		{
+			var max = _mixerState.GetValue(route + "/max");
+			var def = _mixerState.GetValue(route + "/def");
+			Console.WriteLine($"Set: {route} has a range: {min} {max} {def}");
+		}
 		_mixerState.SetValue(route, value);
 		if (broadcast)
 			SendValueMethod(route, value);
-	}
+		ValueChanged?.Invoke(this, new(route, value));
 
+	}
+	
 	public float GetValue(string route)
 	{
+		if (_mixerState.TryGetValue(route + "/min", out float min))
+		{
+			var max = _mixerState.GetValue(route + "/max");
+			var def = _mixerState.GetValue(route + "/def");
+			Console.WriteLine($"Get: {route} has a range: {min} {max} {def}");
+		}
 		return _mixerState.GetValue(route);
 	}
 

@@ -3,21 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="50">
+             xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+    mc:Ignorable="d"
+             Height="200" Width="50" Margin="5,20,5,20" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
-        <Style x:Key="FaderSliderStyle" TargetType="{x:Type Slider}">
+        <Style x:Key="SSLFaderStyle" TargetType="{x:Type Slider}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Slider}">
                         <Grid>
-                            <Rectangle Fill="#E0E0E0" Margin="22,0,22,0" VerticalAlignment="Stretch" Width="6" />
-                            <Track x:Name="PART_Track" Grid.Column="1">
+                            <Rectangle Fill="#FF252525" Width="4" RadiusX="2" RadiusY="2" Height="{TemplateBinding Height}" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+
+                            <Track x:Name="PART_Track" Grid.Row="1">
                                 <Track.Thumb>
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="{x:Type Thumb}">
-                                                <Rectangle Width="50" Height="10" Fill="#FF6200" />
+                                                <!-- Thumb with a PNG image -->
+                                                <Grid>
+                                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/gray thumb.png" Stretch="None"/>
+                                                </Grid>
                                             </ControlTemplate>
                                         </Thumb.Template>
                                     </Thumb>
@@ -28,23 +33,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
     </UserControl.Resources>
 
-    <Grid>
-        <Slider x:Name="FaderSlider"
-                Orientation="Vertical"
-                Minimum="0"
-                Maximum="1"
-                Value="{Binding Value}"
-                Margin="2"
-                VerticalAlignment="Stretch"
-                Background="Transparent"
-                Style="{StaticResource FaderSliderStyle}" />
-        <TextBlock x:Name="FaderValueTextBlock"
-                   Text="{Binding ElementName=FaderSlider, Path=Value, StringFormat=N2}"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Bottom"
-                   Margin="0,0,0,5" />
-    </Grid>
+    <Slider x:Name="FaderSlider" Grid.Row="1" Minimum="0" Maximum="1" Value="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0" Style="{StaticResource SSLFaderStyle}"/>
+
 </UserControl>
