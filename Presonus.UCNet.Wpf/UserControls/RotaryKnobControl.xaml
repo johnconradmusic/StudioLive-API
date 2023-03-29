@@ -5,7 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
              mc:Ignorable="d" x:Name="RotaryKnob"
-             MinWidth="60" Height="20" MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave">
+             MinWidth="60" Height="20" 
+             MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" 
+             MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave"
+             KeyboardNavigation.TabNavigation="Local"
+            KeyboardNavigation.DirectionalNavigation="Cycle"
+            Focusable="True" IsTabStop="True">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />

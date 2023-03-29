@@ -116,7 +116,7 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			double angleOffset = 20; // The offset angle (in degrees) for the minimum value
 			double angle = angleOffset + Value * angleRange;
 			KnobRotateTransform.Angle = angle;
-			ValueText.Text = Math.Round(ValueTransformer.Transform(Value, Min, Max, Curve)).ToString();
+			ValueText.Text = Math.Round(ValueTransformer.Transform(Value, Min, Max, Curve),2).ToString();
 		}
 
 		private void RotaryKnob_MouseWheel(object sender, MouseWheelEventArgs e)
