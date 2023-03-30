@@ -23,6 +23,8 @@ public class MixerStateSynchronizer
 		if (doc.RootElement.TryGetProperty("children", out var children))
 		{
 			_traverser.Traverse(children, string.Empty, mixerState);
+			Mixer.Counted = true;
+
 		}
 	}
 

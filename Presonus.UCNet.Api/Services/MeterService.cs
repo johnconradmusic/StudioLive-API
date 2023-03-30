@@ -82,23 +82,23 @@ namespace Presonus.StudioLive32.Api.Services
 			{
 				data = data.Skip(20).ToArray();
 
-				ReadValues(data, 16, inputs, out data);
-				ReadStripValues(data, new[] { "pregate", "postgate", "postcomp", "posteq", "postlimiter" }, 16, inputStrips, out data);
-				ReadValues(data, 16, faders, out data);
-				ReadStripValues(data, new[] { "input", "stripA", "stripB", "stripC" }, 2 * 2, fxReturnStrips, out data, 8);
-				ReadValues(data, 6, auxes, out data);
-				ReadStripValues(data, new[] { "stripA", "stripB", "stripC", "stripD" }, 6, auxStrips, out data);
-				ReadStripValues(data, new[] { "inputs", "stripA", "stripB", "stripC" }, 2, fxStrips, out data);
-				ReadValues(data, 1 * 2, main, out data);
-				ReadStripValues(data, new[] { "stageA", "stageB", "stageC", "stageD" }, 1 * 2, mainStrips, out data);
+				//ReadValues(data, Mixer.ChannelCounts["LINE"], inputs, out data);
+				//ReadStripValues(data, new[] { "pregate", "postgate", "postcomp", "posteq", "postlimiter" }, Mixer.ChannelCounts["LINE"], inputStrips, out data);
+				//ReadValues(data, Mixer.ChannelCounts["LINE"], faders, out data);
+				//ReadStripValues(data, new[] { "input", "stripA", "stripB", "stripC" }, 2 * 2, fxReturnStrips, out data, 8);
+				//ReadValues(data, 6, auxes, out data);
+				//ReadStripValues(data, new[] { "stripA", "stripB", "stripC", "stripD" }, 6, auxStrips, out data);
+				//ReadStripValues(data, new[] { "inputs", "stripA", "stripB", "stripC" }, 2, fxStrips, out data);
+				//ReadValues(data, 1 * 2, main, out data);
+				//ReadStripValues(data, new[] { "stageA", "stageB", "stageC", "stageD" }, 1 * 2, mainStrips, out data);
 			}
 			else if (msg == "redu")
 			{
-				data = data.Skip(20).ToArray();
+				//data = data.Skip(20).ToArray();
 
-				ReadValues(data, 16, gateReduction, out data);
-				ReadValues(data, 16, compReduction, out data);
-				ReadValues(data, 16, limitReduction, out data);
+				//ReadValues(data, Mixer.ChannelCounts["LINE"], gateReduction, out data);
+				//ReadValues(data, 16, compReduction, out data);
+				//ReadValues(data, 16, limitReduction, out data);
 			}
 
 			WriteMeterValues();
@@ -106,10 +106,11 @@ namespace Presonus.StudioLive32.Api.Services
 
 		private void WriteMeterValues()
 		{
-			for (int i = 0; i < inputs.Count; i++)
+			for (int i = 0; i < inputStrips.Count; i++)
 			{
-				var meter = inputs[i];
-				//_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter);
+				var meter = inputStrips["postlimiter"][i];
+				//Console.WriteLine($"meter {meter}");
+				//_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter, false);
 			}
 			for (int i = 0; i < fxReturnStrips.Count; i++)
 			{

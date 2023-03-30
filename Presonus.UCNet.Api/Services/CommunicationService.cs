@@ -331,7 +331,6 @@ namespace Presonus.StudioLive32.Api.Services
 		{
 			Console.WriteLine("Connection established.");
 			ConnectionEstablished = true;
-			Mixer.Counted = true;
 			foreach (var kvp in Mixer.ChannelCounts)
 			{
 				Console.WriteLine($"{kvp.Key} - {kvp.Value}");

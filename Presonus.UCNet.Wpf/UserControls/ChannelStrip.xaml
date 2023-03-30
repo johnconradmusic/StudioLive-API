@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
-              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters"
+              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
              Height="700" Width="80">
@@ -26,9 +26,28 @@
                 <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Min="0" Max="60"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom">
+
+                <!-- Gate popup -->
+                <Button Margin="5" Content="Gate..." Click="ShowGateParameters" />
+                <Popup x:Name="GateParametersPopup" Placement="Mouse" StaysOpen="False">
+                    <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="Gate Parameters" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                            <local:MiniToggle Margin="2" Label="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Label="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Label="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
+                            <!-- check curve (10 max?)--><local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
+                            <local:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio"/>
+                            <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
+                            <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
+                            <local:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
                 <!-- EQ popup -->
                 <Button Margin="5" Content="EQ" Click="ToggleEqPanelVisibility" />
-                <StackPanel x:Name="EqPanel" Visibility="Collapsed">
+                <Popup x:Name="EqPanel" Placement="Mouse"  StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="5">
@@ -62,26 +81,21 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
-                </StackPanel>
+                </Popup>
 
                 <!-- Compressor popup -->
                 <Button Margin="5" Content="Compressor..." Click="ShowCompressorParameters" />
                 <Popup x:Name="CompressorParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
-                            <StackPanel Margin="5">
-                                <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
-                            </StackPanel>
-                            <StackPanel Margin="5">
-                                <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
-                                <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding compressorThreshold}" Min="-56" Max="0" Curve="Linear"/>
-                                <local:RotaryKnobControl Caption="Ratio" Height="24" Value="{Binding compressorRatio}" Min="1" Max="20" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding compressorAttack}" Min="0.0002" Max="0.150" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding compressorRelease}" Min="0.0025" Max="0.9" Curve="Exponential"/>
-                                <local:MiniToggle Margin="2" Label="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
-                                <local:MiniToggle Margin="2" Label="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
-                                <local:RotaryKnobControl Caption="Makeup Gain" Height="24" Value="{Binding compressorMakeupGain}" Min="0" Max="28" Curve="Linear"/>
-                            </StackPanel>
+                            <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
+                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding comp_threshold}" Min="-56" Max="0" Curve="Linear"/>
+                            <local:RotaryKnobControl Caption="Ratio" Height="24" Value="{Binding comp_ratio}" Min="1" Max="20" Curve="Exponential"/>
+                            <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding comp_attack}" Min="0.0002" Max="0.150" Curve="Exponential"/>
+                            <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding comp_release}" Min="0.0025" Max="0.9" Curve="Exponential"/>
+                            <local:MiniToggle Margin="2" Label="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Label="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
+                            <local:RotaryKnobControl Caption="Makeup Gain" Height="24" Value="{Binding comp_gain}" Min="0" Max="28" Curve="Linear"/>
                         </StackPanel>
                     </Border>
                 </Popup>
@@ -91,34 +105,23 @@
                 <Popup x:Name="LimiterParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
-                            <TextBlock Text="Limiter Parameters" FontSize="16" FontWeight="Bold" Foreground="White"/>
-                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding limiterThreshold}" Min="-60" Max="0" Curve="Linear"/>
-                            <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding limiterRelease}" Min="1" Max="500" Curve="Exponential"/>
+                            <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
+                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
                         </StackPanel>
                     </Border>
                 </Popup>
 
-                <Button Margin="5" Content="Gate..." Click="ShowGateParameters" />
-                <Popup x:Name="GateParametersPopup" Placement="Mouse" StaysOpen="False">
-                    <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
-                        <StackPanel>
-                            <TextBlock Text="Gate Parameters" FontSize="16" FontWeight="Bold" Foreground="White"/>
-                            <local:MiniToggle Margin="2" Label="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
-                            <local:MiniToggle Margin="2" Label="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
-                            <local:MiniToggle Margin="2" Label="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
-                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
-                            <local:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="InverseLog"/>
-                            <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.00002" Max="0.5" Curve="Exponential"/>
-                            <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="0.05" Max="2" Curve="Exponential"/>
-                            <local:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
-                        </StackPanel>
-                    </Border>
-                </Popup>
 
                 <local:ToggleButtonControl Margin="2" Content="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
                 <local:ToggleButtonControl Margin="2" Content="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
                 <local:PanPotControl Value="{Binding pan}" Min="0" Max="1"/>
-                <local:FaderControl Value="{Binding volume}" Width="50" Height="200"/>
+                <Border BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
+
+                    <StackPanel Orientation="Horizontal">
+                        <local:FaderControl Value="{Binding volume}" Width="50" Height="200"/>
+                        <usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>
+                    </StackPanel>
+                </Border>
                 <local:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
             </StackPanel>
         </StackPanel>

@@ -6,6 +6,7 @@ using Presonus.UCNet.Api;
 using System.Windows;
 using Presonus.StudioLive32.Api.Services;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace Presonus.StudioLive32.Wpf
 {
@@ -47,6 +48,10 @@ namespace Presonus.StudioLive32.Wpf
 			var serviceProvider = serviceCollection.BuildServiceProvider();
 
 			serviceProvider.GetRequiredService<BroadcastService>().StartReceive();
+			while (!Mixer.Counted)
+			{
+				Task.Delay(100).Wait();
+			}
 
 			// Run application:
 			var mainWindow = serviceProvider.GetRequiredService<MixerWindow>();

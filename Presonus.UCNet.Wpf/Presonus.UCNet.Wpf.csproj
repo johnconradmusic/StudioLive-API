@@ -12,6 +12,8 @@
     <None Remove="Assets\Images\gray thumb.png" />
     <None Remove="Assets\Images\knob-big-base.png" />
     <None Remove="Assets\Images\knob-big-indicator.png" />
+    <None Remove="Assets\Images\meter-off.png" />
+    <None Remove="Assets\Images\meter-on.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +43,8 @@
     <Resource Include="Assets\Images\gray thumb.png" />
     <Resource Include="Assets\Images\knob-big-base.png" />
     <Resource Include="Assets\Images\knob-big-indicator.png" />
+    <Resource Include="Assets\Images\meter-off.png" />
+    <Resource Include="Assets\Images\meter-on.png" />
   </ItemGroup>
 
   <ItemGroup>

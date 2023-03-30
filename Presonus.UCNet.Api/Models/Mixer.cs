@@ -4,7 +4,7 @@ namespace Presonus.UCNet.Api.Models
 {
 	public class Mixer
 	{
-
+		public static bool Synchronized { get; set; } = false;
 		public static Dictionary<string, int> ChannelCounts { get; set; } = new()
 		{
 			{"LINE", 0 },

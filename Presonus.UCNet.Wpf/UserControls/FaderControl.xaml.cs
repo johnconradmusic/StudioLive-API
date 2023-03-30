@@ -34,7 +34,7 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 
 		private void UpdateDisplay()
 		{
-			Console.WriteLine("Output: " + Math.Round(ValueTransformer.Transform(Value, 0.001, 1, CurveFormula.InverseLog),2));
+			Console.WriteLine("Output: " + Math.Round(ValueTransformer.Transform(Value, 0.0001, 1, CurveFormula.LinearToVolume)));
 		}
 
 		public float Value

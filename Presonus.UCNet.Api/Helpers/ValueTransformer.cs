@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.Integration;
 using MathNet.Numerics.RootFinding;
 
 namespace Presonus.UCNet.Api.Helpers
@@ -12,7 +13,9 @@ namespace Presonus.UCNet.Api.Helpers
 		Exponential,
 		Logarithmic,
 		Linear,
-		InverseLog
+		InverseLog,
+		LinearToVolume,
+		Ratio
 	}
 	public enum Units
 	{
@@ -95,6 +98,12 @@ namespace Presonus.UCNet.Api.Helpers
 			}
 		}
 
+		static double MapLinearValueToRatioCurve(double value, double min, double max)
+		{
+			return 10.37493 - 94.3837 * Math.Exp(-2.213165 * value); // output value of y
+
+		}
+
 		public static double Transform(float input_value, double min_value, double max_value, CurveFormula curve_formula, double exponent = 2)
 		{
 			input_value = Math.Clamp(input_value, 0, 1);
@@ -103,7 +112,9 @@ namespace Presonus.UCNet.Api.Helpers
 				CurveFormula.Exponential => MapValueToExponentialRange(input_value, min_value, max_value, exponent),
 				CurveFormula.Logarithmic => MapValueToLogarithmicRange(input_value, min_value, max_value),
 				CurveFormula.Linear => MapValueToLinearRange(input_value, min_value, max_value),
-				CurveFormula.InverseLog => LinearToVolume(input_value),
+				CurveFormula.LinearToVolume => LinearToVolume(input_value),
+				CurveFormula.InverseLog => MapLinearValueToInverseLogRange(input_value),
+				CurveFormula.Ratio => MapLinearValueToRatioCurve(input_value, min_value, max_value),
 				_ => throw new ArgumentOutOfRangeException(nameof(curve_formula), "Invalid curve formula specified."),
 			};
 		}

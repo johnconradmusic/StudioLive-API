@@ -15,39 +15,36 @@ using System.Windows.Shapes;
 
 namespace Presonus.StudioLive32.Wpf.UserControls
 {
-    /// <summary>
-    /// Interaction logic for ChannelStrip.xaml
-    /// </summary>
-    public partial class ChannelStrip : UserControl
-    {
-        public ChannelStrip()
-        {
-            InitializeComponent();
-        }
+	/// <summary>
+	/// Interaction logic for ChannelStrip.xaml
+	/// </summary>
+	public partial class ChannelStrip : UserControl
+	{
+		public ChannelStrip()
+		{
+			InitializeComponent();
+		}
 		private void ShowGateParameters(object sender, RoutedEventArgs e)
 		{
 			GateParametersPopup.IsOpen = true;
+			GateParametersPopup.InvalidateVisual();
 		}
 		private void ToggleEqPanelVisibility(object sender, RoutedEventArgs e)
 		{
-			if (EqPanel.Visibility == Visibility.Visible)
-			{
-				EqPanel.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				EqPanel.Visibility = Visibility.Visible;
-			}
+			EqPanel.IsOpen = true;
+			EqPanel.InvalidateVisual();
 		}
 
 		private void ShowCompressorParameters(object sender, RoutedEventArgs e)
 		{
 			CompressorParametersPopup.IsOpen = true;
+			CompressorParametersPopup.InvalidateVisual();
 		}
 
 		private void ShowLimiterParameters(object sender, RoutedEventArgs e)
 		{
 			LimiterParametersPopup.IsOpen = true;
+			LimiterParametersPopup.InvalidateVisual();
 		}
 
 	}

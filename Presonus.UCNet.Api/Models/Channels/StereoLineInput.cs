@@ -1,51 +1,24 @@
 ﻿using Presonus.StudioLive32.Api.Attributes;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Presonus.UCNet.Api.Models.Channels
 {
-	public class MicLineInput : InputChannel
+	public class StereoLineInput : InputChannel
 	{
-		public MicLineInput(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
+		public StereoLineInput(int index, MixerStateService mixerStateService) : base(ChannelTypes.RETURN, index, mixerStateService)
 		{
 		}
 
-		[ParameterPath("48v")]
-		public float phantom { get => GetValue(); set => SetValue(value); }
-
-		public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
-		public float preampgain { get => GetValue(); set => SetValue(value); }
-		public float digitalgain { get => GetValue(); set => SetValue(value); }
-		public bool clip { get => GetBoolean(); set => SetBoolean(value); }
-
-		[ParameterPath("filter/hpf")] public float hpf { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("opt/swapcompeq")] public bool swapcompeq { get => GetBoolean(); set => SetBoolean(value); }
 
-		#region Link Options
 
-		[ParameterPath("linkoptions/ch_gain")] public bool link_ch_gain { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("linkoptions/pan")] public bool link_pan { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("linkoptions/fader")] public bool link_fader { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("linkoptions/dyn")] public bool link_dyn { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("linkoptions/ch_name")] public bool link_ch_name { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("linkoptions/ins_fx")] public bool link_ins_fx { get => GetBoolean(); set => SetBoolean(value); }
-
-
-		#endregion
-
-		#region Gate
-		[ParameterPath("gate/on")] public bool gate_on { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("gate/threshold")] public float gate_threshold { get => GetValue(); set => SetValue(value); }
-		[ParameterPath("gate/range")] public float gate_range { get => GetValue(); set => SetValue(value); }
-		[ParameterPath("gate/attack")] public float gate_attack { get => GetValue(); set => SetValue(value); }
-		[ParameterPath("gate/release")] public float gate_release { get => GetValue(); set => SetValue(value); }
-		[ParameterPath("gate/keyfilter")] public float gate_keyfilter { get => GetValue(); set => SetValue(value); }
-		[ParameterPath("gate/expander")] public bool gate_expander { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("gate/keylisten")] public bool gate_keylisten { get => GetBoolean(); set => SetBoolean(value); }
-
-		#endregion
-
-		#region EQ
+		public float trim { get => GetValue(); set => SetValue(value); }
 
 		[ParameterPath("eq/eqallon")]
 		public bool eq_on { get => GetBoolean(); set => SetBoolean(value); }
@@ -104,10 +77,6 @@ namespace Presonus.UCNet.Api.Models.Channels
 		[ParameterPath("eq/eqbandop4")]
 		public bool eq_bandop4 { get => GetBoolean(); set => SetBoolean(value); }
 
-		#endregion
-
-		#region Compressor/Limiter
-
 		[ParameterPath("comp/on")] public bool comp_on { get => GetBoolean(); set => SetBoolean(value); }
 		[ParameterPath("comp/softknee")] public bool comp_softknee { get => GetBoolean(); set => SetBoolean(value); }
 		[ParameterPath("comp/automode")] public bool comp_automode { get => GetBoolean(); set => SetBoolean(value); }
@@ -119,8 +88,5 @@ namespace Presonus.UCNet.Api.Models.Channels
 
 		[ParameterPath("limt/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
 		[ParameterPath("limt/threshold")] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
-
-		#endregion
-
 	}
 }

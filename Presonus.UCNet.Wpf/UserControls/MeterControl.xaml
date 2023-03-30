@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.MeterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="265" d:DesignWidth="15">
+    <Grid>
+        <Image x:Name="meterOffImage" RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/meter-off.png"/>
+        <Image x:Name="meterOnImage" RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/meter-on.png">
+            <Image.Clip>
+                <RectangleGeometry Rect="0,0,0,0"/>
+            </Image.Clip>
+        </Image>
+    </Grid>
+</UserControl>
