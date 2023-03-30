@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
     mc:Ignorable="d"
-             Height="200" Width="50" Margin="5,20,5,20" MouseWheel="UserControl_MouseWheel">
+             Height="200" Width="50" Margin="5,20,5,20" Focusable="True" IsTabStop="True" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
         <Style x:Key="SSLFaderStyle" TargetType="{x:Type Slider}">
             <Setter Property="Template">
@@ -43,6 +43,6 @@
         </Style>
     </UserControl.Resources>
 
-    <Slider x:Name="FaderSlider" Grid.Row="1" Minimum="0" Maximum="1" Value="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0" Style="{StaticResource SSLFaderStyle}"/>
+    <Slider Focusable="False" IsTabStop="False" x:Name="FaderSlider" Grid.Row="1" Minimum="0" Maximum="1" Value="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0" Style="{StaticResource SSLFaderStyle}"/>
 
 </UserControl>

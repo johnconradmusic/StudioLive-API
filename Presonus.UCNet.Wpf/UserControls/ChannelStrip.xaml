@@ -8,7 +8,7 @@
               xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
-             Height="700" Width="80">
+             Height="700" Width="80" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
     </UserControl.Resources>
@@ -19,7 +19,7 @@
                 <GradientStop Color="#FF3E3E3E" Offset="1"/>
             </LinearGradientBrush>
         </Border.Background>
-        <StackPanel VerticalAlignment="Stretch">
+        <StackPanel x:Name="MainContainer" VerticalAlignment="Stretch">
             <StackPanel VerticalAlignment="Top">
                 <local:MiniToggle Margin="2" Label="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}"/>
                 <local:MiniToggle Margin="2" Label="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}"/>
@@ -118,7 +118,7 @@
                 <Border BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
 
                     <StackPanel Orientation="Horizontal">
-                        <local:FaderControl Value="{Binding volume}" Width="50" Height="200"/>
+                        <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="200"/>
                         <usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>
                     </StackPanel>
                 </Border>

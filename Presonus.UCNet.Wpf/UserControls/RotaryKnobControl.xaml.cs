@@ -1,4 +1,5 @@
 ﻿using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Wpf.Interfaces;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,7 +7,7 @@ using System.Windows.Input;
 
 namespace Presonus.StudioLive32.Wpf.UserControls
 {
-	public partial class RotaryKnobControl : UserControl
+	public partial class RotaryKnobControl : UserControl, IAccessibleControl
 	{
 		private bool isDragging;
 
@@ -38,6 +39,15 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public static readonly DependencyProperty MaxProperty =
 			DependencyProperty.Register("Max", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
 
+		public string ValueString
+		{
+			get { return (string)GetValue(ValueStringProperty); }
+			set { SetValue(ValueStringProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for ValueString.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty ValueStringProperty =
+			DependencyProperty.Register("ValueString", typeof(string), typeof(RotaryKnobControl), new PropertyMetadata("unknown value"));
 
 
 		public string Caption
