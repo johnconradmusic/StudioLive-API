@@ -38,6 +38,11 @@ namespace Presonus.StudioLive32.Api.Services
 
 		private async void StartListening()
 		{
+			while (!Mixer.Counted) 
+			{
+				int delayMilliseconds = 10;
+				await Task.Delay(delayMilliseconds);
+			}
 			while (!_disposed)
 			{
 				var result = await _udpClient.ReceiveAsync();
@@ -51,8 +56,7 @@ namespace Presonus.StudioLive32.Api.Services
 
 				AnalyzeMeterData(data);
 
-				int delayMilliseconds = 10;
-				await Task.Delay(delayMilliseconds); // Add the delay here
+				// Add the delay here
 
 			}
 		}
@@ -82,7 +86,7 @@ namespace Presonus.StudioLive32.Api.Services
 			{
 				data = data.Skip(20).ToArray();
 
-				//ReadValues(data, Mixer.ChannelCounts["LINE"], inputs, out data);
+				ReadValues(data, Mixer.ChannelCounts["LINE"], inputs, out data);
 				//ReadStripValues(data, new[] { "pregate", "postgate", "postcomp", "posteq", "postlimiter" }, Mixer.ChannelCounts["LINE"], inputStrips, out data);
 				//ReadValues(data, Mixer.ChannelCounts["LINE"], faders, out data);
 				//ReadStripValues(data, new[] { "input", "stripA", "stripB", "stripC" }, 2 * 2, fxReturnStrips, out data, 8);
@@ -106,17 +110,13 @@ namespace Presonus.StudioLive32.Api.Services
 
 		private void WriteMeterValues()
 		{
-			for (int i = 0; i < inputStrips.Count; i++)
+			for (int i = 0; i < inputs.Count; i++)
 			{
-				var meter = inputStrips["postlimiter"][i];
+				var meter = inputs[i];
 				//Console.WriteLine($"meter {meter}");
-				//_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter, false);
+				_mixerStateService.SetValue("line/ch" + (i + 1).ToString() + "/meter", meter, false);
 			}
-			for (int i = 0; i < fxReturnStrips.Count; i++)
-			{
-				var meter = fxReturnStrips["input"][i];
-				//_mixerStateService.SetValue("fxreturn/ch" + (i + 1).ToString() + "/meter", meter);
-			}
+
 
 		}
 

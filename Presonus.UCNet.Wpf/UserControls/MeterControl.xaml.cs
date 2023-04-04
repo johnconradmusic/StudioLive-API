@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Presonus.UCNet.Api.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,13 +41,12 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private void UpdateMeterImage()
 		{
-			var onStateHeight = meterOnImage.Source.Height;
-			var onStateWidth = meterOnImage.Source.Width;
-			var portionToShow = Value;
-
+			var onStateHeight = meterOnImage.ActualHeight;
+			var onStateWidth = meterOnImage.ActualWidth;
+			var portionToShow = ValueTransformer.Transform(Value, 0, 1, CurveFormula.LinearToVolume) +84;
+			Console.WriteLine($"{Value} -> {portionToShow}");
 			var clipGeometry = new RectangleGeometry(new Rect(0, onStateHeight - (onStateHeight * portionToShow), onStateWidth, onStateHeight * portionToShow));
-			meterOnImage.Clip = clipGeometry;
-			meterOnImage.Visibility = portionToShow > 0 ? Visibility.Visible : Visibility.Hidden;
+			meterOnImage.Clip = clipGeometry;			
 		}
 
 		public MeterControl()

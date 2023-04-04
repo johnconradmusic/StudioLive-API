@@ -30,11 +30,19 @@ namespace Presonus.UCNet.Api.Helpers
 			{
 				throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 1.");
 			}
+			bool offset = false;
+			if(minValue ==0)
+			{
+				offset = true;
+				minValue += 1;
+				maxValue += 1;
+			}
 
 			double logMin = Math.Log10(minValue);
 			double logMax = Math.Log10(maxValue);
 
 			double mappedValue = Math.Pow(10, logMin + (logMax - logMin) * value);
+			if (offset) mappedValue -= 1;
 			return mappedValue;
 		}
 

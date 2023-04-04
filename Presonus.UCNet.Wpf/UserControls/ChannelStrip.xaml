@@ -12,20 +12,20 @@
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
     </UserControl.Resources>
-    <Border>
-        <Border.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FF656565"/>
-                <GradientStop Color="#FF3E3E3E" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
-        <StackPanel x:Name="MainContainer" VerticalAlignment="Stretch">
-            <StackPanel VerticalAlignment="Top">
+    <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
+
+        <Grid x:Name="MainContainer" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" >
                 <local:MiniToggle Margin="2" Label="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}"/>
                 <local:MiniToggle Margin="2" Label="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}"/>
                 <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Min="0" Max="60"/>
             </StackPanel>
-            <StackPanel VerticalAlignment="Bottom">
+            <StackPanel Grid.Row="1">
 
                 <!-- Gate popup -->
                 <Button Margin="5" Content="Gate..." Click="ShowGateParameters" />
@@ -36,7 +36,7 @@
                             <local:MiniToggle Margin="2" Label="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
                             <local:MiniToggle Margin="2" Label="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
                             <local:MiniToggle Margin="2" Label="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
-                            <!-- check curve (10 max?)--><local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
+                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
                             <local:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio"/>
                             <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
                             <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
@@ -110,20 +110,20 @@
                         </StackPanel>
                     </Border>
                 </Popup>
-
-
+            </StackPanel>
+            <StackPanel Grid.Row="2">
                 <local:ToggleButtonControl Margin="2" Content="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
                 <local:ToggleButtonControl Margin="2" Content="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
                 <local:PanPotControl Value="{Binding pan}" Min="0" Max="1"/>
                 <Border BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
                         <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="200"/>
-                        <usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>
+                        <!--<usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>-->
                     </StackPanel>
                 </Border>
                 <local:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
     </Border>
 </UserControl>

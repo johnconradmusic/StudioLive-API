@@ -8,7 +8,7 @@
         xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
         d:DataContext="{d:DesignInstance Type=api:MainViewModel}"
         mc:Ignorable="d"
-        Title="MixerWindow" Height="800" Width="1600" WindowStartupLocation="CenterScreen" Background="#2e2f31">
+        Title="MixerWindow" Height="auto" Width="1600" WindowStartupLocation="CenterScreen" Background="#2e2f31">
     <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <ScrollViewer.Resources>
             <Style TargetType="ScrollBar">
