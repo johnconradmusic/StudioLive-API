@@ -39,20 +39,17 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		}
 		private void ToggleEqPanelVisibility(object sender, RoutedEventArgs e)
 		{
-			EqPanel.IsOpen = true;
-			EqPanel.InvalidateVisual();
+			EqPanel.IsOpen = !EqPanel.IsOpen;
 		}
 
 		private void ShowCompressorParameters(object sender, RoutedEventArgs e)
 		{
-			CompressorParametersPopup.IsOpen = true;
-			CompressorParametersPopup.InvalidateVisual();
+			CompressorParametersPopup.IsOpen = !CompressorParametersPopup.IsOpen;
 		}
 
 		private void ShowLimiterParameters(object sender, RoutedEventArgs e)
 		{
-			LimiterParametersPopup.IsOpen = true;
-			LimiterParametersPopup.InvalidateVisual();
+			LimiterParametersPopup.IsOpen = !LimiterParametersPopup.IsOpen;
 		}
 
 		private void SetAccessibleNames(DependencyObject element)
@@ -82,5 +79,9 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			SetAccessibleNames(MainContainer);
 		}
 
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			AuxSendsPopup.IsOpen = !AuxSendsPopup.IsOpen;
+		}
 	}
 }

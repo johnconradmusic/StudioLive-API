@@ -126,6 +126,38 @@ namespace Presonus.UCNet.Api.Helpers
 				_ => throw new ArgumentOutOfRangeException(nameof(curve_formula), "Invalid curve formula specified."),
 			};
 		}
+
+		public static List<string> GetEnumValues<T>(out int selectedIndex, float value) where T : Enum
+		{
+			// Get the minimum and maximum values of the Enum entries.
+			T[] values = (T[])Enum.GetValues(typeof(T));
+			T min = values.Min();
+			T max = values.Max();
+
+			// Calculate the range of the Enum values.
+			int range = Convert.ToInt32(max) - Convert.ToInt32(min);
+
+			// Scale the float value to the range of the Enum values.
+			int scaledValue = Convert.ToInt32(value * range);
+			int enumValue = Convert.ToInt32(min) + scaledValue;
+
+			// Get the string values of the Enum entries and the selected index.
+			List<string> enumValues = new List<string>();
+			selectedIndex = 0;
+			for (int i = 0; i < values.Length; i++)
+			{
+				string enumString = values[i].ToString();
+				enumValues.Add(enumString);
+				if (Convert.ToInt32(values[i]) == enumValue)
+				{
+					selectedIndex = i;
+				}
+			}
+
+			// Return the list of string values and the selected index.
+			return enumValues;
+		}
+
 	}
 
 

@@ -5,15 +5,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
-              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
              Height="700" Width="80" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!--<usercontrols:FloatToEnumValuesConverter x:TypeArguments="local:MyEnum" x:Key="FloatToEnumValuesConverter" />-->
+
+
     </UserControl.Resources>
     <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
-
         <Grid x:Name="MainContainer" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -21,12 +25,67 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" >
+                <!--<ListBox ItemsSource="{Binding inputsrc, Converter={StaticResource FloatToEnumValuesConverter}}"/>-->
                 <local:MiniToggle Margin="2" Label="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}"/>
                 <local:MiniToggle Margin="2" Label="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}"/>
                 <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Min="0" Max="60"/>
             </StackPanel>
             <StackPanel Grid.Row="1">
-
+                <Button Margin="5" Content="Sends" Click="Button_Click"/>
+                <Popup x:Name="AuxSendsPopup" Placement="Mouse" StaysOpen="False">
+                    <Border>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <local:FaderControl Value="{Binding aux1}"/>
+                                <local:FaderControl Value="{Binding aux2}"/>
+                                <local:FaderControl Value="{Binding aux3}"/>
+                                <local:FaderControl Value="{Binding aux4}"/>
+                                <local:FaderControl Value="{Binding aux5}"/>
+                                <local:FaderControl Value="{Binding aux6}"/>
+                                <local:FaderControl Value="{Binding aux7}"/>
+                                <local:FaderControl Value="{Binding aux8}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <local:FaderControl Value="{Binding aux9}"/>
+                                <local:FaderControl Value="{Binding aux10}"/>
+                                <local:FaderControl Value="{Binding aux11}"/>
+                                <local:FaderControl Value="{Binding aux12}"/>
+                                <local:FaderControl Value="{Binding aux13}"/>
+                                <local:FaderControl Value="{Binding aux14}"/>
+                                <local:FaderControl Value="{Binding aux15}"/>
+                                <local:FaderControl Value="{Binding aux16}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <local:FaderControl Value="{Binding aux17}"/>
+                                <local:FaderControl Value="{Binding aux18}"/>
+                                <local:FaderControl Value="{Binding aux19}"/>
+                                <local:FaderControl Value="{Binding aux20}"/>
+                                <local:FaderControl Value="{Binding aux21}"/>
+                                <local:FaderControl Value="{Binding aux22}"/>
+                                <local:FaderControl Value="{Binding aux23}"/>
+                                <local:FaderControl Value="{Binding aux24}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <local:FaderControl Value="{Binding aux25}"/>
+                                <local:FaderControl Value="{Binding aux26}"/>
+                                <local:FaderControl Value="{Binding aux27}"/>
+                                <local:FaderControl Value="{Binding aux28}"/>
+                                <local:FaderControl Value="{Binding aux29}"/>
+                                <local:FaderControl Value="{Binding aux30}"/>
+                                <local:FaderControl Value="{Binding aux31}"/>
+                                <local:FaderControl Value="{Binding aux32}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Popup>
                 <!-- Gate popup -->
                 <Button Margin="5" Content="Gate..." Click="ShowGateParameters" />
                 <Popup x:Name="GateParametersPopup" Placement="Mouse" StaysOpen="False">
@@ -105,8 +164,8 @@
                 <Popup x:Name="LimiterParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
-                            <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
-                            <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
+                            <local:MiniToggle Margin="2" Label="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
+                            <local:RotaryKnobControl Visibility="{Binding limiter_on, Converter={StaticResource BooleanToVisibilityConverter}}" Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
                         </StackPanel>
                     </Border>
                 </Popup>
@@ -115,10 +174,10 @@
                 <local:ToggleButtonControl Margin="2" Content="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
                 <local:ToggleButtonControl Margin="2" Content="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
                 <local:PanPotControl Value="{Binding pan}" Min="0" Max="1"/>
+                <local:ToggleButtonControl Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="16" IsChecked="{Binding link, Mode=TwoWay}"/>
                 <Border BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
-
                     <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                        <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="200"/>
+                        <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="230"/>
                         <!--<usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>-->
                     </StackPanel>
                 </Border>

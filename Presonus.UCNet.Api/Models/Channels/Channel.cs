@@ -25,8 +25,7 @@ namespace Presonus.UCNet.Api.Models
 		{
 			PropertyChanged?.Invoke(this, eventArgs);
 		}
-
-
+		public bool linkable => !(int.Parse(chnum) % 2 == 0);
 		public string chnum { get => GetString(); set => SetString(value); }
 		public string name { get => GetString(); set => SetString(value); }
 		public string username { get => GetString(); set => SetString(value); }
@@ -38,10 +37,10 @@ namespace Presonus.UCNet.Api.Models
 		public float pan { get => GetValue(); set => SetValue(value); }
 		public float stereopan { get => GetValue(); set => SetValue(value); }
 		public bool panlinkstate { get => GetBoolean(); set => SetBoolean(value); }
-		public bool link { get => GetBoolean(); set => SetBoolean(value); }
+		public bool link { get {  return GetBoolean(); } set { SetBoolean(value); OnPropertyChanged(new("linkslave")); } }
+		public bool linkslave => link && !linkmaster;
 		public bool linkmaster { get => GetBoolean(); set => SetBoolean(value); }
 		public string iconid { get => GetString(); set => SetString(value); }
-
 		public float meter { get => GetValue(); set => SetValue(value); }
 		public float meterpeak { get => GetValue(); set => SetValue(value); }
 		public float meter2 { get => GetValue(); set => SetValue(value); }

@@ -5,14 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
     mc:Ignorable="d"
-             Height="200" Width="50" Margin="5,20,5,20" Focusable="True" IsTabStop="True" MouseWheel="UserControl_MouseWheel">
+             Height="230" Width="50" Margin="5,20,5,20" Focusable="True" IsTabStop="True" MouseWheel="UserControl_MouseWheel">
     <UserControl.Resources>
         <Style x:Key="SSLFaderStyle" TargetType="{x:Type Slider}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Slider}">
-                        <Grid>
-                            <Grid>
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="2.1*"/>
@@ -22,7 +26,8 @@
                                 <Rectangle Grid.Row="1" Fill="White" Width="40" Height="1" VerticalAlignment="Top" HorizontalAlignment="Center" />
                             </Grid>
                             <Rectangle Fill="#FF252525" Width="4" RadiusX="2" RadiusY="2" Height="{TemplateBinding Height}" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
-                            <Track x:Name="PART_Track" Grid.Row="1">
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Caption"/>
+                            <Track x:Name="PART_Track" HorizontalAlignment="Center">
                                 <Track.Thumb>
                                     <Thumb>
                                         <Thumb.Template>
