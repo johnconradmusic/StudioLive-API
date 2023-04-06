@@ -5,17 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
-              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Converters"
+              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" 
+             xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Converters" 
+             xmlns:usercontrols1="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+             xmlns:enums="clr-namespace:Presonus.UCNet.Api.Enums;assembly=Presonus.UCNet.Api"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
              Height="700" Width="80" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-        <!--<usercontrols:FloatToEnumValuesConverter x:TypeArguments="local:MyEnum" x:Key="FloatToEnumValuesConverter" />-->
-
-
+        <usercontrols:EnumValueConverter x:Key="EnumValueConverter" />
     </UserControl.Resources>
     <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
         <Grid x:Name="MainContainer" VerticalAlignment="Stretch">
@@ -25,7 +25,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" >
-                <!--<ListBox ItemsSource="{Binding inputsrc, Converter={StaticResource FloatToEnumValuesConverter}}"/>-->
+                <usercontrols1:EnumComboBox FloatValue="{Binding inputsrc, Mode=TwoWay, Converter={StaticResource EnumValueConverter}, ConverterParameter={x:Type enums:LineInputSource}}" EnumType="{x:Type enums:LineInputSource}" />
                 <local:MiniToggle Margin="2" Label="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}"/>
                 <local:MiniToggle Margin="2" Label="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}"/>
                 <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Min="0" Max="60"/>
@@ -174,9 +174,9 @@
                 <local:ToggleButtonControl Margin="2" Content="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
                 <local:ToggleButtonControl Margin="2" Content="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
                 <local:PanPotControl Value="{Binding pan}" Min="0" Max="1"/>
-                <local:ToggleButtonControl Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="16" IsChecked="{Binding link, Mode=TwoWay}"/>
-                <Border BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
-                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
+                <local:MiniToggle Label="Stereo Link" Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
+                <Border HorizontalAlignment="Center" BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
                         <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="230"/>
                         <!--<usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>-->
                     </StackPanel>
