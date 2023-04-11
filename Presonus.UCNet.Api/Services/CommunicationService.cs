@@ -1,9 +1,9 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Newtonsoft.Json;
-using Presonus.StudioLive32.Api.Extensions;
-using Presonus.StudioLive32.Api.Helpers;
-using Presonus.StudioLive32.Api.Messages;
-using Presonus.StudioLive32.Api.Messages.Readers;
+using Presonus.UCNet.Api.Extensions;
+using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api.Messages;
+using Presonus.UCNet.Api.Messages.Readers;
 using Presonus.UCNet.Api.Messages;
 using Presonus.UCNet.Api.Messages.Readers;
 using Presonus.UCNet.Api.Models;
@@ -21,8 +21,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
-namespace Presonus.StudioLive32.Api.Services
+namespace Presonus.UCNet.Api.Services
 {
 	public class CommunicationService : IDisposable
 	{
@@ -44,6 +45,8 @@ namespace Presonus.StudioLive32.Api.Services
 
 			_mixerStateService.SendValueMethod = SendValue;
 			_mixerStateService.SendStringMethod = SendString;
+			_mixerStateService.RecallProject = RecallProject;
+			_mixerStateService.RecallScene = RecallScene;
 
 			_listeningThread = new Thread(Listener) { IsBackground = true };
 			_writingThread = new Thread(KeepAlive) { IsBackground = true };
@@ -208,7 +211,7 @@ namespace Presonus.StudioLive32.Api.Services
 
 			string route = Encoding.ASCII.GetString(data, 0, idx); // Convert the bytes to a string
 
-			Console.WriteLine($"PC ({route}) {idx}");
+			//Console.WriteLine($"PC ({route}) {idx}");
 			byte[] newArray = new byte[data.Length - idx - 3]; // Create a new array to hold the extracted bytes
 			Array.Copy(data, idx + 3, newArray, 0, newArray.Length); // Copy the bytes to the new array
 
@@ -315,11 +318,19 @@ namespace Presonus.StudioLive32.Api.Services
 				case "RecalledPreset":
 					HandleRecalledPreset();
 					break;
+				case "StoredPreset":
+					HandleStoredPreset();
+					break;
 
 				default:
 					Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
 					break;
 			}
+		}
+
+		private void HandleStoredPreset()
+		{
+			Console.WriteLine("Stored a Preset");
 		}
 
 		private void HandleSynchronizePart()
@@ -398,26 +409,6 @@ namespace Presonus.StudioLive32.Api.Services
 			_mixerStateService.SetString(route, value, false);
 		}
 
-		public static ZLibPayload ConvertToZlibPayload(Dictionary<string, object> deserializedData)
-		{
-			try
-			{
-				// Serialize the deserialized data to a JSON string
-				var jsonString = JsonConvert.SerializeObject(deserializedData);
-
-				// Deserialize the JSON string to a ZLibPayload object
-				var result = JsonConvert.DeserializeObject<ZLibPayload>(jsonString);
-
-				return result;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("An error occurred during the conversion:");
-				Console.WriteLine(ex.Message);
-				throw;
-			}
-		}
-
 		public static Dictionary<string, object> DeserializeZlibBuffer(byte[] buffer)
 		{
 			using var inputStream = new MemoryStream(buffer, 0, buffer.Length);
@@ -474,6 +465,20 @@ namespace Presonus.StudioLive32.Api.Services
 			return _tcpClient?.Connected is true
 				? _tcpClient.GetStream()
 				: null;
+		}
+		public void RecallScene(string projFile, string sceneFile)
+		{
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateSceneRecall(projFile, sceneFile);
+
+			SendMessage(data);
+		}
+		public void RecallProject(string projFile)
+		{
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateProjectRecall(projFile);
+
+			SendMessage(data);
 		}
 
 		public void SendString(string route, string value)

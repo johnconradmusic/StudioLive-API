@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Presonus.StudioLive32.Api.Enums
+namespace Presonus.UCNet.Api.Models
 {
-	public enum Unit
+	public struct Range
 	{
-		none, db, hz, khz, octave, ms
+		public float Min;
+		public float Max;
+		public float Default;
 	}
 }

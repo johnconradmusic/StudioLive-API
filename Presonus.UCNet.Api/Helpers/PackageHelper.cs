@@ -1,10 +1,10 @@
-﻿using Presonus.StudioLive32.Api.Extensions;
-using Presonus.StudioLive32.Api.Services;
+﻿using Presonus.UCNet.Api.Extensions;
+using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Presonus.StudioLive32.Api.Helpers
+namespace Presonus.UCNet.Api.Helpers
 {
     public static class PackageHelper
     {

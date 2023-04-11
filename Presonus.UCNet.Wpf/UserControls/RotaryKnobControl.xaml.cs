@@ -1,11 +1,12 @@
 ﻿using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Wpf.Interfaces;
 using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Presonus.StudioLive32.Wpf.UserControls
+namespace Presonus.UCNet.Wpf.UserControls
 {
 	public partial class RotaryKnobControl : UserControl, IAccessibleControl
 	{
@@ -39,6 +40,20 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public static readonly DependencyProperty MaxProperty =
 			DependencyProperty.Register("Max", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
 
+
+
+		public float Mid
+		{
+			get { return (float)GetValue(MidProperty); }
+			set { SetValue(MidProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Mid.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MidProperty =
+			DependencyProperty.Register("Mid", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
+
+
+
 		public string ValueString
 		{
 			get { return (string)GetValue(ValueStringProperty); }
@@ -60,7 +75,11 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public static readonly DependencyProperty CaptionProperty =
 			DependencyProperty.Register("Caption", typeof(string), typeof(RotaryKnobControl), new PropertyMetadata(""));
 
-
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			UpdateValueString();
+		}
 
 		public RotaryKnobControl()
 		{
@@ -78,7 +97,7 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			get { return (float)GetValue(MaxProperty); }
 			set { SetValue(MaxProperty, value); }
 		}
-				public float Value
+		public float Value
 		{
 			get { return (float)GetValue(ValueProperty); }
 			set { SetValue(ValueProperty, value); }
@@ -87,7 +106,15 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var control = d as RotaryKnobControl;
-			control?.UpdateRotateTransform();
+			control.UpdateRotateTransform();
+			control.UpdateValueString();
+			control.ValueChanged?.Invoke(control, EventArgs.Empty);
+		}
+
+		private void UpdateValueString()
+		{
+			ValueString = ValueTransformer.Transform(Value, Min, Max, Curve, Unit);
+			ValueText.Text = ValueString;
 		}
 
 		private void Knob_MouseDown(object sender, MouseButtonEventArgs e)
@@ -126,8 +153,21 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			double angleOffset = 20; // The offset angle (in degrees) for the minimum value
 			double angle = angleOffset + Value * angleRange;
 			KnobRotateTransform.Angle = angle;
-			ValueText.Text = Math.Round(ValueTransformer.Transform(Value, Min, Max, Curve),2).ToString();
+
 		}
+
+
+		public Units Unit
+		{
+			get { return (Units)GetValue(UnitProperty); }
+			set { SetValue(UnitProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Unit.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty UnitProperty =
+			DependencyProperty.Register("Unit", typeof(Units), typeof(RotaryKnobControl), new PropertyMetadata(Units.NONE));
+
+		public event EventHandler ValueChanged;
 
 		private void RotaryKnob_MouseWheel(object sender, MouseWheelEventArgs e)
 		{

@@ -1,4 +1,4 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Presonus.UCNet.Api.Attributes;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 
@@ -116,6 +116,8 @@ namespace Presonus.UCNet.Api.Models.Channels
 		[ParameterPath("comp/attack")] public float comp_attack { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("comp/release")] public float comp_release { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("comp/gain")] public float comp_gain { get => GetValue(); set => SetValue(value); }
+		[ParameterPath("comp/keyfilter")] public float comp_keyfilter { get => GetValue(); set => SetValue(value); }
+
 
 		[ParameterPath("limt/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
 		[ParameterPath("limt/threshold")] public float limiter_threshold { get => GetValue(); set => SetValue(value); }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
-using Presonus.StudioLive32.Api;
+using Presonus.UCNet.Api;
 
 namespace Presonus.UCNet.Api.Services
 {

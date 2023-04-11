@@ -14,7 +14,8 @@ namespace Presonus.UCNet.Api.NewDataModel
 		SUB,
 		FX,
 		FXRETURN,
-		RETURN
+		RETURN,
+		NONE
 	}
 
 	public class ChannelStrings

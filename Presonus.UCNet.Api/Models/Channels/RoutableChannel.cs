@@ -1,7 +1,9 @@
-﻿using Presonus.UCNet.Api.NewDataModel;
+﻿using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -120,14 +122,19 @@ namespace Presonus.UCNet.Api.Models.Channels
 		public float monolevel { get => GetValue(); set => SetValue(value); }
 		public float centerdiv { get => GetValue(); set => SetValue(value); }
 
-		public int adc_src { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int avb_src { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int usb_src { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int sd_src { get => GetIntInRange(); set => SetValueFromInt(value); }
+		public List<string> adc_src_values => GetValueList(nameof(adc_src));
+		public List<string> avb_src_values => GetValueList(nameof(avb_src));
+		public List<string> usb_src_values => GetValueList(nameof(usb_src));
+		public List<string> sd_src_values => GetValueList(nameof(sd_src));
 
-		public int adc_src2 { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int avb_src2 { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int usb_src2 { get => GetIntInRange(); set => SetValueFromInt(value); }
-		public int sd_src2 { get => GetIntInRange(); set => SetValueFromInt(value); }
+		public float adc_src { get => GetValue(); set => SetValue(value); }
+		public float avb_src { get => GetValue(); set => SetValue(value); }
+		public float usb_src { get => GetValue(); set => SetValue(value); }
+		public float sd_src { get => GetValue(); set => SetValue(value); }
+
+		public float adc_src2 { get => GetValue(); set => SetValue(value); }
+		public float avb_src2 { get => GetValue(); set => SetValue(value); }
+		public float usb_src2 { get => GetValue(); set => SetValue(value); }
+		public float sd_src2 { get => GetValue(); set => SetValue(value); }
 	}
 }

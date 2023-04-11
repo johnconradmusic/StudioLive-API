@@ -1,43 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Presonus.UCNet.Wpf.Interfaces;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Presonus.StudioLive32.Wpf.UserControls
+namespace Presonus.UCNet.Wpf.UserControls
 {
-	public partial class MiniToggle : UserControl
+	public partial class MiniToggle : UserControl, IAccessibleControl
 	{
-		public static readonly DependencyProperty LabelProperty =
-			DependencyProperty.Register("Label", typeof(string), typeof(MiniToggle), new PropertyMetadata(""));
-
 		public static readonly DependencyProperty IsCheckedProperty =
-			DependencyProperty.Register("IsChecked", typeof(bool), typeof(MiniToggle), new PropertyMetadata(false));
+			DependencyProperty.Register("IsChecked", typeof(bool), typeof(MiniToggle), new PropertyMetadata(false, OnIsCheckedChanged));
 
-		public string Label
+		// Using a DependencyProperty as the backing store for Caption. This enables animation,
+		// styling, binding, etc...
+		public static readonly DependencyProperty CaptionProperty =
+			DependencyProperty.Register("Caption", typeof(string), typeof(MiniToggle), new PropertyMetadata("unknown control"));
+
+		// Using a DependencyProperty as the backing store for ValueString. This enables animation,
+		// styling, binding, etc...
+		public static readonly DependencyProperty ValueStringProperty =
+			DependencyProperty.Register("ValueString", typeof(string), typeof(MiniToggle), new PropertyMetadata("unknown value"));
+
+		public event EventHandler ValueChanged;
+		private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			get { return (string)GetValue(LabelProperty); }
-			set { SetValue(LabelProperty, value); }
+			var control = d as MiniToggle;
+			control.ValueString = control.IsChecked ? "On" : "Off";
+			control?.ValueChanged?.Invoke(control, EventArgs.Empty);
+		}
+		public MiniToggle()
+		{
+			InitializeComponent();
+		}
+
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			ValueString = IsChecked ? "On" : "Off";
+		}
+
+		public string Caption
+		{
+			get { return (string)GetValue(CaptionProperty); }
+			set { SetValue(CaptionProperty, value); }
+		}
+
+		public string ValueString
+		{
+			get { return (string)GetValue(ValueStringProperty); }
+			set { SetValue(ValueStringProperty, value); }
 		}
 
 		public bool IsChecked
 		{
 			get { return (bool)GetValue(IsCheckedProperty); }
 			set { SetValue(IsCheckedProperty, value); }
-		}
-
-		public MiniToggle()
-		{
-			InitializeComponent();
 		}
 	}
 }

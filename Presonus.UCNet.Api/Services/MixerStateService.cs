@@ -9,8 +9,11 @@ public class MixerStateService
 	private readonly MixerState _mixerState;
 	private readonly MixerStateSynchronizer _mixerStateSynchronizer;
 	public delegate void SyncEvent();
+
 	internal Action<string, string> SendStringMethod;
 	internal Action<string, float> SendValueMethod;
+	internal Action<string> RecallProject;
+	internal Action<string, string> RecallScene;
 
 	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{
@@ -61,15 +64,16 @@ public class MixerStateService
 		}
 	}
 
-
+	public void RecallProjectFile(string projFile)
+	{
+		RecallProject(projFile);
+	}
+	public void RecallSceneFile(string projFile, string sceneFile)
+	{
+		RecallScene(projFile, sceneFile);
+	}
 	public float GetValue(string route)
 	{
-		if (_mixerState.TryGetValue(route + "/min", out float min))
-		{
-			var max = _mixerState.GetValue(route + "/max");
-			var def = _mixerState.GetValue(route + "/def");
-			Console.WriteLine($"Get: {route} has a range: {min} {max} {def}");
-		}
 		return _mixerState.GetValue(route);
 	}
 

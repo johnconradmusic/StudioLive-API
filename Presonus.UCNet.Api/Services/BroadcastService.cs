@@ -1,5 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Extensions;
-using Presonus.StudioLive32.Api.Helpers;
+﻿using Presonus.UCNet.Api.Extensions;
+using Presonus.UCNet.Api.Helpers;
 using Serilog;
 using System;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Presonus.StudioLive32.Api.Services
+namespace Presonus.UCNet.Api.Services
 {
     /// <summary>
     /// This service is used to get broadcast UDP messages.

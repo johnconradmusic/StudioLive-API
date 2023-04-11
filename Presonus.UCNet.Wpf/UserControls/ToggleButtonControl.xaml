@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Presonus.StudioLive32.Wpf.UserControls.ToggleButtonControl"
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.ToggleButtonControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -39,7 +39,7 @@
     </UserControl.Resources>
     <Grid>
         <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Content="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       Background="{Binding UncheckedBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"

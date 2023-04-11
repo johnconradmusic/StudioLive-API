@@ -4,11 +4,11 @@ using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Api;
 using System.Windows;
-using Presonus.StudioLive32.Api.Services;
+using Presonus.UCNet.Api.Services;
 using Serilog;
 using System.Threading.Tasks;
 
-namespace Presonus.StudioLive32.Wpf
+namespace Presonus.UCNet.Wpf
 {
 
 

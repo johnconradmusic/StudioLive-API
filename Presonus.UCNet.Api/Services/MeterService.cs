@@ -1,6 +1,6 @@
-﻿using Presonus.StudioLive32.Api.Extensions;
-using Presonus.StudioLive32.Api.Helpers;
-using Presonus.StudioLive32.Api;
+﻿using Presonus.UCNet.Api.Extensions;
+using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using Microsoft.VisualBasic;
 using System.Threading;
 using Presonus.UCNet.Api.Services;
 
-namespace Presonus.StudioLive32.Api.Services
+namespace Presonus.UCNet.Api.Services
 {
 	public class MeterService : IDisposable
 	{

@@ -24,5 +24,11 @@ namespace Presonus.UCNet.Api
 			InitializeComponent();
             DataContext = viewModel;
 		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var vm = DataContext as MainViewModel;
+			vm.Test();
+		}
 	}
 }

@@ -1,7 +1,6 @@
-﻿using Presonus.StudioLive32.Api.Enums;
-using System;
+﻿using System;
 
-namespace Presonus.StudioLive32.Api.Attributes
+namespace Presonus.UCNet.Api.Attributes
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 	public class ParameterPathAttribute : Attribute

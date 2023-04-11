@@ -1,4 +1,4 @@
-﻿using Presonus.StudioLive32.Api.Services;
+﻿using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Models.Channels;
 using Presonus.UCNet.Api.NewDataModel;
@@ -24,15 +24,22 @@ public class MainViewModel : INotifyPropertyChanged
 	public ObservableCollection<InputChannel> FXReturns { get; } = new ObservableCollection<InputChannel>();
 	public ObservableCollection<MicLineInput> Talkback { get; } = new ObservableCollection<MicLineInput>();
 	public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
+	public Presets Presets { get; }
 
-
+	public void Test()
+	{
+		_mixerStateService.RecallSceneFile("02.test.proj", "02.testing.scn");
+	}
 	public MainViewModel(MixerStateService mixerStateService)
 	{
 		_mixerStateService = mixerStateService;
 
+		Presets = new Presets(mixerStateService);
+		Presets.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Presets));
+
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.LINE.ToString()]; i++)
 		{
-			var chan = new MicLineInput(ChannelTypes.LINE,i + 1, _mixerStateService);
+			var chan = new MicLineInput(ChannelTypes.LINE, i + 1, _mixerStateService);
 			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(MicLineInputs));
 			MicLineInputs.Add(chan);
 		}

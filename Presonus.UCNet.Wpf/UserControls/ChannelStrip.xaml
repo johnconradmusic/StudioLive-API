@@ -1,21 +1,23 @@
-﻿<UserControl x:Class="Presonus.StudioLive32.Wpf.UserControls.ChannelStrip"
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.ChannelStrip"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
-              xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" 
-             xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Converters" 
+              xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters" 
              xmlns:usercontrols1="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              xmlns:enums="clr-namespace:Presonus.UCNet.Api.Enums;assembly=Presonus.UCNet.Api"
+             x:Name="channelStrip"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
-             Height="700" Width="80" Loaded="UserControl_Loaded">
+             Height="900" Width="80" FocusManager.FocusedElement="{Binding SelectedControl, ElementName=channelStrip}">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
+        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <usercontrols:EnumValueConverter x:Key="EnumValueConverter" />
+        <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
+
     </UserControl.Resources>
     <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
         <Grid x:Name="MainContainer" VerticalAlignment="Stretch">
@@ -25,10 +27,72 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" >
-                <usercontrols1:EnumComboBox FloatValue="{Binding inputsrc, Mode=TwoWay, Converter={StaticResource EnumValueConverter}, ConverterParameter={x:Type enums:LineInputSource}}" EnumType="{x:Type enums:LineInputSource}" />
-                <local:MiniToggle Margin="2" Label="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}"/>
-                <local:MiniToggle Margin="2" Label="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}"/>
-                <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Min="0" Max="60"/>
+                <usercontrols1:ValueDisplay ControlName="{Binding SelectedControl, ElementName=channelStrip}"
+                            Value="{Binding SelectedValue, ElementName=channelStrip}" />
+                <!-- #region Routing -->
+                <local:ToggleButtonControl x:Name="RoutingButton" Caption="Routing" Margin="5" CheckedBackground="DarkSlateBlue"/>
+                
+                <StackPanel x:Name="RoutingPanel" Visibility="{Binding IsChecked, ElementName=RoutingButton, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Vertical">
+                    <ComboBox Visibility="{Binding inputsrc, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Path="inputsrc_values" Mode="OneWay"/>
+                        </ComboBox.ItemsSource>
+                        <ComboBox.SelectedIndex>
+                            <MultiBinding Converter="{StaticResource FloatToIndexConverter}">
+                                <Binding Path="inputsrc" Mode="TwoWay"/>
+                                <Binding Path="inputsrc_values" Mode="OneWay"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedIndex>
+                    </ComboBox>
+                    <ComboBox Visibility="{Binding adc_src, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Path="adc_src_values" Mode="OneWay"/>
+                        </ComboBox.ItemsSource>
+                        <ComboBox.SelectedIndex>
+                            <MultiBinding Converter="{StaticResource FloatToIndexConverter}">
+                                <Binding Path="adc_src" Mode="TwoWay"/>
+                                <Binding Path="adc_src_values" Mode="OneWay"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedIndex>
+                    </ComboBox>
+                    <ComboBox Visibility="{Binding avb_src, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Path="avb_src_values" Mode="OneWay"/>
+                        </ComboBox.ItemsSource>
+                        <ComboBox.SelectedIndex>
+                            <MultiBinding Converter="{StaticResource FloatToIndexConverter}">
+                                <Binding Path="avb_src" Mode="TwoWay"/>
+                                <Binding Path="avb_src_values" Mode="OneWay"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedIndex>
+                    </ComboBox>
+                    <ComboBox Visibility="{Binding usb_src, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Path="usb_src_values" Mode="OneWay"/>
+                        </ComboBox.ItemsSource>
+                        <ComboBox.SelectedIndex>
+                            <MultiBinding Converter="{StaticResource FloatToIndexConverter}">
+                                <Binding Path="usb_src" Mode="TwoWay"/>
+                                <Binding Path="usb_src_values" Mode="OneWay"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedIndex>
+                    </ComboBox>
+                    <ComboBox Visibility="{Binding sd_src, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Path="sd_src_values" Mode="OneWay"/>
+                        </ComboBox.ItemsSource>
+                        <ComboBox.SelectedIndex>
+                            <MultiBinding Converter="{StaticResource FloatToIndexConverter}">
+                                <Binding Path="sd_src" Mode="TwoWay"/>
+                                <Binding Path="sd_src_values" Mode="OneWay"/>
+                            </MultiBinding>
+                        </ComboBox.SelectedIndex>
+                    </ComboBox>
+                </StackPanel>
+                <!-- #endregion -->
+                <local:MiniToggle Margin="2" Caption="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}" Visibility="{Binding phantom, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
+                <local:MiniToggle Margin="2" Caption="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}" Visibility="{Binding polarity, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
+                <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Visibility="{Binding preampgain, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Min="0" Max="60"/>
             </StackPanel>
             <StackPanel Grid.Row="1">
                 <Button Margin="5" Content="Sends" Click="Button_Click"/>
@@ -44,57 +108,58 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                                <local:FaderControl Value="{Binding aux1}"/>
-                                <local:FaderControl Value="{Binding aux2}"/>
-                                <local:FaderControl Value="{Binding aux3}"/>
-                                <local:FaderControl Value="{Binding aux4}"/>
-                                <local:FaderControl Value="{Binding aux5}"/>
-                                <local:FaderControl Value="{Binding aux6}"/>
-                                <local:FaderControl Value="{Binding aux7}"/>
-                                <local:FaderControl Value="{Binding aux8}"/>
+                                <local:FaderControl Caption="Aux 1" Value="{Binding aux1}"/>
+                                <local:FaderControl Caption="Aux 2" Value="{Binding aux2}"/>
+                                <local:FaderControl Caption="Aux 3" Value="{Binding aux3}"/>
+                                <local:FaderControl Caption="Aux 4" Value="{Binding aux4}"/>
+                                <local:FaderControl Caption="Aux 5" Value="{Binding aux5}"/>
+                                <local:FaderControl Caption="Aux 6" Value="{Binding aux6}"/>
+                                <local:FaderControl Caption="Aux 7" Value="{Binding aux7}"/>
+                                <local:FaderControl Caption="Aux 8" Value="{Binding aux8}"/>
                             </StackPanel>
                             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                                <local:FaderControl Value="{Binding aux9}"/>
-                                <local:FaderControl Value="{Binding aux10}"/>
-                                <local:FaderControl Value="{Binding aux11}"/>
-                                <local:FaderControl Value="{Binding aux12}"/>
-                                <local:FaderControl Value="{Binding aux13}"/>
-                                <local:FaderControl Value="{Binding aux14}"/>
-                                <local:FaderControl Value="{Binding aux15}"/>
-                                <local:FaderControl Value="{Binding aux16}"/>
+                                <local:FaderControl Caption="Aux 9" Value="{Binding aux9}"/>
+                                <local:FaderControl Caption="Aux 10" Value="{Binding aux10}"/>
+                                <local:FaderControl Caption="Aux 11" Value="{Binding aux11}"/>
+                                <local:FaderControl Caption="Aux 12" Value="{Binding aux12}"/>
+                                <local:FaderControl Caption="Aux 13" Value="{Binding aux13}"/>
+                                <local:FaderControl Caption="Aux 14" Value="{Binding aux14}"/>
+                                <local:FaderControl Caption="Aux 15" Value="{Binding aux15}"/>
+                                <local:FaderControl Caption="Aux 16" Value="{Binding aux16}"/>
                             </StackPanel>
                             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                                <local:FaderControl Value="{Binding aux17}"/>
-                                <local:FaderControl Value="{Binding aux18}"/>
-                                <local:FaderControl Value="{Binding aux19}"/>
-                                <local:FaderControl Value="{Binding aux20}"/>
-                                <local:FaderControl Value="{Binding aux21}"/>
-                                <local:FaderControl Value="{Binding aux22}"/>
-                                <local:FaderControl Value="{Binding aux23}"/>
-                                <local:FaderControl Value="{Binding aux24}"/>
+                                <local:FaderControl Caption="Aux 17" Value="{Binding aux17}"/>
+                                <local:FaderControl Caption="Aux 18" Value="{Binding aux18}"/>
+                                <local:FaderControl Caption="Aux 19" Value="{Binding aux19}"/>
+                                <local:FaderControl Caption="Aux 20" Value="{Binding aux20}"/>
+                                <local:FaderControl Caption="Aux 21" Value="{Binding aux21}"/>
+                                <local:FaderControl Caption="Aux 22" Value="{Binding aux22}"/>
+                                <local:FaderControl Caption="Aux 23" Value="{Binding aux23}"/>
+                                <local:FaderControl Caption="Aux 24" Value="{Binding aux24}"/>
                             </StackPanel>
                             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                                <local:FaderControl Value="{Binding aux25}"/>
-                                <local:FaderControl Value="{Binding aux26}"/>
-                                <local:FaderControl Value="{Binding aux27}"/>
-                                <local:FaderControl Value="{Binding aux28}"/>
-                                <local:FaderControl Value="{Binding aux29}"/>
-                                <local:FaderControl Value="{Binding aux30}"/>
-                                <local:FaderControl Value="{Binding aux31}"/>
-                                <local:FaderControl Value="{Binding aux32}"/>
+                                <local:FaderControl Caption="Aux 25" Value="{Binding aux25}"/>
+                                <local:FaderControl Caption="Aux 26" Value="{Binding aux26}"/>
+                                <local:FaderControl Caption="Aux 27" Value="{Binding aux27}"/>
+                                <local:FaderControl Caption="Aux 28" Value="{Binding aux28}"/>
+                                <local:FaderControl Caption="Aux 29" Value="{Binding aux29}"/>
+                                <local:FaderControl Caption="Aux 30" Value="{Binding aux30}"/>
+                                <local:FaderControl Caption="Aux 31" Value="{Binding aux31}"/>
+                                <local:FaderControl Caption="Aux 32" Value="{Binding aux32}"/>
                             </StackPanel>
+
                         </Grid>
                     </Border>
                 </Popup>
                 <!-- Gate popup -->
-                <Button Margin="5" Content="Gate..." Click="ShowGateParameters" />
+                <Button Visibility="{Binding gate_on, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Margin="5" Content="Gate..." Click="ShowGateParameters" />
                 <Popup x:Name="GateParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
                             <TextBlock Text="Gate Parameters" FontSize="16" FontWeight="Bold" Foreground="White"/>
-                            <local:MiniToggle Margin="2" Label="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
-                            <local:MiniToggle Margin="2" Label="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
-                            <local:MiniToggle Margin="2" Label="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
                             <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
                             <local:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio"/>
                             <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
@@ -105,79 +170,80 @@
                 </Popup>
 
                 <!-- EQ popup -->
-                <Button Margin="5" Content="EQ" Click="ToggleEqPanelVisibility" />
+                <Button Visibility="{Binding eq_on, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Margin="5" Content="EQ" Click="ToggleEqPanelVisibility" />
                 <Popup x:Name="EqPanel" Placement="Mouse"  StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="5">
-                                <local:MiniToggle Margin="2" Label="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}"/>
+                                <local:MiniToggle Margin="2" Caption="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <local:RotaryKnobControl Caption="Gain 1" Height="24" Value="{Binding eq_gain1}" Min="-15" Max="15" Curve="Linear"/>
-                                <local:RotaryKnobControl Caption="Q 1" Height="24" Value="{Binding eq_q1}" Min="0.1" Max="4" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Freq 1" Height="24" Value="{Binding eq_freq1}" Min="36" Max="18000" Curve="Logarithmic"/>
-                                <local:MiniToggle Margin="2" Label="On 1" Width="auto" Height="20" IsChecked="{Binding eq_bandon1, Mode=TwoWay}"/>
-                                <local:MiniToggle Margin="2" Label="Shelf 1" Width="auto" Height="20" IsChecked="{Binding eq_bandop1, Mode=TwoWay}"/>
+                                <local:RotaryKnobControl Caption="Gain 1" Height="24" Value="{Binding eq_gain1}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                                <local:RotaryKnobControl Caption="Q 1" Height="24" Value="{Binding eq_q1}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                                <local:RotaryKnobControl Caption="Freq 1" Height="24" Value="{Binding eq_freq1}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                                <local:MiniToggle Margin="2" Caption="On 1" Width="auto" Height="20" IsChecked="{Binding eq_bandon1, Mode=TwoWay}"/>
+                                <local:MiniToggle Margin="2" Caption="Shelf 1" Width="auto" Height="20" IsChecked="{Binding eq_bandop1, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <local:RotaryKnobControl Caption="Gain 2" Height="24" Value="{Binding eq_gain2}" Min="-15" Max="15" Curve="Linear"/>
-                                <local:RotaryKnobControl Caption="Q 2" Height="24" Value="{Binding eq_q2}" Min="0.1" Max="4" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Freq 2" Height="24" Value="{Binding eq_freq2}" Min="36" Max="18000" Curve="Logarithmic"/>
-                                <local:MiniToggle Margin="2" Label="On 2" Width="auto" Height="20" IsChecked="{Binding eq_bandon2, Mode=TwoWay}"/>
+                                <local:RotaryKnobControl Caption="Gain 2" Height="24" Value="{Binding eq_gain2}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                                <local:RotaryKnobControl Caption="Q 2" Height="24" Value="{Binding eq_q2}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                                <local:RotaryKnobControl Caption="Freq 2" Height="24" Value="{Binding eq_freq2}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                                <local:MiniToggle Margin="2" Caption="On 2" Width="auto" Height="20" IsChecked="{Binding eq_bandon2, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <local:RotaryKnobControl Caption="Gain 3" Height="24" Value="{Binding eq_gain3}" Min="-15" Max="15" Curve="Linear"/>
-                                <local:RotaryKnobControl Caption="Q 3" Height="24" Value="{Binding eq_q3}" Min="0.1" Max="4" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Freq 3" Height="24" Value="{Binding eq_freq3}" Min="36" Max="18000" Curve="Logarithmic"/>
-                                <local:MiniToggle Margin="2" Label="On 3" Width="auto" Height="20" IsChecked="{Binding eq_bandon3, Mode=TwoWay}"/>
+                                <local:RotaryKnobControl Caption="Gain 3" Height="24" Value="{Binding eq_gain3}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                                <local:RotaryKnobControl Caption="Q 3" Height="24" Value="{Binding eq_q3}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" Unit="DB"/>
+                                <local:RotaryKnobControl Caption="Freq 3" Height="24" Value="{Binding eq_freq3}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                                <local:MiniToggle Margin="2" Caption="On 3" Width="auto" Height="20" IsChecked="{Binding eq_bandon3, Mode=TwoWay}"/>
                             </StackPanel>
                             <StackPanel Margin="5">
-                                <local:RotaryKnobControl Caption="Gain 4" Height="24" Value="{Binding eq_gain4}" Min="-15" Max="15" Curve="Linear"/>
-                                <local:RotaryKnobControl Caption="Q 4" Height="24" Value="{Binding eq_q4}" Min="0.1" Max="4" Curve="Exponential"/>
-                                <local:RotaryKnobControl Caption="Freq 4" Height="24" Value="{Binding eq_freq4}" Min="36" Max="18000" Curve="Logarithmic"/>
-                                <local:MiniToggle Margin="2" Label="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}"/>
-                                <local:MiniToggle Margin="2" Label="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}"/>
+                                <local:RotaryKnobControl Caption="Gain 4" Height="24" Value="{Binding eq_gain4}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                                <local:RotaryKnobControl Caption="Q 4" Height="24" Value="{Binding eq_q4}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                                <local:RotaryKnobControl Caption="Freq 4" Height="24" Value="{Binding eq_freq4}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                                <local:MiniToggle Margin="2" Caption="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}"/>
+                                <local:MiniToggle Margin="2" Caption="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
                 </Popup>
 
                 <!-- Compressor popup -->
-                <Button Margin="5" Content="Compressor..." Click="ShowCompressorParameters" />
+                <Button Visibility="{Binding comp_on, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Margin="5" Content="Compressor..." Click="ShowCompressorParameters" />
                 <Popup x:Name="CompressorParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
-                            <local:MiniToggle Margin="2" Label="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
                             <local:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding comp_threshold}" Min="-56" Max="0" Curve="Linear"/>
                             <local:RotaryKnobControl Caption="Ratio" Height="24" Value="{Binding comp_ratio}" Min="1" Max="20" Curve="Exponential"/>
                             <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding comp_attack}" Min="0.0002" Max="0.150" Curve="Exponential"/>
                             <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding comp_release}" Min="0.0025" Max="0.9" Curve="Exponential"/>
-                            <local:MiniToggle Margin="2" Label="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
-                            <local:MiniToggle Margin="2" Label="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
+                            <local:MiniToggle Margin="2" Caption="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
                             <local:RotaryKnobControl Caption="Makeup Gain" Height="24" Value="{Binding comp_gain}" Min="0" Max="28" Curve="Linear"/>
+                            <local:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding comp_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
                         </StackPanel>
                     </Border>
                 </Popup>
 
                 <!-- Limiter popup -->
-                <Button Margin="5" Content="Limiter..." Click="ShowLimiterParameters" />
+                <Button Visibility="{Binding limiter_on, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Margin="5" Content="Limiter..." Click="ShowLimiterParameters" />
                 <Popup x:Name="LimiterParametersPopup" Placement="Mouse" StaysOpen="False">
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
-                            <local:MiniToggle Margin="2" Label="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
-                            <local:RotaryKnobControl Visibility="{Binding limiter_on, Converter={StaticResource BooleanToVisibilityConverter}}" Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
+                            <local:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
+                            <local:RotaryKnobControl Visibility="{Binding limiter_on, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
                         </StackPanel>
                     </Border>
                 </Popup>
             </StackPanel>
             <StackPanel Grid.Row="2">
-                <local:ToggleButtonControl Margin="2" Content="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
-                <local:ToggleButtonControl Margin="2" Content="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
-                <local:PanPotControl Value="{Binding pan}" Min="0" Max="1"/>
-                <local:MiniToggle Label="Stereo Link" Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
+                <local:ToggleButtonControl Margin="2" Caption="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
+                <local:ToggleButtonControl Margin="2" Caption="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
+                <local:PanPotControl Caption="Pan" Value="{Binding pan}"/>
+                <!--<local:MiniToggle Label="Stereo Link" Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>-->
                 <Border HorizontalAlignment="Center" BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
-                        <local:FaderControl Caption="Volume Slider" Value="{Binding volume}" Width="50" Height="230"/>
+                        <local:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
                         <!--<usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>-->
                     </StackPanel>
                 </Border>

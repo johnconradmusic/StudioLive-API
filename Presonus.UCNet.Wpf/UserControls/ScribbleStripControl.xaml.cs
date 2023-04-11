@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Presonus.StudioLive32.Wpf.UserControls
+namespace Presonus.UCNet.Wpf.UserControls
 {
 	public partial class ScribbleStripControl : UserControl
 	{
@@ -24,6 +24,11 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			DependencyProperty.Register("StripColor", typeof(SolidColorBrush), typeof(ScribbleStripControl), new PropertyMetadata(new SolidColorBrush(Colors.Black)));
 
 		private void ScribbleStripText_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			Rename();
+		}
+		bool editing;
+		private void Rename()
 		{
 			TextBox textBox = new TextBox();
 			textBox.Text = Text; // Set the initial text of the textbox to the current value of the Text property
@@ -37,7 +42,9 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			Grid.SetRow(textBox, 0); // Set the row to 0 so it appears in the same row as the Border
 
 			ScribbleStripText.Visibility = Visibility.Collapsed; // Hide the TextBlock
+			editing = true;
 		}
+
 		private void TextBox_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter) // Check if the Enter key was pressed
@@ -49,6 +56,8 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 				Grid parentGrid = (Grid)VisualTreeHelper.GetParent(ScribbleStripBackground); // Get the parent Grid of the Border
 				parentGrid.Children.Remove(textBox); // Add the TextBox to the parent Grid
 				ScribbleStripText.Visibility = Visibility.Visible; // Show the TextBlock again
+				editing = false;
+
 			}
 		}
 		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -60,6 +69,7 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			Grid parentGrid = (Grid)VisualTreeHelper.GetParent(ScribbleStripBackground); // Get the parent Grid of the Border
 			parentGrid.Children.Remove(textBox); // Add the TextBox to the parent Grid
 			ScribbleStripText.Visibility = Visibility.Visible; // Show the TextBlock again
+			editing = false;
 		}
 		public string Text
 		{
@@ -76,6 +86,13 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public ScribbleStripControl()
 		{
 			InitializeComponent();
+		}
+
+		private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!editing)
+				if (e.Key == Key.Enter) 
+					Rename();
 		}
 	}
 }

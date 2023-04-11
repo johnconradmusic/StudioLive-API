@@ -1,4 +1,4 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Presonus.UCNet.Api.Attributes;
 using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Presonus.StudioLive32.Api.Models
+namespace Presonus.UCNet.Api.Models
 {
 	public abstract class ParameterRouter : INotifyPropertyChanged
 	{
@@ -19,6 +19,9 @@ namespace Presonus.StudioLive32.Api.Models
 		private int _channelIndex;
 		public static bool loadingFromScene = false;
 		private Dictionary<string, string> _propertyValueNameRoute = new();
+		private Dictionary<string, string> _propertyStringNameRoute = new();
+		private Dictionary<string, string> _propertyStringsNameRoute = new();
+
 
 
 		public ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
@@ -46,15 +49,25 @@ namespace Presonus.StudioLive32.Api.Models
 					continue;
 
 				var parameterAttribute = property.GetCustomAttribute<ParameterPathAttribute>();
+
 				string parameterName = parameterAttribute == null ? property.Name : parameterAttribute.ParameterPath;
-				if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(string) || property.PropertyType == typeof(string[]) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float) || property.PropertyType.IsEnum)
+				if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float) || property.PropertyType.IsEnum)
 				{
 					_propertyValueNameRoute[property.Name] = GetPropertyPath(parameterName);
+				}
+				if (property.PropertyType == typeof(string))
+				{
+					_propertyStringNameRoute[property.Name] = GetPropertyPath(parameterName);
+				}
+				if (property.PropertyType == typeof(string[]))
+				{
+					_propertyStringsNameRoute[property.Name] = GetPropertyPath(parameterName);
 				}
 			}
 		}
 		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
 		{
+			if (_channelType == ChannelTypes.NONE) return propertyName;
 			return ChannelUtil.GetChannelString(new(_channelType, _channelIndex, mixType, mixNum)) + $"/{propertyName}";
 		}
 
@@ -69,8 +82,8 @@ namespace Presonus.StudioLive32.Api.Models
 
 		private void StringStateUpdated(object sender, ValueChangedEventArgs<string> args)
 		{
+			var propertyName = _propertyStringNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 
-			var propertyName = _propertyValueNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 			if (propertyName is null)
 			{
 				return;
@@ -80,7 +93,7 @@ namespace Presonus.StudioLive32.Api.Models
 
 		private void StringsStateUpdated(object sender, ValueChangedEventArgs<string[]> args)
 		{
-			var propertyName = _propertyValueNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
+			var propertyName = _propertyStringsNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 			if (propertyName is null)
 				return;
 
@@ -90,7 +103,7 @@ namespace Presonus.StudioLive32.Api.Models
 
 		protected string GetString([CallerMemberName] string propertyName = "")
 		{
-			var path = _propertyValueNameRoute[propertyName];
+			var path = _propertyStringNameRoute[propertyName];
 			var value = _mixerStateService.GetString(path);
 
 			return value;
@@ -104,12 +117,41 @@ namespace Presonus.StudioLive32.Api.Models
 			return result;
 		}
 
+		public List<string> GetValueList(string propertyName)
+		{
+			List<string> result = new();
+			if (TryGetRange(propertyName, out var range))
+			{
+				for (int i = (int)range.Min; i <= range.Max; i++)
+				{
+					result.Add((i+1).ToString());
+				}
+			}
+			return result;
+		}
+
+		public bool TryGetRange(string propertyName, out UCNet.Api.Models.Range range)
+		{
+			var path = _propertyValueNameRoute[propertyName];
+			range = new();
+			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
+			{
+				range.Max = max;
+				_mixerStateService.TryGetValue(path + "/min", out float min);
+				range.Min = min;
+				_mixerStateService.TryGetValue(path + "/def", out float def);
+				range.Default = def;
+				return true;
+			}
+			return false;
+		}
+
 		protected int GetIntInRange([CallerMemberName] string propertyName = "")
 		{
 			var path = _propertyValueNameRoute[propertyName];
 			var value = _mixerStateService.GetValue(path);
 
-			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based
+			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
 			{
 				_mixerStateService.TryGetValue(path + "/min", out float min);
 				if (min == -1) min = 0;
@@ -127,7 +169,7 @@ namespace Presonus.StudioLive32.Api.Models
 		{
 			var path = _propertyValueNameRoute[propertyName];
 
-			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based
+			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
 			{
 				_mixerStateService.TryGetValue(path + "/min", out float min);
 				if (min == -1) min = 0;
@@ -148,7 +190,7 @@ namespace Presonus.StudioLive32.Api.Models
 
 		protected void SetString(string value, [CallerMemberName] string propertyName = "")
 		{
-			if (_propertyValueNameRoute.TryGetValue(propertyName, out var pathName))
+			if (_propertyStringNameRoute.TryGetValue(propertyName, out var pathName))
 				_mixerStateService.SetString(pathName, value);
 		}
 

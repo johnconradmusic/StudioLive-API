@@ -1,4 +1,4 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
+﻿using Presonus.UCNet.Api.Attributes;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;

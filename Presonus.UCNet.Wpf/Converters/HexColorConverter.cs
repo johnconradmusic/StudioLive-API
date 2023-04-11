@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Presonus.StudioLive32.Wpf.Converters
+namespace Presonus.UCNet.Wpf.Converters
 {
 	public class HexStringToSolidColorBrushConverter : IValueConverter
 	{
@@ -18,7 +18,7 @@ namespace Presonus.StudioLive32.Wpf.Converters
 
 
 				string hexColor = (string)value;
-			Console.WriteLine($"CONVERTING {hexColor}");
+			//Console.WriteLine($"CONVERTING {hexColor}");
 
 				if (hexColor == null)
 				{
@@ -35,7 +35,7 @@ namespace Presonus.StudioLive32.Wpf.Converters
 				int b = int.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
 			if (r == 0 && g == 0 && b == 0) return null;
 			var result = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
-			Console.WriteLine(result);
+			//Console.WriteLine(result);
 			return result;
 		}
 

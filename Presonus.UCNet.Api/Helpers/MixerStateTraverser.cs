@@ -7,7 +7,6 @@ using Presonus.UCNet.Api.Models;
 using System.Diagnostics;
 using System.Text.Json;
 using Presonus.UCNet.Api.Services;
-using Presonus.StudioLive32.Api.Enums;
 using System.Windows.Markup;
 
 namespace Presonus.UCNet.Api.Helpers
@@ -96,7 +95,7 @@ namespace Presonus.UCNet.Api.Helpers
 
 							Array.Reverse(buffer); // Reverse the byte order
 							string hexString = BitConverter.ToString(buffer, 0, 4).Replace("-", "");
-							Console.WriteLine(hexString);
+							//Console.WriteLine(hexString);
 							mixerState.SetString(path, hexString);
 						}
 						else

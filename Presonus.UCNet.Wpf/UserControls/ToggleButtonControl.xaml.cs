@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Presonus.UCNet.Wpf.Interfaces;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Presonus.StudioLive32.Wpf.UserControls
+namespace Presonus.UCNet.Wpf.UserControls
 {
-	public partial class ToggleButtonControl : UserControl
+	public partial class ToggleButtonControl : UserControl, IAccessibleControl
 	{
 		public static readonly DependencyProperty IsCheckedProperty =
-			DependencyProperty.Register("IsChecked", typeof(bool), typeof(ToggleButtonControl), new PropertyMetadata(false));
-
-		public static readonly DependencyProperty ContentProperty =
-			DependencyProperty.Register("Content", typeof(object), typeof(ToggleButtonControl), new PropertyMetadata(null));
+			DependencyProperty.Register("IsChecked", typeof(bool), typeof(ToggleButtonControl), new PropertyMetadata(false, OnIsCheckedChanged));
 
 		public static readonly DependencyProperty UncheckedBackgroundProperty =
 			DependencyProperty.Register("UncheckedBackground", typeof(Brush), typeof(ToggleButtonControl), new PropertyMetadata(Brushes.LightGray));
@@ -47,6 +35,23 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public static readonly DependencyProperty OutlineThicknessProperty =
 			DependencyProperty.Register("OutlineThickness", typeof(double), typeof(ToggleButtonControl), new PropertyMetadata(1.0));
 
+		// Using a DependencyProperty as the backing store for Caption. This enables animation,
+		// styling, binding, etc...
+		public static readonly DependencyProperty CaptionProperty =
+			DependencyProperty.Register("Caption", typeof(string), typeof(ToggleButtonControl), new PropertyMetadata(""));
+
+		// Using a DependencyProperty as the backing store for ValueString. This enables animation,
+		// styling, binding, etc...
+		public static readonly DependencyProperty ValueStringProperty =
+			DependencyProperty.Register("ValueString", typeof(string), typeof(ToggleButtonControl), new PropertyMetadata(""));
+
+		public ToggleButtonControl()
+		{
+			InitializeComponent();
+		}
+
+		public event EventHandler ValueChanged;
+
 		public Brush OutlineBrush
 		{
 			get { return (Brush)GetValue(OutlineBrushProperty); }
@@ -65,10 +70,16 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			set { SetValue(IsCheckedProperty, value); }
 		}
 
-		public object Content
+		public string Caption
 		{
-			get { return (object)GetValue(ContentProperty); }
-			set { SetValue(ContentProperty, value); }
+			get { return (string)GetValue(CaptionProperty); }
+			set { SetValue(CaptionProperty, value); }
+		}
+
+		public string ValueString
+		{
+			get { return (string)GetValue(ValueStringProperty); }
+			set { SetValue(ValueStringProperty, value); }
 		}
 
 		public Brush UncheckedBackground
@@ -104,14 +115,20 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		public Brush CheckedForeground
 		{
 			get { return (Brush)GetValue(CheckedForegroundProperty); }
-			set
-			{
-				SetValue(CheckedForegroundProperty, value);
-			}
+			set { SetValue(CheckedForegroundProperty, value); }
 		}
-		public ToggleButtonControl()
+
+		private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			InitializeComponent();
+			var control = d as ToggleButtonControl;
+			control.ValueString = control.IsChecked ? "On" : "Off";
+			control?.ValueChanged?.Invoke(control, EventArgs.Empty);
+		}
+
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			ValueString = IsChecked ? "On" : "Off";
 		}
 	}
 }

@@ -1,8 +1,8 @@
-﻿using Presonus.StudioLive32.Api.Extensions;
+﻿using Presonus.UCNet.Api.Extensions;
 using System;
 using System.Text;
 
-namespace Presonus.StudioLive32.Api.Messages.Readers
+namespace Presonus.UCNet.Api.Messages.Readers
 {
     public static class JM
     {

@@ -35,10 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Assets\Images\black thumb.png" />
     <Resource Include="Assets\Images\gray thumb.png" />
     <Resource Include="Assets\Images\knob-big-base.png" />

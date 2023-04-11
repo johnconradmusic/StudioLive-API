@@ -1,50 +1,32 @@
-﻿using Presonus.UCNet.Api.Helpers;
+﻿using Presonus.UCNet.Wpf.Interfaces;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Presonus.StudioLive32.Wpf.UserControls
+namespace Presonus.UCNet.Wpf.UserControls
 {
-	public partial class PanPotControl : UserControl
+	public partial class PanPotControl : UserControl, IAccessibleControl
 	{
 		private bool isDragging;
 
 		private Point dragStartPoint;
 
-		// Using a DependencyProperty as the backing store for Curve. This enables animation,
-		// styling, binding, etc...
-		public static readonly DependencyProperty CurveProperty =
-			DependencyProperty.Register("Curve", typeof(CurveFormula), typeof(PanPotControl), new PropertyMetadata(CurveFormula.Linear));
-
 		public static readonly DependencyProperty ValueProperty =
 			DependencyProperty.Register("Value", typeof(float), typeof(PanPotControl),
 				new FrameworkPropertyMetadata(0.0f, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
-		// Using a DependencyProperty as the backing store for Min. This enables animation, styling,
-		// binding, etc...
-		public static readonly DependencyProperty MinProperty =
-			DependencyProperty.Register("Min", typeof(float), typeof(PanPotControl), new PropertyMetadata(0f));
-
-		// Using a DependencyProperty as the backing store for Max. This enables animation, styling,
-		// binding, etc...
-		public static readonly DependencyProperty MaxProperty =
-			DependencyProperty.Register("Max", typeof(float), typeof(PanPotControl), new PropertyMetadata(0f));
-
-		// Using a DependencyProperty as the backing store for Caption. This enables animation,
-		// styling, binding, etc...
 		public static readonly DependencyProperty CaptionProperty =
 			DependencyProperty.Register("Caption", typeof(string), typeof(PanPotControl), new PropertyMetadata(""));
+
+		public static readonly DependencyProperty ValueStringProperty =
+			DependencyProperty.Register("ValueString", typeof(string), typeof(PanPotControl), new PropertyMetadata(""));
+
+		public event EventHandler ValueChanged;
 
 		public PanPotControl()
 		{
 			InitializeComponent();
-		}
-
-		public CurveFormula Curve
-		{
-			get { return (CurveFormula)GetValue(CurveProperty); }
-			set { SetValue(CurveProperty, value); }
 		}
 
 		public string Caption
@@ -53,16 +35,41 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 			set { SetValue(CaptionProperty, value); }
 		}
 
-		public float Min
+		public string ValueString
 		{
-			get { return (float)GetValue(MinProperty); }
-			set { SetValue(MinProperty, value); }
+			get { return (string)GetValue(ValueStringProperty); }
+			set { SetValue(ValueStringProperty, value); }
 		}
 
-		public float Max
+		void UpdateValueString(float Value)
 		{
-			get { return (float)GetValue(MaxProperty); }
-			set { SetValue(MaxProperty, value); }
+			int panPercentage;
+			float centerTolerance = 0.01f; // Tolerance range for the center
+
+			// Check if the value is within the center tolerance range
+			if (Math.Abs(Value - 0.5f) <= centerTolerance)
+			{
+				ValueString = "Center";
+			}
+			// If the value is less than 0.5, it means pan to the left
+			else if (Value < 0.5f)
+			{
+				panPercentage = (int)((0.5f - Value) * 200); // Calculate the percentage for left panning
+				ValueString = $"Pan Left {panPercentage}%";
+			}
+			// If the value is greater than 0.5, it means pan to the right
+			else
+			{
+				panPercentage = (int)((Value - 0.5f) * 200); // Calculate the percentage for right panning
+				ValueString = $"Pan Right {panPercentage}%";
+			}
+		}
+
+
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+			UpdateValueString(Value);
 		}
 
 		public float Value
@@ -74,8 +81,23 @@ namespace Presonus.StudioLive32.Wpf.UserControls
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			var control = d as PanPotControl;
+			float newValue = (float)e.NewValue;
+			float centerTolerance = 0.01f; // Tolerance range for the center
+
+			// Snap the value to 0.5 if it's within the center tolerance range
+			if (Math.Abs(newValue - 0.5f) <= centerTolerance)
+			{
+				newValue = 0.5f;
+				// Update the dependency property with the new value
+				control.SetValue(ValueProperty, newValue);
+			}
+
 			control?.UpdateRotateTransform();
+			control?.UpdateValueString(newValue);
+			control?.ValueChanged?.Invoke(control, EventArgs.Empty);
 		}
+
+
 
 		private void Knob_MouseDown(object sender, MouseButtonEventArgs e)
 		{

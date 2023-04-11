@@ -1,7 +1,9 @@
-﻿using Presonus.UCNet.Api.NewDataModel;
+﻿using Presonus.UCNet.Api.Enums;
+using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +42,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 		public float FXH { get => GetValue(); set => SetValue(value); }
 
 		public float inputsrc { get => GetValue(); set => SetValue(value); }
+		public List<string> inputsrc_values => new List<string>(Enum.GetNames(typeof(LineInputSource)).ToList());
 		public float inputsrc_preview { get => GetValue(); set => SetValue(value); }
 		public float delay { get => GetValue(); set => SetValue(value); }
 	}

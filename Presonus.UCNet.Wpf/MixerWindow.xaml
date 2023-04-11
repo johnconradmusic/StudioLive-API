@@ -3,12 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:usercontrols="clr-namespace:Presonus.StudioLive32.Wpf.UserControls"
+        xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
         xmlns:api="clr-namespace:Presonus.UCNet.Api"
-        xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api" xmlns:converters="clr-namespace:Presonus.StudioLive32.Wpf.Converters" xmlns:converters1="clr-namespace:Presonus.UCNet.Wpf.Converters"
+        xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api" xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters" xmlns:converters1="clr-namespace:Presonus.UCNet.Wpf.Converters"
         d:DataContext="{d:DesignInstance Type=api:MainViewModel}"
         mc:Ignorable="d"
-        Title="MixerWindow" Height="900" Width="1600" WindowStartupLocation="CenterScreen" Background="#2e2f31">
+        Title="MixerWindow" Height="1000" Width="1600" WindowState="Maximized" WindowStartupLocation="CenterScreen" Background="#2e2f31">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters1:BooleanToVisibilityConverter x:Key="InverseBooleanConverter" />
@@ -21,7 +21,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border Background="#FF171F17" Grid.Row="0">
-
+                <StackPanel>
+                    <Button Content="TEST" Click="Button_Click"/>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Presets.CurrentScene, Mode=OneWay}" FontSize="24"/>
+                </StackPanel>
             </Border>
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <ScrollViewer.Resources>

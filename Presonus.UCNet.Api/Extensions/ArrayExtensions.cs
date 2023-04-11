@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Presonus.StudioLive32.Api.Extensions
+namespace Presonus.UCNet.Api.Extensions
 {
     internal static class ArrayExtensions
     {

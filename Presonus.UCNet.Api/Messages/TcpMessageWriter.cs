@@ -1,12 +1,14 @@
 ﻿//------------------------------------------------------------------------------
 // The Assistant - Copyright (c) 2016-2023, John Conrad
 //------------------------------------------------------------------------------
+using Presonus.UCNet.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Markup;
 
-namespace Presonus.StudioLive32.Api.Messages
+namespace Presonus.UCNet.Api.Messages
 {
 	public class TcpMessageWriter
 	{
@@ -58,7 +60,49 @@ namespace Presonus.StudioLive32.Api.Messages
 
 			return data;
 		}
+		public byte[] CreateSceneRecall(string projFile, string sceneFile)
+		{
+			var data = CreateHeader(_deviceId);
 
+			string json = JsonSerializer.Serialize(new
+			{
+				id = "StorePreset",
+				url = "presets",
+				presetTarget = "",
+				presetTargetSlave = 0,
+				presetFile = $"presets/proj/{projFile}/{sceneFile}"
+			});
+
+			//JsonLength [12..16]:
+			data.AddRange(BitConverter.GetBytes(json.Length));
+
+			//Json [16..]
+			data.AddRange(Encoding.ASCII.GetBytes(json));
+
+			return Create(data, MessageCode.JSON);
+		}
+
+		public byte[] CreateProjectRecall(string projFile)
+		{
+			var data = CreateHeader(_deviceId);
+
+			string json = JsonSerializer.Serialize(new
+			{
+				id = "RestorePreset",
+				url = "presets",
+				presetTarget = "",
+				presetTargetSlave = 0,
+				presetFile = "presets/proj/" + projFile
+			});
+			//JsonLength [12..16]:
+			data.AddRange(BitConverter.GetBytes(json.Length));
+
+			//Json [16..]
+			data.AddRange(Encoding.ASCII.GetBytes(json));
+
+			return Create(data, MessageCode.JSON);
+
+		}
 		public byte[] CreateClientInfoMessage()
 		{
 			var data = CreateHeader(_deviceId);

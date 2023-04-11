@@ -1,5 +1,5 @@
-﻿using Presonus.StudioLive32.Api.Attributes;
-using Presonus.StudioLive32.Api.Models;
+﻿using Presonus.UCNet.Api.Attributes;
+using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;
@@ -26,7 +26,7 @@ namespace Presonus.UCNet.Api.Models
 			PropertyChanged?.Invoke(this, eventArgs);
 		}
 		public bool linkable => !(int.Parse(chnum) % 2 == 0);
-		public string chnum { get => GetString(); set => SetString(value); }
+		public string chnum { get => GetString(); set { SetString(value); OnPropertyChanged(new("linkable")); } }
 		public string name { get => GetString(); set => SetString(value); }
 		public string username { get => GetString(); set => SetString(value); }
 		public string color { get => GetString(); set => SetString(value); }
