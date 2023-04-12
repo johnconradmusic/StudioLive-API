@@ -13,7 +13,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class RoutableChannel : Channel
 	{
-		public RoutableChannel(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
+		public RoutableChannel(ChannelTypes channelType, int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(channelType, index, mixerStateService, meterDataStorage)
 		{
 
 		}

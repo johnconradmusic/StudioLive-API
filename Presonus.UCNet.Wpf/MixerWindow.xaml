@@ -22,8 +22,9 @@
             </Grid.RowDefinitions>
             <Border Background="#FF171F17" Grid.Row="0">
                 <StackPanel>
-                    <Button Content="TEST" Click="Button_Click"/>
-                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Presets.CurrentScene, Mode=OneWay}" FontSize="24"/>
+                    <!--<Button Content="TEST" Click="Button_Click"/>-->
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Global.devicename, Mode=OneWay}" FontSize="24"/>
+                    <TextBlock Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Presets.CurrentScene, Mode=OneWay}" FontSize="16"/>
                 </StackPanel>
             </Border>
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

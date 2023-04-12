@@ -1,11 +1,14 @@
 ﻿//------------------------------------------------------------------------------
 // The Assistant - Copyright (c) 2016-2023, John Conrad
 //------------------------------------------------------------------------------
+using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace Presonus.UCNet.Api.Messages
@@ -60,6 +63,32 @@ namespace Presonus.UCNet.Api.Messages
 
 			return data;
 		}
+		public const string CHANNEL_PRESETS = "presets/channel";
+		public const string PROJECTS = "presets/proj";
+
+		public byte[] CreateProjectsRequest()
+		{
+			List<byte> data = CreateHeader(_deviceId);
+
+			var key = PROJECTS;
+
+			ushort id = (ushort)UniqueRandom.Get(16).Request();
+			byte[] idBuffer = BitConverter.GetBytes(id);
+			Array.Reverse(idBuffer); // Convert to big-endian format
+
+			byte[] keyBuffer = Encoding.ASCII.GetBytes("List" + key.ToString());
+
+			byte[] nullBuffer = new byte[] { 0x00, 0x00 };
+
+			List<byte> packetBuffer = new List<byte>();
+			packetBuffer.AddRange(idBuffer);
+			packetBuffer.AddRange(keyBuffer);
+			packetBuffer.AddRange(nullBuffer);
+
+			return Create(packetBuffer, MessageCode.FileRequest);
+
+		}
+
 		public byte[] CreateSceneRecall(string projFile, string sceneFile)
 		{
 			var data = CreateHeader(_deviceId);

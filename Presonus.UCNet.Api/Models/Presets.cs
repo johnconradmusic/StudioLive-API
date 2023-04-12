@@ -54,7 +54,7 @@ namespace Presonus.UCNet.Api.Models
 
 		public override event PropertyChangedEventHandler PropertyChanged;
 
-		protected override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+		public override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
 		{
 			PropertyChanged?.Invoke(this, eventArgs);
 		}

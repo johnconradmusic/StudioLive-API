@@ -41,12 +41,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private void UpdateMeterImage()
 		{
-			//var onStateHeight = meterOnImage.ActualHeight;
-			//var onStateWidth = meterOnImage.ActualWidth;
-			//var portionToShow = ValueTransformer.Transform(Value, 0, 1, CurveFormula.LinearToVolume) +84;
-			//Console.WriteLine($"{Value} -> {portionToShow}");
-			//var clipGeometry = new RectangleGeometry(new Rect(0, onStateHeight - (onStateHeight * portionToShow), onStateWidth, onStateHeight * portionToShow));
-			//meterOnImage.Clip = clipGeometry;			
+			Console.WriteLine($"meter {Value}");
 		}
 
 		public MeterControl()

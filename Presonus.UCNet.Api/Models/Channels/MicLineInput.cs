@@ -6,12 +6,13 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class MicLineInput : InputChannel
 	{
-		public MicLineInput(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
+		public MicLineInput(ChannelTypes channelType, int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(channelType, index, mixerStateService, meterDataStorage)
 		{
 		}
 
 		[ParameterPath("48v")]
 		public float phantom { get => GetValue(); set => SetValue(value); }
+		public float meter => _meterDataStorage.GetInputData() != null ? _meterDataStorage.GetInputData()[_channelIndex-1] : 0;
 
 		public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
 		public float preampgain { get => GetValue(); set => SetValue(value); }

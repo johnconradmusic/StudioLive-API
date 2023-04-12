@@ -11,7 +11,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class StereoLineInput : InputChannel
 	{
-		public StereoLineInput(int index, MixerStateService mixerStateService) : base(ChannelTypes.RETURN, index, mixerStateService)
+		public StereoLineInput(int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(ChannelTypes.RETURN, index, mixerStateService, meterDataStorage)
 		{
 		}
 

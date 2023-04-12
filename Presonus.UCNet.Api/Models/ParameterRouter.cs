@@ -15,8 +15,8 @@ namespace Presonus.UCNet.Api.Models
 	{
 		private readonly MixerStateService _mixerStateService;
 
-		private ChannelTypes _channelType;
-		private int _channelIndex;
+		protected ChannelTypes _channelType;
+		protected int _channelIndex;
 		public static bool loadingFromScene = false;
 		private Dictionary<string, string> _propertyValueNameRoute = new();
 		private Dictionary<string, string> _propertyStringNameRoute = new();
@@ -35,7 +35,7 @@ namespace Presonus.UCNet.Api.Models
 
 			InitMapRoutes();
 		}
-		protected abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
+		public abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
 
 		public abstract event PropertyChangedEventHandler PropertyChanged;
 		private void InitMapRoutes()

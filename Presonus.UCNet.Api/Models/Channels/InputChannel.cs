@@ -12,7 +12,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class InputChannel : RoutableChannel
 	{
-		public InputChannel(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
+		public InputChannel(ChannelTypes channelType, int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(channelType, index, mixerStateService, meterDataStorage)
 		{
 		}
 		public bool lr { get => GetBoolean(); set => SetBoolean(value); }

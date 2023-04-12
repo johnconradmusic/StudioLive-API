@@ -10,7 +10,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class OutputDACBus : OutputBus
 	{
-		public OutputDACBus(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
+		public OutputDACBus(ChannelTypes channelType, int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(channelType, index, mixerStateService, meterDataStorage)
 		{
 		}
 	}

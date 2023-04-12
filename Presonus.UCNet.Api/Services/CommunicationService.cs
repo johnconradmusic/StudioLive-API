@@ -47,9 +47,17 @@ namespace Presonus.UCNet.Api.Services
 			_mixerStateService.SendStringMethod = SendString;
 			_mixerStateService.RecallProject = RecallProject;
 			_mixerStateService.RecallScene = RecallScene;
-
+			_mixerStateService.GetProjects = RequestProjectList;
 			_listeningThread = new Thread(Listener) { IsBackground = true };
 			_writingThread = new Thread(KeepAlive) { IsBackground = true };
+		}
+
+		private void RequestProjectList()
+		{
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateProjectsRequest();
+
+			SendMessage(data);
 		}
 
 		public static bool ConnectionEstablished { get; set; }
@@ -153,6 +161,9 @@ namespace Presonus.UCNet.Api.Services
 			Console.WriteLine(messageType);
 			switch (messageType)
 			{
+				case MessageCode.FileData:
+					Console.WriteLine("FILE DATA");
+					break;
 				case MessageCode.Unknown1:
 					break;
 

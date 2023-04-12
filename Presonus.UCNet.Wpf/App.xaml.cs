@@ -7,6 +7,7 @@ using System.Windows;
 using Presonus.UCNet.Api.Services;
 using Serilog;
 using System.Threading.Tasks;
+using Accessibility;
 
 namespace Presonus.UCNet.Wpf
 {
@@ -29,6 +30,7 @@ namespace Presonus.UCNet.Wpf
 			var serviceCollection = new ServiceCollection();
 
 			// Register the new classes and their dependencies
+			serviceCollection.AddSingleton<MeterDataStorage>();
 			serviceCollection.AddSingleton<MixerState>();
 			serviceCollection.AddSingleton<MixerStateTraverser>();
 			serviceCollection.AddSingleton<MixerStateSynchronizer>();
