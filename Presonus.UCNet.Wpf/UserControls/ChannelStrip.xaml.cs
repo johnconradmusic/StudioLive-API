@@ -54,7 +54,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 			{
 				SelectedControl = control.Caption;
 				SelectedValue = control.ValueString;
-				Console.WriteLine($"control got focus {control.Caption}");
+				//Console.WriteLine($"control got focus {control.Caption}");
 			}
 		}
 
@@ -121,20 +121,15 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private void Control_ValueChanged(object? sender, EventArgs e)
 		{
-			Console.WriteLine("changed");
+			//Console.WriteLine("changed");
 			if (sender is IAccessibleControl control)
 			{
-				Console.WriteLine("assigned");
+				//Console.WriteLine("assigned");
 
 				SelectedControl = control.Caption;
 				SelectedValue = control.ValueString;
-
 			}
 		}
-
-
-
-
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{

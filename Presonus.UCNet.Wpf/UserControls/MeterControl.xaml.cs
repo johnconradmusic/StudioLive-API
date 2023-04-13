@@ -21,30 +21,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 	/// </summary>
 	public partial class MeterControl : UserControl
 	{
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-			nameof(Value),
-			typeof(float),
-			typeof(MeterControl),
-			new PropertyMetadata(0f, OnValueChanged));
-
-		public float Value
-		{
-			get { return (float)GetValue(ValueProperty); }
-			set { SetValue(ValueProperty, value); }
-		}
-
-		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			var meterControl = (MeterControl)d;
-			meterControl.UpdateMeterImage();
-		}
-
-		private void UpdateMeterImage()
-		{
-			Console.WriteLine($"meter {Value}");
-		}
-
-		public MeterControl()
+				public MeterControl()
 		{
 			InitializeComponent();
 		}

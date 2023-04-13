@@ -111,38 +111,19 @@ namespace Presonus.UCNet.Api.Helpers
 			return a * Math.Exp(b * position);
 		}
 
-		static double Piecewise(double x)
-		{
-			if (x < 0 || x > 1)
-			{
-				throw new ArgumentException("Input value must be between 0 and 1.");
-			}
 
-			if (x == 0)
-			{
-				return -84;
-			}
-			else if (x <= 0.5)
-			{
-				return Interpolate(x, 0, -84, 0.5, -9);
-			}
-			else if (x <= 0.73)
-			{
-				return Interpolate(x, 0.5, -9, 0.73, 0);
-			}
-			else // x <= 1
-			{
-				return Interpolate(x, 0.73, 0, 1, 10);
-			}
-		}
 
 		static double Interpolate(double input, double input1, double output1, double input2, double output2)
 		{
 			return output1 + ((input - input1) * (output2 - output1) / (input2 - input1));
 		}
 
+		public static float LinearToMeter(float value)
+		{
+			return (LinearToVolume(value) + 84) / 94;
+		}
 
-		private static float LinearToVolume(float value)
+		public static float LinearToVolume(float value)
 
 		{
 			var a = 0.47f;
@@ -187,7 +168,7 @@ namespace Presonus.UCNet.Api.Helpers
 				CurveFormula.Exponential => MapValueToExponentialRange(input_value, min_value, max_value, exponent),
 				CurveFormula.Logarithmic => MapValueToLogarithmicRange(input_value, min_value, max_value),
 				CurveFormula.Linear => MapValueToLinearRange(input_value, min_value, max_value),
-				CurveFormula.LinearToVolume => Piecewise(input_value),
+				CurveFormula.LinearToVolume => LinearToVolume(input_value),
 				CurveFormula.InverseLog => MapLinearValueToInverseLogRange(input_value),
 				CurveFormula.Ratio => MapLinearValueToRatioCurve(input_value),
 				CurveFormula.Skew => EaseWithinRange(SkewIn, input_value, min_value, max_value),
@@ -240,7 +221,7 @@ namespace Presonus.UCNet.Api.Helpers
 		}
 
 
-		
+
 
 	}
 

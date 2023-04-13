@@ -82,7 +82,7 @@ public class MainViewModel : INotifyPropertyChanged
 
 		updateTimer = new DispatcherTimer
 		{
-			Interval = TimeSpan.FromMilliseconds(50) // Update every 100 milliseconds
+			Interval = TimeSpan.FromMilliseconds(10) // Update every 100 milliseconds
 		};
 		updateTimer.Tick += UpdateTimer_Tick;
 		updateTimer.Start();
@@ -91,6 +91,7 @@ public class MainViewModel : INotifyPropertyChanged
 	{
 		foreach (var chan in MicLineInputs)
 		{
+			chan.OnPropertyChanged(new("gate_reduction"));
 			chan.OnPropertyChanged(new("meter"));
 		}
 

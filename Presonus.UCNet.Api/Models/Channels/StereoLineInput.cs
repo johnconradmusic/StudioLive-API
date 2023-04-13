@@ -17,6 +17,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 
 		[ParameterPath("opt/swapcompeq")] public bool swapcompeq { get => GetBoolean(); set => SetBoolean(value); }
 
+		public float meter => _meterDataStorage.GetInputData() != null ? _meterDataStorage.GetFxReturnStripData()["inputs"][_channelIndex - 1] : 0;
 
 		public float trim { get => GetValue(); set => SetValue(value); }
 

@@ -1,4 +1,5 @@
 ﻿using Presonus.UCNet.Api.Attributes;
+using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 
@@ -12,12 +13,12 @@ namespace Presonus.UCNet.Api.Models.Channels
 
 		[ParameterPath("48v")]
 		public float phantom { get => GetValue(); set => SetValue(value); }
-		public float meter => _meterDataStorage.GetInputData() != null ? _meterDataStorage.GetInputData()[_channelIndex-1] : 0;
+		public float meter => _meterDataStorage.GetInputData() != null ? ValueTransformer.LinearToMeter(_meterDataStorage.GetInputData()[_channelIndex-1]) : 0;
+		public float gate_reduction => _meterDataStorage.GetInputGateReduction() != null ? _meterDataStorage.GetInputGateReduction()[_channelIndex - 1] : 0;
 
 		public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
 		public float preampgain { get => GetValue(); set => SetValue(value); }
 		public float digitalgain { get => GetValue(); set => SetValue(value); }
-		public bool clip { get => GetBoolean(); set => SetBoolean(value); }
 
 		[ParameterPath("filter/hpf")] public float hpf { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("opt/swapcompeq")] public bool swapcompeq { get => GetBoolean(); set => SetBoolean(value); }

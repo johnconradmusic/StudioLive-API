@@ -16,6 +16,8 @@
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:OpacityConverter x:Key="OpacityConverter" />
+
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
     </UserControl.Resources>
     <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
@@ -30,7 +32,6 @@
                             Value="{Binding SelectedValue, ElementName=channelStrip}" />
                 <!-- #region Routing -->
                 <local:ToggleButtonControl x:Name="RoutingButton" Caption="Routing" Margin="5" CheckedBackground="DarkSlateBlue"/>
-                
                 <StackPanel x:Name="RoutingPanel" Visibility="{Binding IsChecked, ElementName=RoutingButton, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Vertical">
                     <ComboBox Visibility="{Binding inputsrc, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
                         <ComboBox.ItemsSource>
@@ -156,6 +157,7 @@
                     <Border Background="#FF3E3E3E" BorderThickness="2" BorderBrush="Black" Padding="10">
                         <StackPanel>
                             <TextBlock Text="Gate Parameters" FontSize="16" FontWeight="Bold" Foreground="White"/>
+
                             <local:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
                             <local:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
                             <local:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
@@ -164,6 +166,7 @@
                             <local:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
                             <local:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
                             <local:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
+                            <ProgressBar Width="5" Height="100" Orientation="Vertical" Minimum="0" Maximum="1" Background="Transparent" Foreground="CadetBlue" Value="{Binding gate_reduction, Mode=OneWay}"/>
                         </StackPanel>
                     </Border>
                 </Popup>
@@ -239,12 +242,12 @@
                 <local:ToggleButtonControl Margin="2" Caption="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
                 <local:ToggleButtonControl Margin="2" Caption="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
                 <local:PanPotControl Caption="Pan" Value="{Binding pan}"/>
-                <!--<local:MiniToggle Label="Stereo Link" Visibility="{Binding linkable}" Margin="2" Content="Link" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>-->
+                <local:MiniToggle Caption="Stereo Link" Visibility="{Binding linkable}" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
                 <Border HorizontalAlignment="Center" BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
                         <local:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
-                        <!--<usercontrols:MeterControl Value="{Binding meter, Mode=OneWay}"  Width="10" Height="200"/>-->
-                        <ProgressBar Value="{Binding meter, Mode=OneWay}" Minimum="0" Maximum="1" Orientation="Vertical" Width="10" Height="200" Foreground="Green"/>
+                        <usercontrols:MeterControl Width="10" DataContext="{Binding}"/>
+
                     </StackPanel>
                 </Border>
                 <local:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>

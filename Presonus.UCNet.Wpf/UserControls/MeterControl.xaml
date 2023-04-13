@@ -3,15 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls" xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="265" d:DesignWidth="15">
-    <Grid>
-        <Image x:Name="meterOffImage" RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/meter-off.png"/>
-        <Image x:Name="meterOnImage" RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/meter-on.png">
-            <Image.Clip>
-                <RectangleGeometry Rect="0,0,0,0"/>
-            </Image.Clip>
-        </Image>
-    </Grid>
+             d:DesignHeight="200" d:DesignWidth="4">
+    <UserControl.Resources>
+        <converters:OpacityConverter x:Key="OpacityConverter"/>
+    </UserControl.Resources>
+    <Canvas Width="4" Height="200">
+        <!-- Clip Segment -->
+        <Rectangle Canvas.Top="0" Width="5" Height="4" Fill="Red" Opacity="{Binding clip, Converter={StaticResource OpacityConverter}, ConverterParameter=1.0}" />
+        <!-- Yellow Segments -->
+        <Rectangle Canvas.Top="5" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.975}" />
+        <Rectangle Canvas.Top="10" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.95}" />
+        <Rectangle Canvas.Top="15" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.925}" />
+        <Rectangle Canvas.Top="20" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.9}" />
+        <Rectangle Canvas.Top="25" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.875}" />
+        <Rectangle Canvas.Top="30" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.85}" />
+        <Rectangle Canvas.Top="35" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.825}" />
+        <Rectangle Canvas.Top="40" Width="5" Height="4" Fill="Yellow" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.8}" />
+        <!-- Green Segments -->
+        <Rectangle Canvas.Top="45" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.775}" />
+        <Rectangle Canvas.Top="50" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.75}" />
+        <Rectangle Canvas.Top="55" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.725}" />
+        <Rectangle Canvas.Top="60" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.7}" />
+        <Rectangle Canvas.Top="65" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.675}" />
+        <Rectangle Canvas.Top="70" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.65}" />
+        <Rectangle Canvas.Top="75" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.625}" />
+        <Rectangle Canvas.Top="80" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.6}" />
+        <Rectangle Canvas.Top="85" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.575}" />
+        <Rectangle Canvas.Top="90" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.55}" />
+        <Rectangle Canvas.Top="95" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.525}" />
+        <Rectangle Canvas.Top="100" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.5}" />
+        <Rectangle Canvas.Top="105" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.475}" />
+        <Rectangle Canvas.Top="110" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.45}" />
+        <Rectangle Canvas.Top="115" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.425}" />
+        <Rectangle Canvas.Top="120" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.4}" />
+        <Rectangle Canvas.Top="125" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.375}" />
+        <Rectangle Canvas.Top="130" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.35}" />
+        <Rectangle Canvas.Top="135" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.325}" />
+        <Rectangle Canvas.Top="140" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.3}" />
+        <Rectangle Canvas.Top="145" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.275}" />
+        <Rectangle Canvas.Top="150" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.25}" />
+        <Rectangle Canvas.Top="155" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.225}" />
+        <Rectangle Canvas.Top="160" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.2}" />
+        <Rectangle Canvas.Top="165" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.175}" />
+        <Rectangle Canvas.Top="170" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.15}" />
+        <Rectangle Canvas.Top="175" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.125}" />
+        <Rectangle Canvas.Top="180" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.1}" />
+        <Rectangle Canvas.Top="185" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.075}" />
+        <Rectangle Canvas.Top="190" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.05}" />
+        <Rectangle Canvas.Top="195" Width="5" Height="4" Fill="Green" Opacity="{Binding meter, Converter={StaticResource OpacityConverter}, ConverterParameter=0.025}" />
+    </Canvas>
 </UserControl>

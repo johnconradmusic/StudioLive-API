@@ -93,14 +93,40 @@ namespace Presonus.UCNet.Api.Services
 			}
 			else if (msg == "redu")
 			{
-				//data = data.Skip(20).ToArray();
-
+				data = data.Skip(20).ToArray();
+				var meterData = ReadRedu(data);
+				_meterDataStorage.UpdateMeterData(meterData);
 				//ReadValues(data, Mixer.ChannelCounts["LINE"], gateReduction, out data);
 				//ReadValues(data, 16, compReduction, out data);
 				//ReadValues(data, 16, limitReduction, out data);
 			}
 		}
+		private ReductionData ReadRedu(byte[] data)
+		{
+			int offset = 0;
 
+			float[] ReadValues(int count, int skipBytes = 0)
+			{
+				float[] values = new float[count];
+				offset += skipBytes * 2;
+
+				for (int i = 0; i < count; i++)
+				{
+					float val = BitConverter.ToUInt16(data, offset);
+					values[i] = val / 65535f;
+					offset += 2;
+				}
+
+				return values;
+			}
+
+			var reductionData = new ReductionData
+			{
+				InputGateReduction = ReadValues(Mixer.ChannelCounts[ChannelTypes.LINE.ToString()]),				
+			};
+
+			return reductionData;
+		}
 		private MeterData ReadLevl(byte[] data)
 		{
 			int offset = 0;

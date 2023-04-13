@@ -26,6 +26,7 @@ namespace Presonus.UCNet.Api.Models
 		{
 			PropertyChanged?.Invoke(this, eventArgs);
 		}
+		public bool clip { get => GetBoolean(); set => SetBoolean(value); }
 		public bool linkable => !(int.Parse(chnum) % 2 == 0);
 		public string chnum { get => GetString(); set => SetString(value);  }
 		public string name { get => GetString(); set => SetString(value); }
