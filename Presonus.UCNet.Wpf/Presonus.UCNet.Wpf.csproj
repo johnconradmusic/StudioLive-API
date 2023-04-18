@@ -29,8 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Theme\" />
-    <Folder Include="Views\" />
     <Folder Include="Windows\" />
   </ItemGroup>
 
@@ -44,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="MixerWindow.xaml.cs">
+    <Compile Update="Views\MixerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -62,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="MixerWindow.xaml">
+    <Page Update="Views\MixerView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

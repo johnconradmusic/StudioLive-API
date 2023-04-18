@@ -4,10 +4,10 @@ using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Api;
 using System.Windows;
-using Presonus.UCNet.Api.Services;
 using Serilog;
 using System.Threading.Tasks;
 using Accessibility;
+using Presonus.UCNet.Wpf.Views;
 
 namespace Presonus.UCNet.Wpf
 {
@@ -30,7 +30,6 @@ namespace Presonus.UCNet.Wpf
 			var serviceCollection = new ServiceCollection();
 
 			// Register the new classes and their dependencies
-			serviceCollection.AddSingleton<MeterDataStorage>();
 			serviceCollection.AddSingleton<MixerState>();
 			serviceCollection.AddSingleton<MixerStateTraverser>();
 			serviceCollection.AddSingleton<MixerStateSynchronizer>();
@@ -40,12 +39,10 @@ namespace Presonus.UCNet.Wpf
 			serviceCollection.AddSingleton<CommunicationService>();
 			serviceCollection.AddSingleton<MeterService>();
 
-			// Device model
-			//serviceCollection.AddSingleton<StudioLive32R>();
 
 			// WPF UI
 			serviceCollection.AddSingleton<MainViewModel>();
-			serviceCollection.AddSingleton<MixerWindow>();
+			serviceCollection.AddSingleton<MainWindow>();
 
 			var serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -56,7 +53,7 @@ namespace Presonus.UCNet.Wpf
 			}
 
 			// Run application:
-			var mainWindow = serviceProvider.GetRequiredService<MixerWindow>();
+			var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
 			mainWindow.Show();
 		}
 

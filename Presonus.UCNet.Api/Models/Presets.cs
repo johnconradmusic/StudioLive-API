@@ -1,14 +1,9 @@
 ﻿using Presonus.UCNet.Api.Attributes;
-using Presonus.UCNet.Api.NewDataModel;
 using Presonus.UCNet.Api.Services;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Presonus.UCNet.Api.Models
 {
@@ -17,6 +12,8 @@ namespace Presonus.UCNet.Api.Models
 		public Presets(MixerStateService mixerStateService) : base(ChannelTypes.NONE, -1, mixerStateService)
 		{
 		}
+
+		public override event PropertyChangedEventHandler PropertyChanged;
 
 		[ParameterPath("presets/loaded_scene_name")]
 		public string CurrentScene
@@ -32,7 +29,8 @@ namespace Presonus.UCNet.Api.Models
 				string projectName = pathParts.Length > 1 ? pathParts[1] : string.Empty;
 				string sceneName = pathParts.Length > 2 ? Path.GetFileNameWithoutExtension(pathParts[2]) : string.Empty;
 
-				// Regular expression to match the number and a dot followed by a space at the beginning of the name
+				// Regular expression to match the number and a dot followed by a space at the
+				// beginning of the name
 				Regex regex = new Regex(@"^(\d+)\.");
 
 				// Extract the save slot numbers from the project and scene names
@@ -49,15 +47,11 @@ namespace Presonus.UCNet.Api.Models
 
 				return $"{projectName.ToUpper()}: {sceneName.ToUpper()}";
 			}
-
 		}
-
-		public override event PropertyChangedEventHandler PropertyChanged;
 
 		public override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
 		{
 			PropertyChanged?.Invoke(this, eventArgs);
 		}
-
 	}
 }

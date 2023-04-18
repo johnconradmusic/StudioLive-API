@@ -25,15 +25,15 @@ namespace Presonus.UCNet.Api.Helpers
 						if (!Mixer.Counted)
 						{
 							if (path.StartsWith("line/"))
-								Mixer.ChannelCounts["LINE"]++;
+								Mixer.ChannelCounts[ChannelTypes.LINE]++;
 							else if (path.StartsWith("return/"))
-								Mixer.ChannelCounts["RETURN"]++;
+								Mixer.ChannelCounts[ChannelTypes.RETURN]++;
 							else if (path.StartsWith("fxreturn/"))
-								Mixer.ChannelCounts["FXRETURN"]++;
+								Mixer.ChannelCounts[ChannelTypes.FXRETURN]++;
 							else if (path.StartsWith("aux/"))
-								Mixer.ChannelCounts["AUX"]++;
+								Mixer.ChannelCounts[ChannelTypes.AUX]++;
 							else if (path.StartsWith("fx/"))
-								Mixer.ChannelCounts["FX"]++;
+								Mixer.ChannelCounts[ChannelTypes.FX]++;
 						}
 						Traverse(property.Value, CreatePath(path), mixerState);
 						continue;

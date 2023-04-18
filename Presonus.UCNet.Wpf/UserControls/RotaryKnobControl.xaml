@@ -5,33 +5,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d" x:Name="RotaryKnob"
-             MinWidth="60" Height="20" 
-             MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" 
-             MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave"
-             KeyboardNavigation.TabNavigation="Local"
-            KeyboardNavigation.DirectionalNavigation="Cycle"
-            Focusable="True" IsTabStop="True">
-    <Grid>
+             MouseDown="Knob_MouseDown"
+             MouseMove="Knob_MouseMove"
+             MouseUp="Knob_MouseUp" MouseWheel="RotaryKnob_MouseWheel"
+             d:DesignHeight="40" d:DesignWidth="80">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Assets/Images/knob-big-base.png" Width="20" Height="20"/>
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Assets/Images/knob-big-indicator.png" Width="20" Height="20">
-            <Image.RenderTransform>
-                <RotateTransform x:Name="KnobRotateTransform"
-                                 Angle="30" 
-                                 CenterX="10" CenterY="10"/>
-            </Image.RenderTransform>
-        </Image>
+        <Grid Width="20" Height="20">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <RotateTransform  x:Name="KnobRotation" CenterX="10" CenterY="10"/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Ellipse Width="20" Height="20" Fill="Gray"/>
+            <Rectangle RadiusX="1" RadiusY="1" Width="2" Height="10" Fill="DarkSlateBlue" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        </Grid>
         <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical" >
             <TextBlock Text="{Binding Caption, FallbackValue=Name, RelativeSource={RelativeSource AncestorType={x:Type local:RotaryKnobControl}}}" FontSize="8" Foreground="White" />
             <TextBlock x:Name="ValueText" Text="Value" FontSize="8" Foreground="White"/>
         </StackPanel>
     </Grid>
 </UserControl>
-
-
-
-
-

@@ -1,4 +1,4 @@
-﻿using Presonus.UCNet.Api.NewDataModel;
+﻿
 using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class OutputBus : RoutableChannel
 	{
-		public OutputBus(ChannelTypes channelType, int index, MixerStateService mixerStateService,MeterDataStorage meterDataStorage) : base(channelType, index, mixerStateService, meterDataStorage)
+		public OutputBus(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
 		{
 			
 		}

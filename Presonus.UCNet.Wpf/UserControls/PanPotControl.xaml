@@ -5,18 +5,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d" x:Name="PanPot"
-             MinWidth="60" Height="30" IsTabStop="True" Focusable="True" MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/knob-big-base.png" Width="30" Height="30"/>
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/knob-big-indicator.png" Width="30" Height="30">
-            <Image.RenderTransform>
-                <RotateTransform x:Name="KnobRotateTransform"
-                                 Angle="30" 
-                                 CenterX="15" CenterY="15"/>
-            </Image.RenderTransform>
-        </Image>
+             MinWidth="60" Height="60" IsTabStop="True" Focusable="True" MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown" MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Width="40" Height="40">
+            <Grid.RenderTransform>
+                <RotateTransform Angle="320" CenterX="20" CenterY="20"/>
+            </Grid.RenderTransform>
+            <Rectangle HorizontalAlignment="Center" Width="2" Height="3" Fill="White" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid Width="40" Height="40">
+            <Grid.RenderTransform>
+                <RotateTransform Angle="40" CenterX="20" CenterY="20"/>
+            </Grid.RenderTransform>
+            <Rectangle HorizontalAlignment="Center" Width="2" Height="3" Fill="White" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid Width="40" Height="40">
+            <Grid.RenderTransform>
+                <RotateTransform Angle="180" CenterX="20" CenterY="20"/>
+            </Grid.RenderTransform>
+            <Rectangle HorizontalAlignment="Center" Width="2" Height="3" Fill="White" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid Width="30" Height="30">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <RotateTransform x:Name="KnobRotation" CenterX="15" CenterY="15"/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Ellipse Width="30" Height="30" Fill="{StaticResource Accent}"/>
+            <Rectangle RadiusX="1" RadiusY="1" Width="2" Height="10" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        </Grid>
+        <StackPanel VerticalAlignment="Center" Grid.Row="1" Orientation="Vertical" >
+            <TextBlock Text="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="12" HorizontalAlignment="Center" Foreground="White"/>
+        </StackPanel>
     </Grid>
 </UserControl>

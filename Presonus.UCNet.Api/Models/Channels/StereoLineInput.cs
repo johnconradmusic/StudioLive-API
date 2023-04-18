@@ -1,5 +1,5 @@
 ﻿using Presonus.UCNet.Api.Attributes;
-using Presonus.UCNet.Api.NewDataModel;
+
 using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -11,13 +11,11 @@ namespace Presonus.UCNet.Api.Models.Channels
 {
 	public class StereoLineInput : InputChannel
 	{
-		public StereoLineInput(int index, MixerStateService mixerStateService, MeterDataStorage meterDataStorage) : base(ChannelTypes.RETURN, index, mixerStateService, meterDataStorage)
+		public StereoLineInput(int index, MixerStateService mixerStateService) : base(ChannelTypes.RETURN, index, mixerStateService)
 		{
 		}
 
 		[ParameterPath("opt/swapcompeq")] public bool swapcompeq { get => GetBoolean(); set => SetBoolean(value); }
-
-		public float meter => _meterDataStorage.GetInputData() != null ? _meterDataStorage.GetFxReturnStripData()["inputs"][_channelIndex - 1] : 0;
 
 		public float trim { get => GetValue(); set => SetValue(value); }
 

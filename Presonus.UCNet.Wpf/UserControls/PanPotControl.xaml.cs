@@ -82,7 +82,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 		{
 			var control = d as PanPotControl;
 			float newValue = (float)e.NewValue;
-			float centerTolerance = 0.01f; // Tolerance range for the center
+			float centerTolerance = 0.001f; // Tolerance range for the center
 
 			// Snap the value to 0.5 if it's within the center tolerance range
 			if (Math.Abs(newValue - 0.5f) <= centerTolerance)
@@ -131,10 +131,10 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private void UpdateRotateTransform()
 		{
-			double angleRange = 310; // The range of angles (in degrees) between 30 and 330
-			double angleOffset = 20; // The offset angle (in degrees) for the minimum value
+			double angleRange = 280; // The range of angles (in degrees) between 30 and 330
+			double angleOffset = 40; // The offset angle (in degrees) for the minimum value
 			double angle = angleOffset + Value * angleRange;
-			KnobRotateTransform.Angle = angle;
+			KnobRotation.Angle = angle;
 		}
 
 		private void RotaryKnob_MouseWheel(object sender, MouseWheelEventArgs e)

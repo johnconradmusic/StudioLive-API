@@ -13,15 +13,11 @@ namespace Presonus.UCNet.Api.Messages
 		public const string JSON = "JM";
 		public const string CompressedJSON = "ZM";
 
-		[Obsolete("Use ParamValue")]
-		public const string Setting = "PV";
 		public const string ParamValue = "PV";
 
 		public const string ParamColor = "PC";
 		public const string ParamString = "PS";
 
-		[Obsolete("Use ParamStrList")]
-		public const string DeviceList = "PL";
 		public const string ParamStrList = "PL";
 
 		public const string FileRequest = "FR";
@@ -30,6 +26,11 @@ namespace Presonus.UCNet.Api.Messages
 		public const string Unknown1 = "BO";
 		public const string Chunk = "CK";
 		public const string Unknown3 = "MB";
+
 		public const string FaderPosition = "MS";
+		public const string MeterSingles = "MS";
+
+		public const string Meter = "levl";
+		public const string Reduction = "redu";
 	}
 }

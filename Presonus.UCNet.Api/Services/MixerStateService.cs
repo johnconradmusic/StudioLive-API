@@ -1,5 +1,5 @@
 ﻿using Presonus.UCNet.Api.Models;
-using Presonus.UCNet.Api.NewDataModel;
+
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +9,6 @@ public class MixerStateService
 {
 	private readonly MixerState _mixerState;
 	private readonly MixerStateSynchronizer _mixerStateSynchronizer;
-	private readonly MeterDataStorage _meterDataStorage;
 	public delegate void SyncEvent();
 	internal Action<string, string> SendStringMethod;
 	internal Action<string, float> SendValueMethod;
@@ -18,11 +17,10 @@ public class MixerStateService
 	internal Action GetProjects;
 
 
-	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer, MeterDataStorage meterDataStorage)
+	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{
 		_mixerState = mixerState;
 		_mixerStateSynchronizer = mixerStateSynchronizer;
-		_meterDataStorage = meterDataStorage;
 	}
 
 	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;

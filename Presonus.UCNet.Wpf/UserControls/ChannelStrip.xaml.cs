@@ -74,27 +74,6 @@ namespace Presonus.UCNet.Wpf.UserControls
 			}
 		}
 
-		private void ShowGateParameters(object sender, RoutedEventArgs e)
-		{
-			GateParametersPopup.IsOpen = true;
-			GateParametersPopup.InvalidateVisual();
-		}
-
-		private void ToggleEqPanelVisibility(object sender, RoutedEventArgs e)
-		{
-			EqPanel.IsOpen = !EqPanel.IsOpen;
-		}
-
-		private void ShowCompressorParameters(object sender, RoutedEventArgs e)
-		{
-			CompressorParametersPopup.IsOpen = !CompressorParametersPopup.IsOpen;
-		}
-
-		private void ShowLimiterParameters(object sender, RoutedEventArgs e)
-		{
-			LimiterParametersPopup.IsOpen = !LimiterParametersPopup.IsOpen;
-		}
-
 		private void SetAccessibleNames(DependencyObject element)
 		{
 			// Check if the element is a FrameworkElement and implements the IAccessibleControl interface
@@ -129,11 +108,6 @@ namespace Presonus.UCNet.Wpf.UserControls
 				SelectedControl = control.Caption;
 				SelectedValue = control.ValueString;
 			}
-		}
-
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			AuxSendsPopup.IsOpen = !AuxSendsPopup.IsOpen;
 		}
 
 		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

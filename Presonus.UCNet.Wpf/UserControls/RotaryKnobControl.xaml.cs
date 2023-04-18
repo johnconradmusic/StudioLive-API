@@ -79,6 +79,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 		{
 			base.OnApplyTemplate();
 			UpdateValueString();
+			UpdateRotateTransform();
 		}
 
 		public RotaryKnobControl()
@@ -114,7 +115,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 		private void UpdateValueString()
 		{
 			ValueString = ValueTransformer.Transform(Value, Min, Max, Curve, Unit);
-			ValueText.Text = ValueString;
+			//ValueText.Text = ValueString;
 		}
 
 		private void Knob_MouseDown(object sender, MouseButtonEventArgs e)
@@ -152,8 +153,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 			double angleRange = 310; // The range of angles (in degrees) between 30 and 330
 			double angleOffset = 20; // The offset angle (in degrees) for the minimum value
 			double angle = angleOffset + Value * angleRange;
-			KnobRotateTransform.Angle = angle;
-
+			KnobRotation.Angle = angle;
 		}
 
 

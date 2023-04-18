@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Brush x:Key="Background">#14151b</Brush>
+    <Brush x:Key="LightBackground">#2d3739</Brush>    
+    <Brush x:Key="Highlight">#fbe9e9</Brush>
+    <Brush x:Key="Pop">#d42f06</Brush>
+    <Brush x:Key="Accent">#7e7099</Brush>
+</ResourceDictionary>

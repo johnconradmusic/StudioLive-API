@@ -19,25 +19,25 @@
                             <Grid Grid.Row="0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="2.1*"/>
+                                    <RowDefinition Height="2.2*"/>
                                 </Grid.RowDefinitions>
 
                                 <!-- Unity gain indicator line -->
-                                <Rectangle Grid.Row="1" Fill="White" Width="40" Height="1" VerticalAlignment="Top" HorizontalAlignment="Center" />
+                                <Border Grid.Row="1" Background="White" Width="40" Height="1" VerticalAlignment="Top" HorizontalAlignment="Center" />
                             </Grid>
-                            <Rectangle Fill="#FF252525" Width="4" RadiusX="2" RadiusY="2" Height="{TemplateBinding Height}" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+                            <Border Background="#333333" Width="4" CornerRadius="2" Height="{TemplateBinding Height}" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
                             <StackPanel Grid.Row="1">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Caption, ElementName=fader}"/>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding ValueString, ElementName=fader}"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="10" Foreground="#9E9E9E" Text="{Binding Caption, ElementName=fader}"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="10" Foreground="#9E9E9E" Text="{Binding ValueString, ElementName=fader}"/>
                             </StackPanel>
                             <Track x:Name="PART_Track" HorizontalAlignment="Center">
                                 <Track.Thumb>
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="{x:Type Thumb}">
-                                                <!-- Thumb with a PNG image -->
-                                                <Grid>
-                                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Assets/Images/gray thumb.png" Stretch="None"/>
+                                                <Grid VerticalAlignment="Center">
+                                                    <Rectangle RadiusX="4" RadiusY="4" Fill="{StaticResource Accent}" Width="20" Height="40"/>
+                                                    <Rectangle Height="1" Fill="{StaticResource Highlight}" Width="15" />
                                                 </Grid>
                                             </ControlTemplate>
                                         </Thumb.Template>
@@ -50,7 +50,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-
-    <Slider AutomationProperties.Name="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" Focusable="False" IsTabStop="False" x:Name="FaderSlider" Grid.Row="1" Minimum="0" Maximum="1" Value="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0" Style="{StaticResource SSLFaderStyle}"/>
+    <Slider AutomationProperties.Name="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" Focusable="False" IsTabStop="False" x:Name="FaderSlider" Grid.Row="1" Minimum="0" Maximum="1" Value="{Binding Value, FallbackValue=0.735, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0" Style="{StaticResource SSLFaderStyle}"/>
 
 </UserControl>

@@ -5,15 +5,15 @@ namespace Presonus.UCNet.Api.Models
 	public class Mixer
 	{
 		public static bool Synchronized { get; set; } = false;
-		public static Dictionary<string, int> ChannelCounts { get; set; } = new()
+		public static Dictionary<ChannelTypes, int> ChannelCounts { get; set; } = new()
 		{
-			{"LINE", 0 },
-			{"RETURN", 0 },
-			{"FXRETURN",0 },
-			{"TALKBACK",1 },
-			{"AUX",0 },
-			{"FX", 0 },
-			{"MAIN",1 }
+			{ChannelTypes.LINE, 0 },
+			{ChannelTypes.RETURN, 0 },
+			{ChannelTypes.FXRETURN,0 },
+			{ChannelTypes.TALKBACK,1 },
+			{ChannelTypes.AUX,0 },
+			{ChannelTypes.FX, 0 },
+			{ChannelTypes.MAIN,1 }
 		};
 		public static bool Counted { get; internal set; }
 	}

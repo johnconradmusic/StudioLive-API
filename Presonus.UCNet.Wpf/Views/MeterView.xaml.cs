@@ -12,23 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Presonus.UCNet.Api
+namespace Presonus.UCNet.Wpf.Views
 {
 	/// <summary>
-	/// Interaction logic for MixerWindow.xaml
+	/// Interaction logic for MeterView.xaml
 	/// </summary>
-	public partial class MixerWindow : Window
+	public partial class MeterView : UserControl
 	{
-		public MixerWindow(MainViewModel viewModel)
+		public MeterView()
 		{
 			InitializeComponent();
-            DataContext = viewModel;
-		}
-
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			var vm = DataContext as MainViewModel;
-			vm.Test();
 		}
 	}
 }

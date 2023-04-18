@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.Views.ChannelDetailView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Views" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+        mc:Ignorable="d"
+        Height="900" Width="1600" Background="{StaticResource Background}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="ChannelSelector" Height="40" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username"/>
+        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="0">
+            <StackPanel Margin="5">
+                <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
+            </StackPanel>
+            <usercontrols:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
+            <usercontrols:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
+            <usercontrols:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
+            <usercontrols:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio"/>
+            <usercontrols:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
+            <usercontrols:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
+            <usercontrols:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="1">
+
+            <StackPanel Margin="5">
+                <usercontrols:MiniToggle Margin="2" Caption="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <usercontrols:RotaryKnobControl Caption="Gain 1" Height="24" Value="{Binding eq_gain1}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                <usercontrols:RotaryKnobControl Caption="Q 1" Height="24" Value="{Binding eq_q1}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                <usercontrols:RotaryKnobControl Caption="Freq 1" Height="24" Value="{Binding eq_freq1}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                <usercontrols:MiniToggle Margin="2" Caption="On 1" Width="auto" Height="20" IsChecked="{Binding eq_bandon1, Mode=TwoWay}"/>
+                <usercontrols:MiniToggle Margin="2" Caption="Shelf 1" Width="auto" Height="20" IsChecked="{Binding eq_bandop1, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <usercontrols:RotaryKnobControl Caption="Gain 2" Height="24" Value="{Binding eq_gain2}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                <usercontrols:RotaryKnobControl Caption="Q 2" Height="24" Value="{Binding eq_q2}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                <usercontrols:RotaryKnobControl Caption="Freq 2" Height="24" Value="{Binding eq_freq2}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                <usercontrols:MiniToggle Margin="2" Caption="On 2" Width="auto" Height="20" IsChecked="{Binding eq_bandon2, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <usercontrols:RotaryKnobControl Caption="Gain 3" Height="24" Value="{Binding eq_gain3}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                <usercontrols:RotaryKnobControl Caption="Q 3" Height="24" Value="{Binding eq_q3}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" Unit="DB"/>
+                <usercontrols:RotaryKnobControl Caption="Freq 3" Height="24" Value="{Binding eq_freq3}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                <usercontrols:MiniToggle Margin="2" Caption="On 3" Width="auto" Height="20" IsChecked="{Binding eq_bandon3, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Margin="5">
+                <usercontrols:RotaryKnobControl Caption="Gain 4" Height="24" Value="{Binding eq_gain4}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
+                <usercontrols:RotaryKnobControl Caption="Q 4" Height="24" Value="{Binding eq_q4}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
+                <usercontrols:RotaryKnobControl Caption="Freq 4" Height="24" Value="{Binding eq_freq4}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
+                <usercontrols:MiniToggle Margin="2" Caption="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}"/>
+                <usercontrols:MiniToggle Margin="2" Caption="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

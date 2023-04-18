@@ -1,6 +1,7 @@
 ﻿using Presonus.UCNet.Api.Attributes;
+using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
-using Presonus.UCNet.Api.NewDataModel;
+
 using Presonus.UCNet.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Timers;
 
 namespace Presonus.UCNet.Api.Models
 {
@@ -22,7 +24,8 @@ namespace Presonus.UCNet.Api.Models
 		private Dictionary<string, string> _propertyStringNameRoute = new();
 		private Dictionary<string, string> _propertyStringsNameRoute = new();
 
-
+		private readonly DebounceTimer _debounceTimer;
+		private bool _debounceTimerRunning;
 
 		public ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
 		{
@@ -34,7 +37,11 @@ namespace Presonus.UCNet.Api.Models
 			_mixerStateService.StringsChanged += StringsStateUpdated;
 
 			InitMapRoutes();
+
+			_debounceTimer = new(2000, () => _debounceTimerRunning = false);
 		}
+
+
 		public abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
 
 		public abstract event PropertyChangedEventHandler PropertyChanged;
@@ -64,6 +71,7 @@ namespace Presonus.UCNet.Api.Models
 					_propertyStringsNameRoute[property.Name] = GetPropertyPath(parameterName);
 				}
 			}
+			if (_channelIndex == 32) throw new Exception("stop!");
 		}
 		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
 		{
@@ -73,6 +81,7 @@ namespace Presonus.UCNet.Api.Models
 
 		private void ValueStateUpdated(object sender, ValueChangedEventArgs<float> args)
 		{
+			if (_debounceTimerRunning) return;
 			var propertyName = _propertyValueNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 			if (propertyName is null)
 				return;
@@ -82,6 +91,8 @@ namespace Presonus.UCNet.Api.Models
 
 		private void StringStateUpdated(object sender, ValueChangedEventArgs<string> args)
 		{
+			if (_debounceTimerRunning) return;
+
 			var propertyName = _propertyStringNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 
 			if (propertyName is null)
@@ -93,6 +104,8 @@ namespace Presonus.UCNet.Api.Models
 
 		private void StringsStateUpdated(object sender, ValueChangedEventArgs<string[]> args)
 		{
+			if (_debounceTimerRunning) return;
+
 			var propertyName = _propertyStringsNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
 			if (propertyName is null)
 				return;
@@ -124,7 +137,7 @@ namespace Presonus.UCNet.Api.Models
 			{
 				for (int i = (int)range.Min; i <= range.Max; i++)
 				{
-					result.Add((i+1).ToString());
+					result.Add((i + 1).ToString());
 				}
 			}
 			return result;
@@ -190,12 +203,17 @@ namespace Presonus.UCNet.Api.Models
 
 		protected void SetString(string value, [CallerMemberName] string propertyName = "")
 		{
+			_debounceTimerRunning = true;
+			_debounceTimer.Start();
+
 			if (_propertyStringNameRoute.TryGetValue(propertyName, out var pathName))
 				_mixerStateService.SetString(pathName, value);
 		}
 
 		protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
 		{
+			_debounceTimerRunning = true;
+			_debounceTimer.Start();
 			var floatValue = value ? 1.0f : 0.0f;
 			if (_propertyValueNameRoute.TryGetValue(propertyName, out var pathName))
 				_mixerStateService.SetValue(pathName, floatValue);
@@ -203,6 +221,8 @@ namespace Presonus.UCNet.Api.Models
 
 		protected void SetValue(float value, [CallerMemberName] string propertyName = "")
 		{
+			_debounceTimerRunning = true;
+			_debounceTimer.Start();
 			if (_propertyValueNameRoute.TryGetValue(propertyName, out var pathName))
 				_mixerStateService.SetValue(pathName, value);
 		}

@@ -7,7 +7,7 @@ using Presonus.UCNet.Api.Messages.Readers;
 using Presonus.UCNet.Api.Messages;
 using Presonus.UCNet.Api.Messages.Readers;
 using Presonus.UCNet.Api.Models;
-using Presonus.UCNet.Api.NewDataModel;
+
 using Presonus.UCNet.Api.Services;
 using Serilog;
 using System;
@@ -436,21 +436,22 @@ namespace Presonus.UCNet.Api.Services
 		{
 			data = data.Skip(20).ToArray();
 
-			var order = new string[] { "LINE", "RETURN", "FXRETURN", "TALKBACK", "AUX", "FX", "MAIN" };
+			var order = new ChannelTypes[] 
+			{ ChannelTypes.LINE, ChannelTypes.RETURN, ChannelTypes.FXRETURN, ChannelTypes.TALKBACK, ChannelTypes.AUX, ChannelTypes.FX, ChannelTypes.MAIN };
 
-			var values = new Dictionary<string, List<float>>();
+			var values = new Dictionary<ChannelTypes, List<float>>();
 
 			using (var stream = new MemoryStream(data))
 			using (var reader = new BinaryReader(stream))
 			{
 				for (int i = 0; i < order.Length; i++)
 				{
-					string type = order[i]; //"LINE", "RETURN", etc..
+					ChannelTypes type = order[i]; //"LINE", "RETURN", etc..
 					values[type] = ReadValues(reader, Mixer.ChannelCounts[type]);
 					for (int j = 0; j < values[type].Count; j++)
 					{
 						var count = values[type][j];
-						var chanString = ChannelUtil.GetChannelString(new((ChannelTypes)Enum.Parse(typeof(ChannelTypes), type), j + 1, null, null)) + "/volume";
+						var chanString = ChannelUtil.GetChannelString(new(type, j + 1, null, null)) + "/volume";
 						_mixerStateService.SetValue(chanString, count, false);
 					}
 				}
