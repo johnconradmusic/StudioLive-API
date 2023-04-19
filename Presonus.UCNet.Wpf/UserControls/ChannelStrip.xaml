@@ -16,7 +16,6 @@
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:OpacityConverter x:Key="OpacityConverter" />
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
         <Style TargetType="ComboBox">
             <Setter Property="Margin" Value="2"/>            

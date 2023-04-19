@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1600" Width="900" Background="{StaticResource Background}">
+        Title="MainWindow" Height="720" Width="1280" Background="{StaticResource Background}">
 
     <Grid>
         <TabControl>

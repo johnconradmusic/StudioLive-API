@@ -16,26 +16,23 @@ namespace Presonus.UCNet.Wpf.Converters
 				return new SolidColorBrush(Colors.HotPink);
 			}
 
+			string hexColor = (string)value;
 
-				string hexColor = (string)value;
-			//Console.WriteLine($"CONVERTING {hexColor}");
+			if (hexColor == null)
+			{
+				return null;
+			}
 
-				if (hexColor == null)
-				{
-					return null;
-				}
+			if (hexColor.StartsWith("#"))
+			{
+				hexColor = hexColor.Substring(1);
+			}
 
-				if (hexColor.StartsWith("#"))
-				{
-					hexColor = hexColor.Substring(1);
-				}
-
-				int r = int.Parse(hexColor.Substring(0, 2), NumberStyles.HexNumber);
-				int g = int.Parse(hexColor.Substring(2, 2), NumberStyles.HexNumber);
-				int b = int.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
+			int r = int.Parse(hexColor.Substring(0, 2), NumberStyles.HexNumber);
+			int g = int.Parse(hexColor.Substring(2, 2), NumberStyles.HexNumber);
+			int b = int.Parse(hexColor.Substring(4, 2), NumberStyles.HexNumber);
 			if (r == 0 && g == 0 && b == 0) return null;
 			var result = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, (byte)b));
-			//Console.WriteLine(result);
 			return result;
 		}
 

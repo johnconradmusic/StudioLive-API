@@ -3,26 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Views" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
-        mc:Ignorable="d"
-        Height="900" Width="1600" Background="{StaticResource Background}">
+        xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls" xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters"
+             mc:Ignorable="d"
+        Width="1280" Height="720" Background="{StaticResource Background}">
+    <UserControl.Resources>
+        <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
+        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ComboBox x:Name="ChannelSelector" Height="40" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username"/>
+
+        <!--// Channel Selector //-->
+
+        <ComboBox x:Name="ChannelSelector" Height="30" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username"/>
+
+        <!--// Gate //-->
+
         <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="0">
-            <StackPanel Margin="5">
                 <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
-            </StackPanel>
             <usercontrols:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
             <usercontrols:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
             <usercontrols:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
@@ -31,8 +42,10 @@
             <usercontrols:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
             <usercontrols:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="1">
 
+        <!--// EQ //-->
+
+        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="2">
             <StackPanel Margin="5">
                 <usercontrols:MiniToggle Margin="2" Caption="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}"/>
             </StackPanel>
@@ -62,7 +75,93 @@
                 <usercontrols:MiniToggle Margin="2" Caption="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}"/>
                 <usercontrols:MiniToggle Margin="2" Caption="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}"/>
             </StackPanel>
-
         </StackPanel>
+
+        <!--// Channel Strip //-->
+
+        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom" Grid.Row="1" Grid.RowSpan="4">
+            <usercontrols:ToggleButtonControl Margin="2" Caption="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
+            <usercontrols:ToggleButtonControl Margin="2" Caption="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
+            <usercontrols:PanPotControl Caption="Pan" Value="{Binding pan}"/>
+            <usercontrols:MiniToggle Caption="Stereo Link" Visibility="{Binding linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
+            <usercontrols:ResponsiveFaderControl Value="{Binding volume, Mode=TwoWay}"/>
+            <usercontrols:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
+        </StackPanel>
+
+        <!--// Compressor //-->
+
+        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1">
+            <usercontrols:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
+            <usercontrols:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding comp_threshold}" Min="-56" Max="0" Curve="Linear"/>
+            <usercontrols:RotaryKnobControl Caption="Ratio" Height="24" Value="{Binding comp_ratio}" Min="1" Max="20" Curve="Exponential"/>
+            <usercontrols:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding comp_attack}" Min="0.0002" Max="0.150" Curve="Exponential"/>
+            <usercontrols:RotaryKnobControl Caption="Release" Height="24" Value="{Binding comp_release}" Min="0.0025" Max="0.9" Curve="Exponential"/>
+            <usercontrols:MiniToggle Margin="2" Caption="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
+            <usercontrols:MiniToggle Margin="2" Caption="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
+            <usercontrols:RotaryKnobControl Caption="Makeup Gain" Height="24" Value="{Binding comp_gain}" Min="0" Max="28" Curve="Linear"/>
+            <usercontrols:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding comp_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
+        </StackPanel>
+
+        <!--// Limiter //-->
+
+        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1">
+            <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
+            <usercontrols:RotaryKnobControl Visibility="{Binding limiter_on, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
+        </StackPanel>
+
+        <!--// Sends //-->
+
+        <Grid DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="4" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 1" Value="{Binding aux1}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 2" Value="{Binding aux2}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 3" Value="{Binding aux3}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 4" Value="{Binding aux4}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 5" Value="{Binding aux5}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 6" Value="{Binding aux6}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 7" Value="{Binding aux7}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 8" Value="{Binding aux8}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 9" Value="{Binding aux9}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 10" Value="{Binding aux10}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 11" Value="{Binding aux11}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 12" Value="{Binding aux12}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 13" Value="{Binding aux13}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 14" Value="{Binding aux14}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 15" Value="{Binding aux15}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 16" Value="{Binding aux16}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 17" Value="{Binding aux17}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 18" Value="{Binding aux18}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 19" Value="{Binding aux19}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 20" Value="{Binding aux20}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 21" Value="{Binding aux21}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 22" Value="{Binding aux22}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 23" Value="{Binding aux23}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 24" Value="{Binding aux24}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 25" Value="{Binding aux25}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 26" Value="{Binding aux26}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 27" Value="{Binding aux27}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 28" Value="{Binding aux28}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 29" Value="{Binding aux29}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 30" Value="{Binding aux30}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 31" Value="{Binding aux31}"/>
+                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 32" Value="{Binding aux32}"/>
+            </StackPanel>
+
+        </Grid>
+
     </Grid>
 </UserControl>
