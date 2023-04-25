@@ -1,167 +1,197 @@
 ﻿<UserControl x:Class="Presonus.UCNet.Wpf.Views.ChannelDetailView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls" xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters"
+             xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d"
-        Width="1280" Height="720" Background="{StaticResource Background}">
+        Width="1600"
+        Height="900"
+        Background="{StaticResource Background}">
     <UserControl.Resources>
-        <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
-        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
+        <Style x:Key="ModernStackPanel" TargetType="StackPanel">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <Style x:Key="ModernBorder" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Control.Border}" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+        <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter" />
+        <converters:VisibilityConverter x:Key="VisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="9*"/>
 
+    <Grid x:Name="MainContainer">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.8*" />
+            <RowDefinition Height="1.8*" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="1.7*" />
+            <RowDefinition Height="3.7*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <!--// Channel Selector //-->
-
-        <ComboBox x:Name="ChannelSelector" Height="30" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username"/>
-
-        <!--// Gate //-->
-
-        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="0">
-                <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}"/>
-            <usercontrols:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}"/>
-            <usercontrols:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}"/>
-            <usercontrols:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear"/>
-            <usercontrols:RotaryKnobControl Caption="Range" Height="24" Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio"/>
-            <usercontrols:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential"/>
-            <usercontrols:RotaryKnobControl Caption="Release" Height="24" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential"/>
-            <usercontrols:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
-        </StackPanel>
-
-        <!--// EQ //-->
-
-        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Column="1" Grid.Row="2">
-            <StackPanel Margin="5">
-                <usercontrols:MiniToggle Margin="2" Caption="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}"/>
-            </StackPanel>
-            <StackPanel Margin="5">
-                <usercontrols:RotaryKnobControl Caption="Gain 1" Height="24" Value="{Binding eq_gain1}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
-                <usercontrols:RotaryKnobControl Caption="Q 1" Height="24" Value="{Binding eq_q1}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
-                <usercontrols:RotaryKnobControl Caption="Freq 1" Height="24" Value="{Binding eq_freq1}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
-                <usercontrols:MiniToggle Margin="2" Caption="On 1" Width="auto" Height="20" IsChecked="{Binding eq_bandon1, Mode=TwoWay}"/>
-                <usercontrols:MiniToggle Margin="2" Caption="Shelf 1" Width="auto" Height="20" IsChecked="{Binding eq_bandop1, Mode=TwoWay}"/>
-            </StackPanel>
-            <StackPanel Margin="5">
-                <usercontrols:RotaryKnobControl Caption="Gain 2" Height="24" Value="{Binding eq_gain2}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
-                <usercontrols:RotaryKnobControl Caption="Q 2" Height="24" Value="{Binding eq_q2}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
-                <usercontrols:RotaryKnobControl Caption="Freq 2" Height="24" Value="{Binding eq_freq2}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
-                <usercontrols:MiniToggle Margin="2" Caption="On 2" Width="auto" Height="20" IsChecked="{Binding eq_bandon2, Mode=TwoWay}"/>
-            </StackPanel>
-            <StackPanel Margin="5">
-                <usercontrols:RotaryKnobControl Caption="Gain 3" Height="24" Value="{Binding eq_gain3}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
-                <usercontrols:RotaryKnobControl Caption="Q 3" Height="24" Value="{Binding eq_q3}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" Unit="DB"/>
-                <usercontrols:RotaryKnobControl Caption="Freq 3" Height="24" Value="{Binding eq_freq3}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
-                <usercontrols:MiniToggle Margin="2" Caption="On 3" Width="auto" Height="20" IsChecked="{Binding eq_bandon3, Mode=TwoWay}"/>
-            </StackPanel>
-            <StackPanel Margin="5">
-                <usercontrols:RotaryKnobControl Caption="Gain 4" Height="24" Value="{Binding eq_gain4}" Min="-15" Max="15" Curve="Linear" Unit="DB"/>
-                <usercontrols:RotaryKnobControl Caption="Q 4" Height="24" Value="{Binding eq_q4}" Min="0.1" Mid="0.6" Max="10" Curve="Skew"/>
-                <usercontrols:RotaryKnobControl Caption="Freq 4" Height="24" Value="{Binding eq_freq4}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ"/>
-                <usercontrols:MiniToggle Margin="2" Caption="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}"/>
-                <usercontrols:MiniToggle Margin="2" Caption="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}"/>
-            </StackPanel>
-        </StackPanel>
+        <Border Style="{DynamicResource ModernBorder}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2" Style="{StaticResource ModernStackPanel}">
+                    <ComboBox SelectedIndex="0"  x:Name="ChannelSelector" Height="20" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username" />
+                </StackPanel>
+                <Button Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Content="Previous Channel" />
+                <Button Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Content="Next Channel" />
+            </Grid>
+        </Border>
 
         <!--// Channel Strip //-->
 
-        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom" Grid.Row="1" Grid.RowSpan="4">
-            <usercontrols:ToggleButtonControl Margin="2" Caption="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
-            <usercontrols:ToggleButtonControl Margin="2" Caption="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
-            <usercontrols:PanPotControl Caption="Pan" Value="{Binding pan}"/>
-            <usercontrols:MiniToggle Caption="Stereo Link" Visibility="{Binding linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
-            <usercontrols:ResponsiveFaderControl Value="{Binding volume, Mode=TwoWay}"/>
-            <usercontrols:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
-        </StackPanel>
+        <Border Grid.Row="1" Grid.RowSpan="3" Style="{DynamicResource ModernBorder}">
+            <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom" Height="auto">
+                <usercontrols:ToggleButtonControl Margin="2" Caption="Solo" Width="auto"  IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
+                <usercontrols:ToggleButtonControl Margin="2" Caption="Mute" Width="auto"  IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
+                <usercontrols:PanPotControl Caption="Pan" Value="{Binding pan}" />
+                <usercontrols:MiniToggle Caption="Stereo Link" Visibility="{Binding linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}" />
+                <usercontrols:FaderControl Value="{Binding volume, Mode=TwoWay}" />
+                <usercontrols:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}" />
+            </StackPanel>
+        </Border>
+
+        <!--// Gate //-->
+        
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Content="GATE" Padding="0" Width="80" Height="20" x:Name="GateButton"/>
+        <Border Grid.Column="1" Grid.Row="0" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=GateButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Style="{StaticResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
+                <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}" />
+                <usercontrols:MiniToggle Margin="2" Caption="Listen" Width="auto" Height="20" IsChecked="{Binding gate_keylisten, Mode=TwoWay}" />
+                <usercontrols:MiniToggle Margin="2" Caption="Expander" Width="auto" Height="20" IsChecked="{Binding gate_expander, Mode=TwoWay}" />
+                <usercontrols:LargeRotaryKnobControl Caption="Threshold" Value="{Binding gate_threshold}" Min="-84" Max="0" Curve="Linear" />
+                <usercontrols:LargeRotaryKnobControl Caption="Range"  Value="{Binding gate_range}" Min="-84" Max="0" Curve="Ratio" />
+                <usercontrols:LargeRotaryKnobControl Caption="Attack"  Value="{Binding gate_attack}" Min="0.02" Max="500" Curve="Exponential" />
+                <usercontrols:LargeRotaryKnobControl Caption="Release" Value="{Binding gate_release}" Min="50" Max="2000" Curve="Exponential" />
+                <usercontrols:LargeRotaryKnobControl Caption="Key Filter" Value="{Binding gate_keyfilter}" Min="40" Max="16000" Curve="Logarithmic" />
+            </StackPanel>
+        </Border>
 
         <!--// Compressor //-->
+        
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" Content="COMPRESSOR" Padding="0" Width="120" Height="20" x:Name="CompressorButton"/>
+        <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=CompressorButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Center">
+                <usercontrols:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}" />
+                <usercontrols:LargeRotaryKnobControl Caption="Threshold"  Value="{Binding comp_threshold}" Min="-56" Max="0" Curve="Linear" />
+                <usercontrols:LargeRotaryKnobControl Caption="Ratio"  Value="{Binding comp_ratio}" Min="1" Max="20" Curve="Exponential" />
+                <usercontrols:LargeRotaryKnobControl Caption="Attack"  Value="{Binding comp_attack}" Min="0.0002" Max="0.150" Curve="Exponential" />
+                <usercontrols:LargeRotaryKnobControl Caption="Release"  Value="{Binding comp_release}" Min="0.0025" Max="0.9" Curve="Exponential" />
+                <usercontrols:MiniToggle Margin="2" Caption="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}" />
+                <usercontrols:MiniToggle Margin="2" Caption="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}" />
+                <usercontrols:LargeRotaryKnobControl Caption="Makeup Gain"  Value="{Binding comp_gain}" Min="0" Max="28" Curve="Linear" />
+                <usercontrols:LargeRotaryKnobControl Caption="Key Filter"  Value="{Binding comp_keyfilter}" Min="40" Max="16000" Curve="Logarithmic" />
+            </StackPanel>
+        </Border>
+        
+        <!--// EQ //-->
 
-        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1">
-            <usercontrols:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}"/>
-            <usercontrols:RotaryKnobControl Caption="Threshold" Height="24" Value="{Binding comp_threshold}" Min="-56" Max="0" Curve="Linear"/>
-            <usercontrols:RotaryKnobControl Caption="Ratio" Height="24" Value="{Binding comp_ratio}" Min="1" Max="20" Curve="Exponential"/>
-            <usercontrols:RotaryKnobControl Caption="Attack" Height="24" Value="{Binding comp_attack}" Min="0.0002" Max="0.150" Curve="Exponential"/>
-            <usercontrols:RotaryKnobControl Caption="Release" Height="24" Value="{Binding comp_release}" Min="0.0025" Max="0.9" Curve="Exponential"/>
-            <usercontrols:MiniToggle Margin="2" Caption="Auto" Width="auto" Height="20" IsChecked="{Binding comp_automode, Mode=TwoWay}"/>
-            <usercontrols:MiniToggle Margin="2" Caption="Soft Knee" Width="auto" Height="20" IsChecked="{Binding comp_softknee, Mode=TwoWay}"/>
-            <usercontrols:RotaryKnobControl Caption="Makeup Gain" Height="24" Value="{Binding comp_gain}" Min="0" Max="28" Curve="Linear"/>
-            <usercontrols:RotaryKnobControl Caption="Key Filter" Height="24" Value="{Binding comp_keyfilter}" Min="40" Max="16000" Curve="Logarithmic"/>
-        </StackPanel>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Content="EQ" Padding="0" Width="80" Height="20" x:Name="EQButton"/>
+        <Border Grid.Column="1" Grid.Row="2" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=EQButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
+                <StackPanel Margin="5">
+                    <usercontrols:MiniToggle Margin="2" Caption="EQ" Width="auto" Height="20" IsChecked="{Binding eq_on, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <usercontrols:LargeRotaryKnobControl Caption="Gain 1"  Value="{Binding eq_gain1}" Min="-15" Max="15" Curve="Linear" Unit="DB" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Q 1"  Value="{Binding eq_q1}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Freq 1"  Value="{Binding eq_freq1}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                    <usercontrols:MiniToggle Margin="2" Caption="On 1" Width="auto" Height="20" IsChecked="{Binding eq_bandon1, Mode=TwoWay}" />
+                    <usercontrols:MiniToggle Margin="2" Caption="Shelf 1" Width="auto" Height="20" IsChecked="{Binding eq_bandop1, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <usercontrols:LargeRotaryKnobControl Caption="Gain 2"  Value="{Binding eq_gain2}" Min="-15" Max="15" Curve="Linear" Unit="DB" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Q 2"  Value="{Binding eq_q2}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Freq 2"  Value="{Binding eq_freq2}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                    <usercontrols:MiniToggle Margin="2" Caption="On 2" Width="auto" Height="20" IsChecked="{Binding eq_bandon2, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <usercontrols:LargeRotaryKnobControl Caption="Gain 3"  Value="{Binding eq_gain3}" Min="-15" Max="15" Curve="Linear" Unit="DB" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Q 3"  Value="{Binding eq_q3}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" Unit="DB" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Freq 3"  Value="{Binding eq_freq3}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                    <usercontrols:MiniToggle Margin="2" Caption="On 3" Width="auto" Height="20" IsChecked="{Binding eq_bandon3, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Margin="5">
+                    <usercontrols:LargeRotaryKnobControl Caption="Gain 4"  Value="{Binding eq_gain4}" Min="-15" Max="15" Curve="Linear" Unit="DB" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Q 4"  Value="{Binding eq_q4}" Min="0.1" Mid="0.6" Max="10" Curve="Skew" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Freq 4"  Value="{Binding eq_freq4}" Min="36" Max="18000" Curve="Logarithmic" Unit="HZ" />
+                    <usercontrols:MiniToggle Margin="2" Caption="On 4" Width="auto" Height="20" IsChecked="{Binding eq_bandon4, Mode=TwoWay}" />
+                    <usercontrols:MiniToggle Margin="2" Caption="Shelf 4" Width="auto" Height="20" IsChecked="{Binding eq_bandop4, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
         <!--// Limiter //-->
-
-        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="1">
-            <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}"/>
-            <usercontrols:RotaryKnobControl Visibility="{Binding limiter_on, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityConverter}}" Caption="Threshold" Height="24" Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear"/>
-        </StackPanel>
+        
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Content="LIMITER" Padding="0" Width="80" Height="20" x:Name="LimiterButton"/>
+        <Border Grid.Column="1" Grid.Row="3" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=LimiterButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom">
+                <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}" />
+                <usercontrols:LargeRotaryKnobControl Caption="Threshold"  Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear" />
+            </StackPanel>
+        </Border>
 
         <!--// Sends //-->
-
-        <Grid DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="4" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 1" Value="{Binding aux1}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 2" Value="{Binding aux2}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 3" Value="{Binding aux3}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 4" Value="{Binding aux4}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 5" Value="{Binding aux5}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 6" Value="{Binding aux6}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 7" Value="{Binding aux7}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 8" Value="{Binding aux8}"/>
-            </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 9" Value="{Binding aux9}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 10" Value="{Binding aux10}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 11" Value="{Binding aux11}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 12" Value="{Binding aux12}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 13" Value="{Binding aux13}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 14" Value="{Binding aux14}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 15" Value="{Binding aux15}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 16" Value="{Binding aux16}"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 17" Value="{Binding aux17}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 18" Value="{Binding aux18}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 19" Value="{Binding aux19}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 20" Value="{Binding aux20}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 21" Value="{Binding aux21}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 22" Value="{Binding aux22}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 23" Value="{Binding aux23}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 24" Value="{Binding aux24}"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 25" Value="{Binding aux25}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 26" Value="{Binding aux26}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 27" Value="{Binding aux27}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 28" Value="{Binding aux28}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 29" Value="{Binding aux29}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 30" Value="{Binding aux30}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 31" Value="{Binding aux31}"/>
-                <usercontrols:FaderControl Width="30" Height="180" Caption="Aux 32" Value="{Binding aux32}"/>
-            </StackPanel>
-
-        </Grid>
-
+        
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Content="SENDS" Padding="0" Width="80" Height="20" x:Name="SendsButton"/>
+        <Border Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource ModernBorder}" Padding="0"  Visibility="{Binding IsChecked, ElementName=SendsButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 1" Value="{Binding aux1}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 2" Value="{Binding aux2}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 3" Value="{Binding aux3}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 4" Value="{Binding aux4}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 5" Value="{Binding aux5}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 6" Value="{Binding aux6}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 7" Value="{Binding aux7}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 8" Value="{Binding aux8}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 9" Value="{Binding aux9}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 10" Value="{Binding aux10}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 11" Value="{Binding aux11}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 12" Value="{Binding aux12}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 13" Value="{Binding aux13}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 14" Value="{Binding aux14}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 15" Value="{Binding aux15}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 16" Value="{Binding aux16}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 17" Value="{Binding aux17}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 18" Value="{Binding aux18}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 19" Value="{Binding aux19}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 20" Value="{Binding aux20}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 21" Value="{Binding aux21}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 22" Value="{Binding aux22}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 23" Value="{Binding aux23}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 24" Value="{Binding aux24}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 25" Value="{Binding aux25}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 26" Value="{Binding aux26}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 27" Value="{Binding aux27}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 28" Value="{Binding aux28}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 29" Value="{Binding aux29}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 30" Value="{Binding aux30}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 31" Value="{Binding aux31}" />
+                    <usercontrols:FaderControl Width="38" Height="180" Caption="Aux 32" Value="{Binding aux32}" />
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

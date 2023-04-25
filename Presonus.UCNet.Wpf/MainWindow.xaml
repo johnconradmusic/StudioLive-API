@@ -1,26 +1,32 @@
-﻿<Window x:Class="Presonus.UCNet.Wpf.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Views"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" Background="{StaticResource Background}">
+﻿<mah:MetroWindow   x:Class="Presonus.UCNet.Wpf.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Views"
+                   mc:Ignorable="d"
+                   Title="Universal Control" 
+                   Height="965" 
+                   Width="1605"
+                   BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                   BorderThickness="1"
+                   WindowStartupLocation="CenterScreen">
+    
 
     <Grid>
-        <TabControl>
-            <!-- MixerView tab -->
+        <TabControl Style="{DynamicResource MahApps.Styles.TabControl}">
+            <TabItem Header="ChannelDetailView">
+                <local:ChannelDetailView DataContext="{Binding}" />
+            </TabItem>
             <TabItem Header="MixerView">
                 <local:MixerView DataContext="{Binding}" />
             </TabItem>
 
-            <TabItem Header="MeterView">
+            <!--<TabItem Header="MeterView">
                 <local:MeterView DataContext="{Binding}" />
-            </TabItem>
+            </TabItem>-->
 
-            <TabItem Header="ChannelDetailView">
-                <local:ChannelDetailView DataContext="{Binding}" />
-            </TabItem>
         </TabControl>
     </Grid>
-</Window>
+</mah:MetroWindow>

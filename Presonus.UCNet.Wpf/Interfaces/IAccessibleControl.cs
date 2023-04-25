@@ -9,7 +9,7 @@ namespace Presonus.UCNet.Wpf.Interfaces
 	public interface IAccessibleControl
 	{
 		string Caption { get; set; }
-		string ValueString { get; }
+		string ValueString { get; set; }
 
 		event EventHandler ValueChanged;
 	}

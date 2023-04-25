@@ -36,8 +36,8 @@
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="{x:Type Thumb}">
                                                 <Grid VerticalAlignment="Center">
-                                                    <Rectangle RadiusX="4" RadiusY="4" Fill="{StaticResource Accent}" Width="20" Height="40"/>
-                                                    <Rectangle Height="1" Fill="{StaticResource Highlight}" Width="15" />
+                                                    <Rectangle RadiusX="4" RadiusY="4" Fill="{StaticResource MahApps.Brushes.AccentBase}" Width="20" Height="40"/>
+                                                    <Rectangle Height="2" Fill="{StaticResource Highlight}" Width="15" />
                                                 </Grid>
                                             </ControlTemplate>
                                         </Thumb.Template>

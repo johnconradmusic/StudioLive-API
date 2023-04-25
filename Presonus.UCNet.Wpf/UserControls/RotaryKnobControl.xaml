@@ -1,31 +1,34 @@
 ﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.RotaryKnobControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d" x:Name="RotaryKnob"
-             MouseDown="Knob_MouseDown"
-             MouseMove="Knob_MouseMove"
-             MouseUp="Knob_MouseUp" MouseWheel="RotaryKnob_MouseWheel"
-             d:DesignHeight="40" d:DesignWidth="80">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+             Width="80" Height="30"
+             MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown"
+             MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave"
+            Focusable="True" IsTabStop="True">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="30" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Grid Width="20" Height="20">
+
+        <Grid Width="24" Height="24">
             <Grid.RenderTransform>
                 <TransformGroup>
-                    <RotateTransform  x:Name="KnobRotation" CenterX="10" CenterY="10"/>
+                    <RotateTransform x:Name="KnobRotateTransform" CenterX="12" CenterY="12" />
                 </TransformGroup>
             </Grid.RenderTransform>
-            <Ellipse Width="20" Height="20" Fill="Gray"/>
-            <Rectangle RadiusX="1" RadiusY="1" Width="2" Height="10" Fill="DarkSlateBlue" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+            <Ellipse Width="24" Height="24" Fill="{StaticResource MahApps.Brushes.Accent}" />
+            <Rectangle RadiusX="1" RadiusY="1" Width="2" Height="10" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
         </Grid>
-        <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical" >
-            <TextBlock Text="{Binding Caption, FallbackValue=Name, RelativeSource={RelativeSource AncestorType={x:Type local:RotaryKnobControl}}}" FontSize="8" Foreground="White" />
-            <TextBlock x:Name="ValueText" Text="Value" FontSize="8" Foreground="White"/>
+
+        <StackPanel VerticalAlignment="Center" Grid.Column="1" Orientation="Vertical">
+            <TextBlock FontFamily="{DynamicResource MahApps.Fonts.Family.ToggleSwitch.Header}" Text="{Binding Caption, FallbackValue=Name, RelativeSource={RelativeSource AncestorType={x:Type local:RotaryKnobControl}}}" FontSize="9" Foreground="White" />
+            <Rectangle HorizontalAlignment="Left" VerticalAlignment="Center" Fill="White" Opacity="0.5" Width="40" Height="1" />
+            <TextBlock FontFamily="{DynamicResource MahApps.Fonts.Family.ToggleSwitch}" x:Name="ValueText" Text="Value" Foreground="White" FontSize="8" />
         </StackPanel>
     </Grid>
 </UserControl>

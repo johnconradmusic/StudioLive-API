@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Expression.Blend.SDK.WPF" Version="4.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
@@ -42,6 +44,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="UserControls\LargeRotaryKnobControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\MixerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -60,6 +65,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="UserControls\LargeRotaryKnobControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MixerView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

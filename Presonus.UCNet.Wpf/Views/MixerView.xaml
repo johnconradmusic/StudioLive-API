@@ -20,13 +20,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <ScrollViewer.Resources>
-                    <Style TargetType="ScrollBar">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderBrush" Value="Gray"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                    </Style>
-                </ScrollViewer.Resources>
                 <StackPanel Orientation="Horizontal">
                     <ItemsControl ItemsSource="{Binding MicLineInputs}">
                         <ItemsControl.ItemsPanel>
@@ -36,7 +29,9 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type channels:MicLineInput}">
-                                <usercontrols:ChannelStrip />
+                                <Border BorderThickness="1" BorderBrush="White">
+                                    <usercontrols:ChannelStrip Visibility="{Binding linked_visibility}" />
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

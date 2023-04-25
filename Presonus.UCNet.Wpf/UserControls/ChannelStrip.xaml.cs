@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -54,7 +52,6 @@ namespace Presonus.UCNet.Wpf.UserControls
 			{
 				SelectedControl = control.Caption;
 				SelectedValue = control.ValueString;
-				//Console.WriteLine($"control got focus {control.Caption}");
 			}
 		}
 
@@ -80,7 +77,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 			if (element is FrameworkElement frameworkElement && frameworkElement is IAccessibleControl control)
 			{
 				// Set the accessible name using the Caption property value
-				//AutomationProperties.SetName(frameworkElement, control.Caption);
+				AutomationProperties.SetName((FrameworkElement)control, control.Caption + " " + control.ValueString);
 				control.ValueChanged += Control_ValueChanged;
 			}
 
@@ -93,17 +90,15 @@ namespace Presonus.UCNet.Wpf.UserControls
 				{
 					DependencyObject childElement = VisualTreeHelper.GetChild(element, i);
 					SetAccessibleNames(childElement);
-
 				}
 			}
 		}
 
 		private void Control_ValueChanged(object? sender, EventArgs e)
 		{
-			//Console.WriteLine("changed");
 			if (sender is IAccessibleControl control)
 			{
-				//Console.WriteLine("assigned");
+				AutomationProperties.SetName((FrameworkElement)control, control.Caption + " " + control.ValueString);
 
 				SelectedControl = control.Caption;
 				SelectedValue = control.ValueString;
@@ -118,24 +113,6 @@ namespace Presonus.UCNet.Wpf.UserControls
 		protected virtual void OnSelectedControlChanged()
 		{
 			SelectedControlChanged?.Invoke(this, EventArgs.Empty);
-		}
-
-		private void RoutingButton_Click(object sender, RoutedEventArgs e)
-		{
-			var state = RoutingPanel.Visibility;
-			switch (state)
-			{
-				case Visibility.Visible:
-					RoutingPanel.Visibility = Visibility.Collapsed;
-					break;
-				case Visibility.Hidden:
-					break;
-				case Visibility.Collapsed:
-					RoutingPanel.Visibility = Visibility.Visible;
-					break;
-				default:
-					break;
-			}
 		}
 	}
 }

@@ -3,22 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
               xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters" 
              xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
-             xmlns:enums="clr-namespace:Presonus.UCNet.Api.Enums;assembly=Presonus.UCNet.Api"
+             xmlns:api="clr-namespace:Presonus.UCNet.Api" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              x:Name="channelStrip"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
-             Height="800" Width="80" FocusManager.FocusedElement="{Binding SelectedControl, ElementName=channelStrip}">
+             Width="90" FocusManager.FocusedElement="{Binding SelectedControl, ElementName=channelStrip}">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
         <Style TargetType="ComboBox">
-            <Setter Property="Margin" Value="2"/>            
+            <Setter Property="Margin" Value="2"/>
         </Style>
     </UserControl.Resources>
     <Border Background="{Binding color, Converter={StaticResource HexStringToSolidColorBrushConverter}}">
@@ -32,7 +31,7 @@
                 <usercontrols:ValueDisplay ControlName="{Binding SelectedControl, ElementName=channelStrip}"
                             Value="{Binding SelectedValue, ElementName=channelStrip}" />
                 <!-- #region Routing -->
-                <local:MiniToggle x:Name="RoutingButton" Caption="Routing" Margin="2"/>
+                <ToggleButton Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Content="ROUTING" Padding="0" Width="80" Height="20" Margin="2" x:Name="RoutingButton"/>
                 <StackPanel x:Name="RoutingPanel" Visibility="{Binding IsChecked, ElementName=RoutingButton, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Vertical">
                     <ComboBox Visibility="{Binding inputsrc, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}">
                         <ComboBox.ItemsSource>
@@ -91,22 +90,28 @@
                     </ComboBox>
                 </StackPanel>
                 <!-- #endregion -->
-                <local:MiniToggle Margin="2" Caption="+48v" Width="auto" Height="20" IsChecked="{Binding phantom, Mode=TwoWay}" Visibility="{Binding phantom, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
-                <local:MiniToggle Margin="2" Caption="⌀" Width="auto" Height="20" IsChecked="{Binding polarity, Mode=TwoWay}" Visibility="{Binding polarity, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
-                <local:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Visibility="{Binding preampgain, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Min="0" Max="60"/>
+                
+                <ToggleButton Content="+48v" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding phantom, Mode=TwoWay}" />
+                <ToggleButton Content="Polarity" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding polarity, Mode=TwoWay}" Visibility="{Binding polarity, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
+                <usercontrols:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Visibility="{Binding preampgain, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Min="0" Max="60"/>
             </StackPanel>
-            
+
             <StackPanel VerticalAlignment="Bottom" Grid.Row="2">
-                <local:ToggleButtonControl Margin="2" Caption="Solo" Width="auto" Height="24" IsChecked="{Binding solo, Mode=TwoWay}" CheckedBackground="#FFE8FE6C" CheckedForeground="#FF3C3C3C" />
-                <local:ToggleButtonControl Margin="2" Caption="Mute" Width="auto" Height="24" IsChecked="{Binding mute, Mode=TwoWay}" CheckedBackground="#FFC33632" />
-                <local:PanPotControl Caption="Pan" Value="{Binding pan}"/>
-                <local:MiniToggle Caption="Stereo Link" Visibility="{Binding linkable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
-                <Border HorizontalAlignment="Center" BorderBrush="Black" BorderThickness="1" Margin="2" CornerRadius="4" Background="#FF383838">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <local:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
+                <ToggleButton Content="Solo" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding solo, Mode=TwoWay}" />
+                <ToggleButton Content="Mute" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding mute, Mode=TwoWay}" />
+
+                <usercontrols:PanPotControl Caption="Pan" HorizontalAlignment="Center" Margin="10" VerticalAlignment="Center" Width="60" Value="{Binding pan, FallbackValue=0.5}"/>
+                <CheckBox Content="Link -->" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
+                <StackPanel Orientation="Horizontal">
+                    <!--<Slider Ticks="0.73" TickPlacement="Both" HorizontalAlignment="Center" Margin="10" Orientation="Vertical" Minimum="0" Maximum="1" Height="200" Value="{Binding volume, Mode=TwoWay}"/>-->
+                <usercontrols:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
+                    <ProgressBar Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="200" Minimum="0" Maximum="1" Value="{Binding input_meter, FallbackValue=0.72}"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <ProgressBar Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1"  Value="{Binding DataContext.MeterData.InputInput[0], FallbackValue=0.72, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <ProgressBar Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1" Value="{Binding DataContext.MeterData.InputInput[0], FallbackValue=0.72, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </StackPanel>
-                </Border>
-                <local:ScribbleStripControl  StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
+                </StackPanel>
+                <usercontrols:ScribbleStripControl Caption="Channel Name" StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
             </StackPanel>
         </Grid>
     </Border>

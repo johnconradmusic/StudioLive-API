@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Presonus.UCNet.Wpf.UserControls
 {
-	public partial class RotaryKnobControl : UserControl, IAccessibleControl
+	public partial class LargeRotaryKnobControl : UserControl, IAccessibleControl
 	{
 		private bool isDragging;
 
@@ -23,22 +23,22 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		// Using a DependencyProperty as the backing store for Curve.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CurveProperty =
-			DependencyProperty.Register("Curve", typeof(CurveFormula), typeof(RotaryKnobControl), new PropertyMetadata(CurveFormula.Linear));
+			DependencyProperty.Register("Curve", typeof(CurveFormula), typeof(LargeRotaryKnobControl), new PropertyMetadata(CurveFormula.Linear));
 
 
 		public static readonly DependencyProperty ValueProperty =
-			DependencyProperty.Register("Value", typeof(float), typeof(RotaryKnobControl),
+			DependencyProperty.Register("Value", typeof(float), typeof(LargeRotaryKnobControl),
 				new FrameworkPropertyMetadata(0.0f, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
 		// Using a DependencyProperty as the backing store for Min. This enables animation, styling,
 		// binding, etc...
 		public static readonly DependencyProperty MinProperty =
-			DependencyProperty.Register("Min", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
+			DependencyProperty.Register("Min", typeof(float), typeof(LargeRotaryKnobControl), new PropertyMetadata(0f));
 
 		// Using a DependencyProperty as the backing store for Max. This enables animation, styling,
 		// binding, etc...
 		public static readonly DependencyProperty MaxProperty =
-			DependencyProperty.Register("Max", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
+			DependencyProperty.Register("Max", typeof(float), typeof(LargeRotaryKnobControl), new PropertyMetadata(0f));
 
 
 
@@ -50,7 +50,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		// Using a DependencyProperty as the backing store for Mid.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty MidProperty =
-			DependencyProperty.Register("Mid", typeof(float), typeof(RotaryKnobControl), new PropertyMetadata(0f));
+			DependencyProperty.Register("Mid", typeof(float), typeof(LargeRotaryKnobControl), new PropertyMetadata(0f));
 
 
 
@@ -62,7 +62,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		// Using a DependencyProperty as the backing store for ValueString.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ValueStringProperty =
-			DependencyProperty.Register("ValueString", typeof(string), typeof(RotaryKnobControl), new PropertyMetadata("unknown value"));
+			DependencyProperty.Register("ValueString", typeof(string), typeof(LargeRotaryKnobControl), new PropertyMetadata("unknown value"));
 
 
 		public string Caption
@@ -73,7 +73,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		// Using a DependencyProperty as the backing store for Caption.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty CaptionProperty =
-			DependencyProperty.Register("Caption", typeof(string), typeof(RotaryKnobControl), new PropertyMetadata(""));
+			DependencyProperty.Register("Caption", typeof(string), typeof(LargeRotaryKnobControl), new PropertyMetadata(""));
 
 		public override void OnApplyTemplate()
 		{
@@ -82,7 +82,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 			UpdateRotateTransform();
 		}
 
-		public RotaryKnobControl()
+		public LargeRotaryKnobControl()
 		{
 			InitializeComponent();
 		}
@@ -106,7 +106,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var control = d as RotaryKnobControl;
+			var control = d as LargeRotaryKnobControl;
 			control.UpdateRotateTransform();
 			control.UpdateValueString();
 			control.ValueChanged?.Invoke(control, EventArgs.Empty);
@@ -166,7 +166,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		// Using a DependencyProperty as the backing store for Unit.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty UnitProperty =
-			DependencyProperty.Register("Unit", typeof(Units), typeof(RotaryKnobControl), new PropertyMetadata(Units.NONE));
+			DependencyProperty.Register("Unit", typeof(Units), typeof(LargeRotaryKnobControl), new PropertyMetadata(Units.NONE));
 
 		public event EventHandler ValueChanged;
 

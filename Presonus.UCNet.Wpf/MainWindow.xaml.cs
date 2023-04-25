@@ -1,9 +1,10 @@
-﻿using Presonus.UCNet.Api;
+﻿using MahApps.Metro.Controls;
+using Presonus.UCNet.Api;
 using System.Windows;
 
 namespace Presonus.UCNet.Wpf
 {
-	public partial class MainWindow : Window
+	public partial class MainWindow : MetroWindow
 	{
 		public MainWindow(MainViewModel viewModel)
 		{

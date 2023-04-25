@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.ToggleButtonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Width="70" Height="30" Margin="5">
+    <UserControl.Resources>
+        <Style TargetType="ToggleButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" CornerRadius="2"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border x:Name="outline" CornerRadius="2"
+                                    BorderBrush="#FF353535"
+                                    BorderThickness="0.5" Background="{x:Null}">
+                                <ContentPresenter x:Name="contentPresenter"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{Binding CheckedBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                <Setter Property="Foreground" Value="{Binding CheckedForeground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#3d3d3d"/>
+                                <Setter Property="Foreground" Value="#FFC8C8C8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Content="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Background="{Binding UncheckedBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      />
+    </Grid>
+</UserControl>

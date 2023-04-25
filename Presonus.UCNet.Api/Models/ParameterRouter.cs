@@ -18,7 +18,7 @@ namespace Presonus.UCNet.Api.Models
 		private readonly MixerStateService _mixerStateService;
 
 		protected ChannelTypes _channelType;
-		protected int _channelIndex;
+		private int _channelIndex;
 		public static bool loadingFromScene = false;
 		private Dictionary<string, string> _propertyValueNameRoute = new();
 		private Dictionary<string, string> _propertyStringNameRoute = new();
@@ -26,6 +26,8 @@ namespace Presonus.UCNet.Api.Models
 
 		private readonly DebounceTimer _debounceTimer;
 		private bool _debounceTimerRunning;
+
+		protected int ChannelIndex { get => _channelIndex; }
 
 		public ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
 		{

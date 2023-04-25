@@ -1,5 +1,6 @@
 ﻿using Presonus.UCNet.Api.Services;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Presonus.UCNet.Api.Models
 {
@@ -7,13 +8,18 @@ namespace Presonus.UCNet.Api.Models
 	{
 
 		public Channel(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
-		{		}
+		{
+		}
+
+		protected MeterData _meterData;
 
 		public override event PropertyChangedEventHandler PropertyChanged;
 
+
+
 		public bool clip { get => GetBoolean(); set => SetBoolean(value); }
 
-		public bool linkable => !(_channelIndex % 2 == 0);
+		public bool linkable => !(ChannelIndex % 2 == 0);
 
 		public string chnum { get => GetString(); set => SetString(value); }
 
@@ -38,11 +44,19 @@ namespace Presonus.UCNet.Api.Models
 		public bool panlinkstate { get => GetBoolean(); set => SetBoolean(value); }
 
 		public bool link
-		{ get { return GetBoolean(); } set { SetBoolean(value); OnPropertyChanged(new("linkslave")); } }
+		{ get { return GetBoolean(); } set { SetBoolean(value); OnPropertyChanged(new PropertyChangedEventArgs(nameof(linked_visibility))); } }
 
-		public bool linkslave => link && !linkmaster;
-
-		public bool linkmaster { get => GetBoolean(); set => SetBoolean(value); }
+		public Visibility linked_visibility
+		{
+			get
+			{
+				if (linkmaster) return Visibility.Visible;
+				if (link && !linkmaster) return Visibility.Collapsed;
+				else return Visibility.Visible;
+			}
+		}
+		public bool linkmaster
+		{ get { return GetBoolean(); } set { SetBoolean(value); OnPropertyChanged(new PropertyChangedEventArgs(nameof(linked_visibility))); } }
 
 		public string iconid { get => GetString(); set => SetString(value); }
 

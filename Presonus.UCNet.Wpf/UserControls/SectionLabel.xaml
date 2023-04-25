@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.UserControls.SectionLabel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="80">
+    <StackPanel>
+        <TextBlock Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}}" FontFamily="{DynamicResource MahApps.Fonts.Family.Control}" FontWeight="SemiBold" Foreground="{DynamicResource MahApps.Brushes.Text}" />
+        <Rectangle Fill="White" HorizontalAlignment="Left" Opacity="0.7" Width="60" Height="1"/>
+    </StackPanel>
+</UserControl>

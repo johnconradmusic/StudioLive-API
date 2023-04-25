@@ -35,7 +35,7 @@
                     <RotateTransform x:Name="KnobRotation" CenterX="15" CenterY="15"/>
                 </TransformGroup>
             </Grid.RenderTransform>
-            <Ellipse Width="30" Height="30" Fill="{StaticResource Accent}"/>
+            <Ellipse Width="30" Height="30" Fill="{DynamicResource MahApps.Brushes.Accent}"/>
             <Rectangle RadiusX="1" RadiusY="1" Width="2" Height="10" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         </Grid>
         <StackPanel VerticalAlignment="Center" Grid.Row="1" Orientation="Vertical" >
