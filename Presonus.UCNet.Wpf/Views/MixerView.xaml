@@ -29,9 +29,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type channels:MicLineInput}">
-                                <Border BorderThickness="1" BorderBrush="White">
-                                    <usercontrols:ChannelStrip Visibility="{Binding linked_visibility}" />
-                                </Border>
+                                    <usercontrols:ChannelStrip  />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

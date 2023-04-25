@@ -172,8 +172,34 @@ namespace Presonus.UCNet.Wpf.UserControls
 
 		private void RotaryKnob_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			Value += (float)e.Delta / 120f / 50f;
-			Value = Math.Clamp(Value, 0f, 1f);
+			float delta = (float)e.Delta / 120f / 50f;
+			float newValue = Math.Clamp(Value + delta, 0f, 1f);
+			if (newValue != Value)
+			{
+				Value = newValue;
+			}
 		}
-	}
+
+		private void RotaryKnob_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+            Console.WriteLine(e.Key);
+			float delta = 0f;
+			if (e.Key == Key.OemPlus) delta = 0.05f;
+			else if (e.Key == Key.OemMinus) delta = -0.05f;
+
+			if (delta != 0f)
+			{
+				float newValue = Math.Clamp(Value + delta, 0f, 1f);
+				if (newValue != Value)
+				{
+					Value = newValue;
+				}
+			}
+		}
+
+        private void RotaryKnob_GotFocus(object sender, RoutedEventArgs e)
+        {
+			Keyboard.Focus(sender as RotaryKnobControl);
+        }
+    }
 }

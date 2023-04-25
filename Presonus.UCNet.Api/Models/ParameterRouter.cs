@@ -73,7 +73,6 @@ namespace Presonus.UCNet.Api.Models
 					_propertyStringsNameRoute[property.Name] = GetPropertyPath(parameterName);
 				}
 			}
-			if (_channelIndex == 32) throw new Exception("stop!");
 		}
 		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
 		{

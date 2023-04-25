@@ -114,5 +114,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 		{
 			SelectedControlChanged?.Invoke(this, EventArgs.Empty);
 		}
-	}
+
+
+    }
 }

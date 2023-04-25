@@ -8,7 +8,7 @@
              Width="80" Height="30"
              MouseWheel="RotaryKnob_MouseWheel" MouseDown="Knob_MouseDown"
              MouseMove="Knob_MouseMove" MouseUp="Knob_MouseUp" MouseLeave="Knob_MouseLeave"
-            Focusable="True" IsTabStop="True">
+             Focusable="True" IsTabStop="True" PreviewKeyDown="RotaryKnob_PreviewKeyDown" GotFocus="RotaryKnob_GotFocus">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30" />

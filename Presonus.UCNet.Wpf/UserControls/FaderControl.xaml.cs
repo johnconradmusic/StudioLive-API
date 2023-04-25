@@ -90,5 +90,11 @@ namespace Presonus.UCNet.Wpf.UserControls
 			Value += (float)e.Delta / 120f / 50f;
 			Value = Math.Clamp(Value, 0f, 1f);
 		}
-	}
+
+        private void fader_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+			if (e.Key == System.Windows.Input.Key.OemPlus) Value += 0.01f;
+			if (e.Key == System.Windows.Input.Key.OemMinus) Value -= 0.01f;
+		}
+    }
 }

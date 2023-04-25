@@ -11,15 +11,16 @@
                    Width="1605"
                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                    BorderThickness="1"
-                   WindowStartupLocation="CenterScreen">
+                   WindowStartupLocation="CenterScreen"
+                   KeyboardNavigation.DirectionalNavigation="None">
     
 
     <Grid>
-        <TabControl Style="{DynamicResource MahApps.Styles.TabControl}">
-            <TabItem Header="ChannelDetailView">
+        <TabControl  Style="{DynamicResource MahApps.Styles.TabControl}">
+            <TabItem Focusable="True" IsTabStop="True" Header="ChannelDetailView">
                 <local:ChannelDetailView DataContext="{Binding}" />
             </TabItem>
-            <TabItem Header="MixerView">
+            <TabItem Focusable="True" IsTabStop="True" Header="MixerView">
                 <local:MixerView DataContext="{Binding}" />
             </TabItem>
 

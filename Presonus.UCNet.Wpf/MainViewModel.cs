@@ -40,7 +40,6 @@ public class MainViewModel : INotifyPropertyChanged
 			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(FXReturns));
 			FXReturns.Add(chan);
 			AllChannels.Add(chan);
-
 		}
 
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.RETURN]; i++)
@@ -49,8 +48,8 @@ public class MainViewModel : INotifyPropertyChanged
 			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(StereoLineInputs));
 			StereoLineInputs.Add(chan);
 			AllChannels.Add(chan);
-
 		}
+
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.TALKBACK]; i++)
 		{
 			var chan = new MicLineInput(ChannelTypes.TALKBACK, i + 1, _mixerStateService);
@@ -58,6 +57,7 @@ public class MainViewModel : INotifyPropertyChanged
 			Talkback.Add(chan);
 			AllChannels.Add(chan);
 		}
+
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.MAIN]; i++)
 		{
 			var chan = new OutputDACBus(ChannelTypes.MAIN, i + 1, _mixerStateService);

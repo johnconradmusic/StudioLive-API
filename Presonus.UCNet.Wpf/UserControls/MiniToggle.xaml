@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d" Margin="2"
-             Height="16" Width="80" Focusable="True" IsTabStop="True">
+             Height="30" Width="80" Focusable="True" IsTabStop="True">
     <UserControl.Resources>
         <Style TargetType="local:MiniToggle">
             <Setter Property="Template">
@@ -28,7 +28,7 @@
                             </ToggleButton.Template>
                             <ToggleButton.Style>
                                 <Style TargetType="ToggleButton">
-                                    <Setter Property="Background" Value="#FFBFB7B7"/>
+                                    <Setter Property="Background" Value="#3d3d3d"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsChecked" Value="True">
                                             <Setter Property="Background" Value="{StaticResource Pop}"/>
@@ -47,6 +47,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <ToggleButton  x:Name="ToggleButton" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ToggleButton x:Name="ToggleButton" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

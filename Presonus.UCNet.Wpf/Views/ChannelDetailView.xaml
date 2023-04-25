@@ -6,12 +6,12 @@
              xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters"
              xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              mc:Ignorable="d"
-        Width="1600"
-        Height="900"
-        Background="{StaticResource Background}">
+             Width="1600"
+             Height="900"
+             Background="{StaticResource Background}" 
+             KeyboardNavigation.DirectionalNavigation="Contained">
     <UserControl.Resources>
         <Style x:Key="ModernStackPanel" TargetType="StackPanel">
-            <Setter Property="Background" Value="Transparent" />
             <Setter Property="Margin" Value="5" />
         </Style>
         <Style x:Key="ModernBorder" TargetType="Border">
@@ -54,8 +54,8 @@
                 <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2" Style="{StaticResource ModernStackPanel}">
                     <ComboBox SelectedIndex="0"  x:Name="ChannelSelector" Height="20" Width="200" ItemsSource="{Binding AllChannels}" DisplayMemberPath="username" />
                 </StackPanel>
-                <Button Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Content="Previous Channel" />
-                <Button Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Content="Next Channel" />
+                <Button Click="PrevChan_Click" x:Name="PrevChan" Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Content="Previous Channel" />
+                <Button Click="NextChan_Click" x:Name="NextChan" Style="{DynamicResource MahApps.Styles.Button.Flat}" Padding="0"  Width="120" Height="20" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Content="Next Channel" />
             </Grid>
         </Border>
 
@@ -73,8 +73,8 @@
         </Border>
 
         <!--// Gate //-->
-        
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Content="GATE" Padding="0" Width="80" Height="20" x:Name="GateButton"/>
+
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Content="GATE" Padding="0" Width="80" Height="20" x:Name="GateButton"/>
         <Border Grid.Column="1" Grid.Row="0" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=GateButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{StaticResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}" />
@@ -89,8 +89,8 @@
         </Border>
 
         <!--// Compressor //-->
-        
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" Content="COMPRESSOR" Padding="0" Width="120" Height="20" x:Name="CompressorButton"/>
+
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" Content="COMPRESSOR" Padding="0" Width="120" Height="20" x:Name="CompressorButton"/>
         <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=CompressorButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Center">
                 <usercontrols:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}" />
@@ -104,10 +104,10 @@
                 <usercontrols:LargeRotaryKnobControl Caption="Key Filter"  Value="{Binding comp_keyfilter}" Min="40" Max="16000" Curve="Logarithmic" />
             </StackPanel>
         </Border>
-        
+
         <!--// EQ //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Content="EQ" Padding="0" Width="80" Height="20" x:Name="EQButton"/>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Content="EQ" Padding="0" Width="80" Height="20" x:Name="EQButton"/>
         <Border Grid.Column="1" Grid.Row="2" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=EQButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <StackPanel Margin="5">
@@ -143,8 +143,8 @@
         </Border>
 
         <!--// Limiter //-->
-        
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Content="LIMITER" Padding="0" Width="80" Height="20" x:Name="LimiterButton"/>
+
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Content="LIMITER" Padding="0" Width="80" Height="20" x:Name="LimiterButton"/>
         <Border Grid.Column="1" Grid.Row="3" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=LimiterButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom">
                 <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}" />
@@ -153,8 +153,8 @@
         </Border>
 
         <!--// Sends //-->
-        
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Down}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Content="SENDS" Padding="0" Width="80" Height="20" x:Name="SendsButton"/>
+
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Content="SENDS" Padding="0" Width="80" Height="20" x:Name="SendsButton"/>
         <Border Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource ModernBorder}" Padding="0"  Visibility="{Binding IsChecked, ElementName=SendsButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">

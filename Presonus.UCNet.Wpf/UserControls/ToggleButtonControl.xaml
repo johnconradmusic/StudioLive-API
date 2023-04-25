@@ -28,7 +28,7 @@
                                 <Setter Property="Foreground" Value="{Binding CheckedForeground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter TargetName="border" Property="Background" Value="#FF4A4E4F"/>
+                                <Setter TargetName="border" Property="Background" Value="#3d3d3d"/>
                                 <Setter Property="Foreground" Value="#FFC8C8C8" />
                             </Trigger>
                         </ControlTemplate.Triggers>
