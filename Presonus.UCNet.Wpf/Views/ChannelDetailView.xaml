@@ -8,8 +8,7 @@
              mc:Ignorable="d"
              Width="1600"
              Height="900"
-             Background="{StaticResource Background}" 
-             KeyboardNavigation.DirectionalNavigation="Contained">
+             Background="{StaticResource Background}">
     <UserControl.Resources>
         <Style x:Key="ModernStackPanel" TargetType="StackPanel">
             <Setter Property="Margin" Value="5" />
@@ -41,6 +40,7 @@
         </Grid.ColumnDefinitions>
 
         <!--// Channel Selector //-->
+
         <Border Style="{DynamicResource ModernBorder}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -74,7 +74,7 @@
 
         <!--// Gate //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Content="GATE" Padding="0" Width="80" Height="20" x:Name="GateButton"/>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Content="GATE" Padding="0" Width="80" Height="20" x:Name="GateButton" />
         <Border Grid.Column="1" Grid.Row="0" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=GateButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{StaticResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <usercontrols:MiniToggle Margin="2" Caption="Gate" Width="auto" Height="20" IsChecked="{Binding gate_on, Mode=TwoWay}" />
@@ -90,7 +90,7 @@
 
         <!--// Compressor //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" Content="COMPRESSOR" Padding="0" Width="120" Height="20" x:Name="CompressorButton"/>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="1" Content="COMPRESSOR" Padding="0" Width="120" Height="20" x:Name="CompressorButton" />
         <Border Grid.Column="1" Grid.Row="1" Style="{DynamicResource ModernBorder}" Visibility="{Binding IsChecked, ElementName=CompressorButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Center">
                 <usercontrols:MiniToggle Margin="2" Caption="Compressor" Width="auto" Height="20" IsChecked="{Binding comp_on, Mode=TwoWay}" />
@@ -107,7 +107,7 @@
 
         <!--// EQ //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Content="EQ" Padding="0" Width="80" Height="20" x:Name="EQButton"/>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Content="EQ" Padding="0" Width="80" Height="20" x:Name="EQButton" />
         <Border Grid.Column="1" Grid.Row="2" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=EQButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <StackPanel Margin="5">
@@ -144,17 +144,31 @@
 
         <!--// Limiter //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="3" Content="LIMITER" Padding="0" Width="80" Height="20" x:Name="LimiterButton"/>
-        <Border Grid.Column="1" Grid.Row="3" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=LimiterButton, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom">
-                <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}" />
-                <usercontrols:LargeRotaryKnobControl Caption="Threshold"  Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear" />
-            </StackPanel>
-        </Border>
+        <Grid Grid.Column="1" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <ToggleButton Grid.Column="0" IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Content="LIMITER" Padding="0" Width="80" Height="20" x:Name="LimiterButton" />
+            <Border Grid.Column="0"  Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=LimiterButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom">
+                    <usercontrols:MiniToggle Margin="2" Caption="Limiter" Width="auto" Height="20" IsChecked="{Binding limiter_on, Mode=TwoWay}" />
+                    <usercontrols:LargeRotaryKnobControl Caption="Threshold"  Value="{Binding limiter_threshold}" Min="-60" Max="0" Curve="Linear" />
+                </StackPanel>
+            </Border>
+            <ToggleButton Grid.Column="1" IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Content="FX" Padding="0" Width="80" Height="20" x:Name="FXButton" />
+            <Border Grid.Column="1" Style="{DynamicResource ModernBorder}"  Visibility="{Binding IsChecked, ElementName=FXButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Style="{DynamicResource ModernStackPanel}" Orientation="Horizontal" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" VerticalAlignment="Bottom">
+                    <usercontrols:LargeRotaryKnobControl Caption="FX A"  Value="{Binding FXA}" Min="-96" Max="10" Curve="LinearToVolume" />
+                    <usercontrols:LargeRotaryKnobControl Caption="FX B"  Value="{Binding FXB}" Min="-96" Max="10" Curve="LinearToVolume" />
+
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <!--// Sends //-->
 
-        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Content="SENDS" Padding="0" Width="80" Height="20" x:Name="SendsButton"/>
+        <ToggleButton IsChecked="True" Style="{DynamicResource MahApps.Styles.ToggleButton.ExpanderHeader.Up}" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Content="SENDS" Padding="0" Width="80" Height="20" x:Name="SendsButton" />
         <Border Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource ModernBorder}" Padding="0"  Visibility="{Binding IsChecked, ElementName=SendsButton, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">

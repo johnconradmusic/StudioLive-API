@@ -1,4 +1,9 @@
-﻿using Presonus.UCNet.Wpf.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Presonus.UCNet.Api;
+using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api.Models;
+using Presonus.UCNet.Api.Services;
+using Presonus.UCNet.Wpf.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,16 +21,33 @@ namespace Presonus.UCNet.Wpf.UserControls
 	{
 		private string selectedControl;
 		private string selectedValue;
-
+		public float Meter => channel?.ChannelType != null && channel.ChannelIndex != null
+			? _meterService.MeterData.GetData(new(channel.ChannelType, channel.ChannelIndex - 1))
+			: 0.0f;
+		public float Peak;
+		private Channel channel;
+		private MeterService _meterService;
 		public ChannelStrip()
 		{
 			InitializeComponent();
-			SetAccessibleNames(MainContainer);
 			Loaded += (s, e) =>
 			{
+				SetAccessibleNames(MainContainer);
 				TraverseVisualTree(this, AttachGotFocusEventHandler);
 				SetAccessibleNames(MainContainer);
+				_meterService = App.ServiceProvider.GetRequiredService<MeterService>();
+				_meterService.MeterDataReceived += _meterService_MeterDataReceived;
+				channel = channelStrip.DataContext as Channel;
 			};
+
+		}
+
+		private void _meterService_MeterDataReceived(object? sender, MeterDataEventArgs e)
+		{
+			var value = ValueTransformer.LinearToMeter(Meter);
+			if (value > Peak) Peak = value;
+			else Peak *= 0.9f;
+			meter.Value = Peak;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -115,6 +137,15 @@ namespace Presonus.UCNet.Wpf.UserControls
 			SelectedControlChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-
-    }
+		private void channelStrip_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.M)
+			{
+				AutomationProperties.SetLiveSetting(meter, AutomationLiveSetting.Off);
+				AutomationProperties.SetName(meter, ValueTransformer.LinearToVolume((float)Peak).ToString());
+				Console.WriteLine("Speak: " + ValueTransformer.LinearToVolume((float)Peak));
+				
+			}
+		}
+	}
 }

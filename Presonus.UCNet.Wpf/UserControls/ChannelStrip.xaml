@@ -10,7 +10,7 @@
              x:Name="channelStrip"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=models:MicLineInput}" Margin="2"
-             Width="90" FocusManager.FocusedElement="{Binding SelectedControl, ElementName=channelStrip}">
+             Width="90" FocusManager.FocusedElement="{Binding SelectedControl, ElementName=channelStrip}" PreviewKeyDown="channelStrip_PreviewKeyDown">
     <UserControl.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter"/>
         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
@@ -105,13 +105,13 @@
                 <StackPanel Orientation="Horizontal">
                     <!--<Slider Ticks="0.73" TickPlacement="Both" HorizontalAlignment="Center" Margin="10" Orientation="Vertical" Minimum="0" Maximum="1" Height="200" Value="{Binding volume, Mode=TwoWay}"/>-->
                 <usercontrols:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
-                    <ProgressBar Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="200" Minimum="0" Maximum="1" Value="{Binding input_meter, FallbackValue=0.72}"/>
+                    <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="meter" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="200" Minimum="0" Maximum="1"/>
                     <StackPanel VerticalAlignment="Center">
-                        <ProgressBar Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1"  Value="{Binding DataContext.MeterData.InputInput[0], FallbackValue=0.72, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                        <ProgressBar Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1" Value="{Binding DataContext.MeterData.InputInput[0], FallbackValue=0.72, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <ProgressBar AutomationProperties.LiveSetting="Off" Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1" />
+                        <ProgressBar AutomationProperties.LiveSetting="Off"  Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1" />
                     </StackPanel>
                 </StackPanel>
-                <usercontrols:ScribbleStripControl Caption="Channel Name" StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
+                <usercontrols:ScribbleStripControl x:Name="scribbleStrip" Caption="Channel Name" StripColor="{Binding color, FallbackValue=#FF454749, Converter={StaticResource HexStringToSolidColorBrushConverter}}" Text="{Binding username, Mode=TwoWay}"/>
             </StackPanel>
         </Grid>
     </Border>

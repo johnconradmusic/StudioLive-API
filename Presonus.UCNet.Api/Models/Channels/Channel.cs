@@ -6,7 +6,7 @@ namespace Presonus.UCNet.Api.Models
 {
 	public class Channel : ParameterRouter, INotifyPropertyChanged
 	{
-
+		
 		public Channel(ChannelTypes channelType, int index, MixerStateService mixerStateService) : base(channelType, index, mixerStateService)
 		{
 		}

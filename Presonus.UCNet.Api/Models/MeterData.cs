@@ -16,7 +16,6 @@ namespace Presonus.UCNet.Api.Models
 	}
 	public class MeterData
 	{
-
 		public float GetData(ChannelSelector channelSelector)
 		{
 			return channelSelector.Type switch
@@ -31,7 +30,6 @@ namespace Presonus.UCNet.Api.Models
 				_ => 0,
 			};
 		}
-
 
 		public float[] InputInput { get; set; }
 		public float[] InputPreGate { get; set; }
@@ -49,7 +47,6 @@ namespace Presonus.UCNet.Api.Models
 
 		public Dictionary<string, float[]> FxChStrip { get; set; } = new();
 		public Dictionary<string, float[]> FxReturnStrip { get; set; } = new();
-
 
 		public event PropertyChangedEventHandler PropertyChanged;
 	}

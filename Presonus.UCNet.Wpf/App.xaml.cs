@@ -15,6 +15,7 @@ namespace Presonus.UCNet.Wpf
 
 	public partial class App : Application
 	{
+		public static ServiceProvider ServiceProvider { get; set; }
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
@@ -44,16 +45,16 @@ namespace Presonus.UCNet.Wpf
 			serviceCollection.AddSingleton<MainViewModel>();
 			serviceCollection.AddSingleton<MainWindow>();
 
-			var serviceProvider = serviceCollection.BuildServiceProvider();
+			ServiceProvider = serviceCollection.BuildServiceProvider();
 
-			serviceProvider.GetRequiredService<BroadcastService>().StartReceive();
+			ServiceProvider.GetRequiredService<BroadcastService>().StartReceive();
 			while (!Mixer.Counted)
 			{
 				Task.Delay(100).Wait();
 			}
 
 			// Run application:
-			var mainWindow = serviceProvider.GetRequiredService<MainWindow>();
+			var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
 			mainWindow.Show();
 		}
 

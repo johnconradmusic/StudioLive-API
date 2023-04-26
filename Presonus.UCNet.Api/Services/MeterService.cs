@@ -20,8 +20,8 @@ namespace Presonus.UCNet.Api.Services
 		private readonly UdpClient _udpClient;
 		private bool _disposed;
 
-		private MeterData meterData = new();
-		private ReductionMeterData reductionMeterData = new();
+		public MeterData MeterData = new();
+		public ReductionMeterData ReductionMeterData = new();
 
 		public MeterService()
 		{
@@ -70,13 +70,13 @@ namespace Presonus.UCNet.Api.Services
 			{
 				data = data.Skip(20).ToArray();
 				ReadMeterValues(data);
-				MeterDataReceived?.Invoke(this, new(meterData));
+				MeterDataReceived?.Invoke(this, new(MeterData));
 			}
 			else if (msg == MessageCode.Reduction)
 			{
 				data = data.Skip(20).ToArray();
 				ReadReductionValues(data);
-				ReductionDataReceived?.Invoke(this, new(reductionMeterData));
+				ReductionDataReceived?.Invoke(this, new(ReductionMeterData));
 			}
 		}
 
@@ -96,46 +96,46 @@ namespace Presonus.UCNet.Api.Services
 		}
 		private void ReadReductionValues(byte[] data)
 		{
-			reductionMeterData.InputGateReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			reductionMeterData.InputCompReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			reductionMeterData.InputLimitReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			ReductionMeterData.InputGateReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			ReductionMeterData.InputCompReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			ReductionMeterData.InputLimitReduction = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
 		}
 		private void ReadMeterValues(byte[] data)
 		{
-			meterData.InputInput = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			meterData.InputPreGate = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE], 3);
-			meterData.InputPostGate = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			meterData.InputPostComp = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			meterData.InputPostEQ = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			meterData.InputPostLimit = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
-			meterData.InputPostFader = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputInput = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputPreGate = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE], 3);
+			MeterData.InputPostGate = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputPostComp = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputPostEQ = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputPostLimit = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.InputPostFader = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.LINE]);
+			MeterData.FxReturnStrip["input"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.RETURN] * 2, 8);
+			MeterData.FxReturnStrip["stripA"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
+			MeterData.FxReturnStrip["stripB"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
+			MeterData.FxReturnStrip["stripC"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
+
+			MeterData.AuxMetering = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.AUX]);
+
+			MeterData.AuxChStrip["stripA"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.AUX]);
+			MeterData.AuxChStrip["stripB"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.AUX]);
+			MeterData.AuxChStrip["stripC"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.AUX]);
+			MeterData.AuxChStrip["stripD"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.AUX]);
+
+
+			MeterData.FxChStrip["inputs"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.FX]);
+			MeterData.FxChStrip["stripA"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.FX]);
+			MeterData.FxChStrip["stripB"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.FX]);
+			MeterData.FxChStrip["stripC"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.FX]);
+
+			MeterData.Main = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
+
+			MeterData.MainChStrip["stageA"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
+			MeterData.MainChStrip["stageB"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
+			MeterData.MainChStrip["stageC"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
+			MeterData.MainChStrip["stageD"] = ReadValues(data, Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
+
 		}
-			//meterData.FxReturnStrip["input"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.RETURN] * 2, 8);
-			//meterData.FxReturnStrip["stripA"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
-			//meterData.FxReturnStrip["stripB"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
-			//meterData.FxReturnStrip["stripC"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.RETURN] * 2);
 
-			//meterData.AuxMetering = ReadValues(Mixer.ChannelCounts[ChannelTypes.AUX]);
-
-			//meterData.AuxChStrip["stripA"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.AUX]);
-			//meterData.AuxChStrip["stripB"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.AUX]);
-			//meterData.AuxChStrip["stripC"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.AUX]);
-			//meterData.AuxChStrip["stripD"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.AUX]);
-
-
-			//meterData.FxChStrip["inputs"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.FX]);
-			//meterData.FxChStrip["stripA"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.FX]);
-			//meterData.FxChStrip["stripB"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.FX]);
-			//meterData.FxChStrip["stripC"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.FX]);
-
-			//meterData.Main = ReadValues(Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
-
-			//meterData.MainChStrip["stageA"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
-			//meterData.MainChStrip["stageB"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
-			//meterData.MainChStrip["stageC"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
-			//meterData.MainChStrip["stageD"] = ReadValues(Mixer.ChannelCounts[ChannelTypes.MAIN] * 2);
-
-		
 
 		protected virtual void Dispose(bool disposing)
 		{
@@ -160,9 +160,9 @@ namespace Presonus.UCNet.Api.Services
 	{
 		public MeterData MeterData { get; }
 
-		public MeterDataEventArgs(MeterData meterData)
+		public MeterDataEventArgs(MeterData MeterData)
 		{
-			MeterData = meterData;
+			MeterData = MeterData;
 		}
 	}
 

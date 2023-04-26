@@ -17,9 +17,6 @@ public class MainViewModel : INotifyPropertyChanged
 	public MainViewModel(MixerStateService mixerStateService, MeterService meterService)
 	{
 		_mixerStateService = mixerStateService;
-		_meterService = meterService;
-		meterService.MeterDataReceived += (sender, args) => { MeterData = args.MeterData; OnPropertyChanged(nameof(MeterData)); };
-		meterService.ReductionDataReceived += (sender, args) => { ReductionMeterData = args.ReductionData; OnPropertyChanged(nameof(ReductionMeterData)); };
 		Presets = new Presets(mixerStateService);
 		Presets.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Presets));
 

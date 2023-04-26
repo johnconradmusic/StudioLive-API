@@ -17,7 +17,7 @@ namespace Presonus.UCNet.Api.Models
 	{
 		private readonly MixerStateService _mixerStateService;
 
-		protected ChannelTypes _channelType;
+		private ChannelTypes channelType;
 		private int _channelIndex;
 		public static bool loadingFromScene = false;
 		private Dictionary<string, string> _propertyValueNameRoute = new();
@@ -27,12 +27,13 @@ namespace Presonus.UCNet.Api.Models
 		private readonly DebounceTimer _debounceTimer;
 		private bool _debounceTimerRunning;
 
-		protected int ChannelIndex { get => _channelIndex; }
+		public int ChannelIndex { get => _channelIndex; }
+		public ChannelTypes ChannelType { get => channelType; set => channelType = value; }
 
 		public ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
 		{
 			_channelIndex = index;
-			_channelType = channelType;
+			ChannelType = channelType;
 			_mixerStateService = mixerStateService;
 			_mixerStateService.ValueChanged += ValueStateUpdated;
 			_mixerStateService.StringChanged += StringStateUpdated;
@@ -76,8 +77,8 @@ namespace Presonus.UCNet.Api.Models
 		}
 		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
 		{
-			if (_channelType == ChannelTypes.NONE) return propertyName;
-			return ChannelUtil.GetChannelString(new(_channelType, _channelIndex, mixType, mixNum)) + $"/{propertyName}";
+			if (ChannelType == ChannelTypes.NONE) return propertyName;
+			return ChannelUtil.GetChannelString(new(ChannelType, _channelIndex, mixType, mixNum)) + $"/{propertyName}";
 		}
 
 		private void ValueStateUpdated(object sender, ValueChangedEventArgs<float> args)
