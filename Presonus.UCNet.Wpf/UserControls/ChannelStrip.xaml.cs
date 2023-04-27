@@ -9,8 +9,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static ICSharpCode.SharpZipLib.Zip.ZipEntryFactory;
 
 namespace Presonus.UCNet.Wpf.UserControls
 {
@@ -41,6 +44,7 @@ namespace Presonus.UCNet.Wpf.UserControls
 			};
 
 		}
+
 
 		private void _meterService_MeterDataReceived(object? sender, MeterDataEventArgs e)
 		{
@@ -141,11 +145,24 @@ namespace Presonus.UCNet.Wpf.UserControls
 		{
 			if (e.Key == System.Windows.Input.Key.M)
 			{
-				AutomationProperties.SetLiveSetting(meter, AutomationLiveSetting.Off);
-				AutomationProperties.SetName(meter, ValueTransformer.LinearToVolume((float)Peak).ToString());
-				Console.WriteLine("Speak: " + ValueTransformer.LinearToVolume((float)Peak));
-				
+				e.Handled = true;
+				UpdateLiveRegionText(ValueTransformer.LinearToVolume((float)Peak).ToString());
 			}
 		}
+		public void UpdateLiveRegionText(string newText)
+		{
+			liveRegionLabel.Text = newText;
+			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(liveRegionLabel);
+			if (peer == null)
+			{
+				peer = new FrameworkElementAutomationPeer(liveRegionLabel);
+			}
+			if (peer != null)
+			{
+				Console.WriteLine(newText);
+				peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+			}
+		}
+
 	}
 }

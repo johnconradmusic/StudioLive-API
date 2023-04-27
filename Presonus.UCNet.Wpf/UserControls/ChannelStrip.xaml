@@ -28,6 +28,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" >
+                <TextBlock x:Name="liveRegionLabel" AutomationProperties.LiveSetting="Assertive" />
                 <usercontrols:ValueDisplay ControlName="{Binding SelectedControl, ElementName=channelStrip}"
                             Value="{Binding SelectedValue, ElementName=channelStrip}" />
                 <!-- #region Routing -->
@@ -90,7 +91,7 @@
                     </ComboBox>
                 </StackPanel>
                 <!-- #endregion -->
-                
+
                 <ToggleButton Content="+48v" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding phantom, Mode=TwoWay}" />
                 <ToggleButton Content="Polarity" Width="60" Height="20" Padding="0" Margin="2" Style="{DynamicResource MahApps.Styles.ToggleButton.Flat}" IsChecked="{Binding polarity, Mode=TwoWay}" Visibility="{Binding polarity, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}"/>
                 <usercontrols:RotaryKnobControl  Caption="Gain" Value="{Binding preampgain}" Visibility="{Binding preampgain, FallbackValue=Collapsed, Converter={StaticResource VisibilityConverter}}" Min="0" Max="60"/>
@@ -104,7 +105,7 @@
                 <CheckBox Content="Stereo Link" Margin="2" Width="auto" Height="20" IsChecked="{Binding link, Mode=TwoWay}"/>
                 <StackPanel Orientation="Horizontal">
                     <!--<Slider Ticks="0.73" TickPlacement="Both" HorizontalAlignment="Center" Margin="10" Orientation="Vertical" Minimum="0" Maximum="1" Height="200" Value="{Binding volume, Mode=TwoWay}"/>-->
-                <usercontrols:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
+                    <usercontrols:FaderControl Caption="Volume" Value="{Binding volume}" Width="50" Height="230"/>
                     <ProgressBar AutomationProperties.LiveSetting="Off" x:Name="meter" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="200" Minimum="0" Maximum="1"/>
                     <StackPanel VerticalAlignment="Center">
                         <ProgressBar AutomationProperties.LiveSetting="Off" Margin="5" Foreground="Green" Background="DarkGreen" Orientation="Vertical" Width="3" Height="95" Minimum="0" Maximum="1" />
