@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Presonus.UCNet.Wpf.Converters
+namespace Presonus.UCNet.Api.Converters
 {
-    public class BooleanInverterConverter : IValueConverter
+	public class BooleanInverterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

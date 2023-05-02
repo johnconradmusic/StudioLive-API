@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
-              xmlns:converters="clr-namespace:Presonus.UCNet.Wpf.Converters" 
+              xmlns:converters="clr-namespace:Presonus.UCNet.Api.Converters;assembly=Presonus.UCNet.Api" 
              xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.UserControls"
              xmlns:api="clr-namespace:Presonus.UCNet.Api" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              x:Name="channelStrip"

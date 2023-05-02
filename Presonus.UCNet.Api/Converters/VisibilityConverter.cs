@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows;
 using System.Reflection;
 
-namespace Presonus.UCNet.Wpf.Converters
+namespace Presonus.UCNet.Api.Converters
 {
 	public class VisibilityConverter : IValueConverter
 	{

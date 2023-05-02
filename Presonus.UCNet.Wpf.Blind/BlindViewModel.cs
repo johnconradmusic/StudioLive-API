@@ -13,14 +13,15 @@ public class BlindViewModel : INotifyPropertyChanged
 {
 	private MixerStateService _mixerStateService;
 	private MeterService _meterService;
-	private DispatcherTimer updateTimer;
-
-	public TreeNode Tree { get; set; }
-
 
 	public BlindViewModel(MixerStateService mixerStateService, MeterService meterService)
 	{
 		_mixerStateService = mixerStateService;
+		BuildMixer(mixerStateService);
+	}
+
+	private void BuildMixer(MixerStateService mixerStateService)
+	{
 		Presets = new Presets(mixerStateService);
 		Presets.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Presets));
 
@@ -66,42 +67,14 @@ public class BlindViewModel : INotifyPropertyChanged
 			Main.Add(chan);
 			AllChannels.Add(chan);
 		}
-
-		updateTimer = new DispatcherTimer
-		{
-			Interval = TimeSpan.FromMilliseconds(10) // Update every 100 milliseconds
-		};
-		updateTimer.Tick += UpdateTimer_Tick;
-		updateTimer.Start();
-
-
-		Tree = new();
-		PopulateTree(Tree, this);
 	}
-	public void PopulateTree(TreeNode node, object obj)
-	{
-		Type type = obj.GetType();
 
-		foreach (PropertyInfo prop in type.GetProperties())
-		{
-			var propNode = new TreeNode
-			{
-				Name = prop.Name,
-				Value = prop.GetValue(obj)
-			};
-
-			node.Children.Add(propNode);
-
-			if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string))
-			{
-				PopulateTree(propNode, prop.GetValue(obj));
-			}
-		}
-	}
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public MeterData MeterData { get; set; }
+
 	public ReductionMeterData ReductionMeterData { get; set; }
+
 	public ObservableCollection<MicLineInput> MicLineInputs { get; } = new ObservableCollection<MicLineInput>();
 
 	public ObservableCollection<StereoLineInput> StereoLineInputs { get; } = new ObservableCollection<StereoLineInput>();
@@ -114,14 +87,10 @@ public class BlindViewModel : INotifyPropertyChanged
 
 	public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
 
-	public Presets Presets { get; }
+	public Presets Presets { get; set; }
 
-	public Global Global { get; }
+	public Global Global { get; set; }
 
-	private void UpdateTimer_Tick(object sender, EventArgs e)
-	{
-		// OnPropertyChanged(nameof(MeterData.Input));
-	}
 
 	protected virtual void OnPropertyChanged(string propertyName)
 	{
@@ -135,14 +104,4 @@ public class BlindViewModel : INotifyPropertyChanged
 		// _mixerStateService.RecallSceneFile("02.test.proj", "02.testing.scn");
 	}
 }
-public class TreeNode
-{
-	public string Name { get; set; }
-	public object Value { get; set; }
-	public ObservableCollection<TreeNode> Children { get; set; }
 
-	public TreeNode()
-	{
-		Children = new ObservableCollection<TreeNode>();
-	}
-}

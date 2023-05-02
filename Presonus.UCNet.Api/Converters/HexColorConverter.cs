@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Presonus.UCNet.Wpf.Converters
+namespace Presonus.UCNet.Api.Converters
 {
 	public class HexStringToSolidColorBrushConverter : IValueConverter
 	{

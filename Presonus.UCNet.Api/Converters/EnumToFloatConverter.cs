@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Presonus.UCNet.Wpf.Converters
+namespace Presonus.UCNet.Api.Converters
 {
 	using System;
 	using System.Globalization;

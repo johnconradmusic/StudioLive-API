@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows;
 
-namespace Presonus.UCNet.Wpf.Converters
+namespace Presonus.UCNet.Api.Converters
 {
 	public class BooleanToVisibilityConverter : IValueConverter
 	{
