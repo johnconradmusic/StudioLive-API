@@ -113,16 +113,17 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 		private void UpdateValueString()
 		{
 			ValueString = ValueTransformer.Transform(Value, Min, Max, Curve, Unit);
+			Speech.SpeechManager.Say($"{ValueString}");
 		}
 
 		private void RotaryKnob_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
-			Console.WriteLine(e.Key);
 			float delta = 0f;
 			if (e.Key == Key.Up) 
-			{ 
+			{ 				
 				e.Handled = true; 
 				delta = 0.01f; 
+				
 			}
 			else if (e.Key == Key.Down)
 			{
@@ -139,6 +140,7 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 				e.Handled = true;
 				delta = -0.1f;
 			}
+			if (ModifierKeys.IsCtrlDown()) delta /= 10;
 			if (delta != 0f)
 			{
 				float newValue = Math.Clamp(Value + delta, 0f, 1f);
@@ -148,5 +150,10 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 				}
 			}
 		}
-	}
+
+        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+        {
+			Speech.SpeechManager.Say($"{Caption} ({ValueString})");
+        }
+    }
 }

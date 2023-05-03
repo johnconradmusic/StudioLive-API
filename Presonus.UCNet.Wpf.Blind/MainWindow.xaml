@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:api1="clr-namespace:Presonus.UCNet.Api"
         xmlns:converters="clr-namespace:Presonus.UCNet.Api.Converters;assembly=Presonus.UCNet.Api"
-        xmlns:channels="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api" xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
+        xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
         d:DataContext="{d:DesignInstance Type=api1:BlindViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="DarkGray">
+        Title="MainWindow" Height="450" Width="800" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
     <Window.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter" />
         <converters:VisibilityConverter x:Key="VisibilityConverter" />
@@ -17,37 +17,35 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition/>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <ListBox x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalContentAlignment="Left" VerticalAlignment="Top"
-         SelectionMode="Single" 
-         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+        <ListBox SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
+         SelectionMode="Single"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Width="40" Height="20" Orientation="Horizontal"/>
+                    <StackPanel Width="40" Height="20" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border>
-                        <TextBlock Text="{Binding chnum}"/>
-                    </Border>
+                    <TextBlock Text="{Binding chnum}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
-                <ContextMenu DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
-                    <MenuItem IsCheckable="True" Header="Mute" IsChecked="{Binding mute}"/>
-                    <MenuItem IsCheckable="True" Header="Phantom" IsChecked="{Binding phantom}"/>
-                    <MenuItem IsCheckable="True" Header="Phase Invert" IsChecked="{Binding polarity}"/>
-                </ContextMenu>
-            </ListBox.ContextMenu>
         </ListBox>
+
         <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
-            <usercontrols:NumericUpDown Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB"/>
-            <usercontrols:NumericUpDown Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="NONE"/>
-            <usercontrols:NumericUpDown Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB"/>
+            <StackPanel.ContextMenu>
+                <ContextMenu x:Name="contextMenu" Placement="Center" >
+                    <MenuItem Header="Mute" IsCheckable="True" IsChecked="{Binding mute}" />
+                </ContextMenu>
+            </StackPanel.ContextMenu>
+            <usercontrols:NumericUpDown Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" />
+            <usercontrols:NumericUpDown Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" />
+            <usercontrols:NumericUpDown Caption="Level" Value="{Binding hpf}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" />
+            <usercontrols:NumericUpDown Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" />
         </StackPanel>
     </Grid>
 </Window>

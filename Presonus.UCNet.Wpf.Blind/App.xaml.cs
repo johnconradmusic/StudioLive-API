@@ -43,6 +43,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 
 			// WPF UI
+			serviceCollection.AddSingleton<Speech.SpeechManager>();
 			serviceCollection.AddSingleton<BlindViewModel>();
 			serviceCollection.AddSingleton<MainWindow>();
 

@@ -1,107 +1,103 @@
 ﻿using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Models.Channels;
 using Presonus.UCNet.Api.Services;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
-using System.Windows.Threading;
 
 namespace Presonus.UCNet.Api;
 
 public class BlindViewModel : INotifyPropertyChanged
 {
-	private MixerStateService _mixerStateService;
-	private MeterService _meterService;
+    private MixerStateService _mixerStateService;
+    private MeterService _meterService;
 
-	public BlindViewModel(MixerStateService mixerStateService, MeterService meterService)
-	{
-		_mixerStateService = mixerStateService;
-		BuildMixer(mixerStateService);
-	}
+    public BlindViewModel(MixerStateService mixerStateService, MeterService meterService)
+    {
+        _mixerStateService = mixerStateService;
+        BuildMixer(mixerStateService);
+    }
 
-	private void BuildMixer(MixerStateService mixerStateService)
-	{
-		Presets = new Presets(mixerStateService);
-		Presets.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Presets));
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-		Global = new Global(mixerStateService);
-		Global.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Global));
+    public Channel SelectedChannel { get; set; }
+    public MeterData MeterData { get; set; }
 
-		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.LINE]; i++)
-		{
-			var chan = new MicLineInput(ChannelTypes.LINE, i + 1, _mixerStateService);
-			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(MicLineInputs));
-			MicLineInputs.Add(chan);
-			AllChannels.Add(chan);
-		}
+    public ReductionMeterData ReductionMeterData { get; set; }
 
-		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.FXRETURN]; i++)
-		{
-			var chan = new InputChannel(ChannelTypes.FXRETURN, i + 1, _mixerStateService);
-			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(FXReturns));
-			FXReturns.Add(chan);
-			AllChannels.Add(chan);
-		}
+    public ObservableCollection<MicLineInput> MicLineInputs { get; } = new ObservableCollection<MicLineInput>();
 
-		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.RETURN]; i++)
-		{
-			var chan = new StereoLineInput(i + 1, _mixerStateService);
-			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(StereoLineInputs));
-			StereoLineInputs.Add(chan);
-			AllChannels.Add(chan);
-		}
+    public ObservableCollection<StereoLineInput> StereoLineInputs { get; } = new ObservableCollection<StereoLineInput>();
 
-		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.TALKBACK]; i++)
-		{
-			var chan = new MicLineInput(ChannelTypes.TALKBACK, i + 1, _mixerStateService);
-			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Talkback));
-			Talkback.Add(chan);
-			AllChannels.Add(chan);
-		}
+    public ObservableCollection<InputChannel> FXReturns { get; } = new ObservableCollection<InputChannel>();
 
-		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.MAIN]; i++)
-		{
-			var chan = new OutputDACBus(ChannelTypes.MAIN, i + 1, _mixerStateService);
-			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Main));
-			Main.Add(chan);
-			AllChannels.Add(chan);
-		}
-	}
+    public ObservableCollection<MicLineInput> Talkback { get; } = new ObservableCollection<MicLineInput>();
 
-	public event PropertyChangedEventHandler? PropertyChanged;
+    public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
 
-	public MeterData MeterData { get; set; }
+    public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
 
-	public ReductionMeterData ReductionMeterData { get; set; }
+    public Presets Presets { get; set; }
 
-	public ObservableCollection<MicLineInput> MicLineInputs { get; } = new ObservableCollection<MicLineInput>();
+    public Global Global { get; set; }
 
-	public ObservableCollection<StereoLineInput> StereoLineInputs { get; } = new ObservableCollection<StereoLineInput>();
+    private void BuildMixer(MixerStateService mixerStateService)
+    {
+        Presets = new Presets(mixerStateService);
+        Presets.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Presets));
 
-	public ObservableCollection<InputChannel> FXReturns { get; } = new ObservableCollection<InputChannel>();
+        Global = new Global(mixerStateService);
+        Global.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Global));
 
-	public ObservableCollection<MicLineInput> Talkback { get; } = new ObservableCollection<MicLineInput>();
+        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.LINE]; i++)
+        {
+            var chan = new MicLineInput(ChannelTypes.LINE, i + 1, _mixerStateService);
+            chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(MicLineInputs));
+            MicLineInputs.Add(chan);
+            AllChannels.Add(chan);
+        }
 
-	public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
+        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.FXRETURN]; i++)
+        {
+            var chan = new InputChannel(ChannelTypes.FXRETURN, i + 1, _mixerStateService);
+            chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(FXReturns));
+            FXReturns.Add(chan);
+            AllChannels.Add(chan);
+        }
 
-	public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
+        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.RETURN]; i++)
+        {
+            var chan = new StereoLineInput(i + 1, _mixerStateService);
+            chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(StereoLineInputs));
+            StereoLineInputs.Add(chan);
+            AllChannels.Add(chan);
+        }
 
-	public Presets Presets { get; set; }
+        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.TALKBACK]; i++)
+        {
+            var chan = new MicLineInput(ChannelTypes.TALKBACK, i + 1, _mixerStateService);
+            chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Talkback));
+            Talkback.Add(chan);
+            AllChannels.Add(chan);
+        }
 
-	public Global Global { get; set; }
+        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.MAIN]; i++)
+        {
+            var chan = new OutputDACBus(ChannelTypes.MAIN, i + 1, _mixerStateService);
+            chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Main));
+            Main.Add(chan);
+            AllChannels.Add(chan);
+        }
+    }
 
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //if (propertyName == "MeterData") Console.WriteLine(MeterData.Input[0]);
+    }
 
-	protected virtual void OnPropertyChanged(string propertyName)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		//if (propertyName == "MeterData") Console.WriteLine(MeterData.Input[0]);
-	}
-
-	public void Test()
-	{
-		_mixerStateService.RequestProjects();
-		// _mixerStateService.RecallSceneFile("02.test.proj", "02.testing.scn");
-	}
+    public void Test()
+    {
+        _mixerStateService.RequestProjects();
+        // _mixerStateService.RecallSceneFile("02.test.proj", "02.testing.scn");
+    }
 }
-
