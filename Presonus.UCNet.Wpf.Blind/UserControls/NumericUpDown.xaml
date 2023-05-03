@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.Blind.UserControls.NumericUpDown"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
+             mc:Ignorable="d" 
+             PreviewKeyDown="RotaryKnob_PreviewKeyDown" Focusable="True" IsTabStop="True">
+    <Grid Background="Green" Margin="5">
+        <TextBox Focusable="False" Text="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+    </Grid>
+</UserControl>

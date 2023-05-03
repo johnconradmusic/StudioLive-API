@@ -16,19 +16,38 @@
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
     </Window.Resources>
     <Grid>
-        <TreeView  ItemsSource="{Binding AllChannels}">
-            <TreeView.Resources>
-                <DataTemplate DataType="{x:Type channels:MicLineInput}">
-                    <TreeViewItem IsTabStop="True" Header="{Binding username}">
-                        <usercontrols:TreeViewFloat Header="Volume" Value="{Binding volume}" Minimum="0" Maximum="1"/>
-                    </TreeViewItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ListBox x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalContentAlignment="Left" VerticalAlignment="Top"
+         SelectionMode="Single" 
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Width="40" Height="20" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border>
+                        <TextBlock Text="{Binding chnum}"/>
+                    </Border>
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type channels:OutputDACBus}">
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <!-- Define the visual representation of an OutputDAC object here -->
-                    </StackPanel>
-                </DataTemplate>
-            </TreeView.Resources>
-        </TreeView>
+            </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}">
+                    <MenuItem IsCheckable="True" Header="Mute" IsChecked="{Binding mute}"/>
+                    <MenuItem IsCheckable="True" Header="Phantom" IsChecked="{Binding phantom}"/>
+                    <MenuItem IsCheckable="True" Header="Phase Invert" IsChecked="{Binding polarity}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
+            <usercontrols:NumericUpDown Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB"/>
+            <usercontrols:NumericUpDown Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="NONE"/>
+            <usercontrols:NumericUpDown Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB"/>
+        </StackPanel>
     </Grid>
 </Window>
