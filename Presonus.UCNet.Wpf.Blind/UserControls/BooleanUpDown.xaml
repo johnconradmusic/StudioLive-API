@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Presonus.UCNet.Wpf.Blind.UserControls.BooleanUpDown"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
+             mc:Ignorable="d" 
+             PreviewKeyDown="UserControl_PreviewKeyDown"  GotFocus="UserControl_GotFocus"  Focusable="True" Width="50" Height="50" IsTabStop="True">
+    <Grid Margin="5">
+        <TextBox Background="LightGoldenrodYellow" Focusable="False" Text="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+    </Grid>
+</UserControl>

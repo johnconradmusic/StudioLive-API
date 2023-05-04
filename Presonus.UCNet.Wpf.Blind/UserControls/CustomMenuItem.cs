@@ -23,6 +23,8 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 			}
 			else
 				Speech.SpeechManager.Say(Header);
+
+			e.Handled = true;
 		}
 	}
 }

@@ -4,6 +4,7 @@ using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Models.Channels;
 using Presonus.UCNet.Api.Services;
+using Presonus.UCNet.Wpf.Blind.ToolWindows;
 using Presonus.UCNet.Wpf.Blind.UserControls;
 using System;
 using System.Windows;
@@ -89,7 +90,11 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-
+			if(e.Key == Key.E)
+            {
+				e.Handled = true;
+				new EQ4ToolWindow(_channel).ShowDialog();
+            }
 			if (e.Key == Key.M)
 			{
 				if (UserControls.ModifierKeys.IsCtrlDown())
