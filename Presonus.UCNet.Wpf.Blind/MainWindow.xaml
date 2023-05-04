@@ -36,16 +36,31 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
             <StackPanel.ContextMenu>
                 <ContextMenu x:Name="contextMenu" Placement="Center" >
-                    <MenuItem Header="Mute" IsCheckable="True" IsChecked="{Binding mute}" />
+                    <usercontrols:CustomMenuItem Header="Mute" IsCheckable="True" IsChecked="{Binding mute}" />
+                    <usercontrols:CustomMenuItem Header="Solo" IsCheckable="True" IsChecked="{Binding solo}" />
+                    <usercontrols:CustomMenuItem Header="Phase Invert" IsCheckable="True" IsChecked="{Binding polarity}" />
+                    <usercontrols:CustomMenuItem Header="Phantom" IsCheckable="True" IsChecked="{Binding phantom}" />
+                    <usercontrols:CustomMenuItem Header="Clip Protection" IsCheckable="True" IsChecked="{Binding clipProtection}" />
+                    <Separator/>
+                    <usercontrols:CustomMenuItem Header="Stereo Link Options">
+                        <usercontrols:CustomMenuItem Header="Link" IsCheckable="True" IsChecked="{Binding link}" />
+                        <Separator/>
+                        <usercontrols:CustomMenuItem Header="Gain" IsCheckable="True" IsChecked="{Binding link_ch_gain}" />
+                        <usercontrols:CustomMenuItem Header="Pan" IsCheckable="True" IsChecked="{Binding link_pan}" />
+                        <usercontrols:CustomMenuItem Header="Fader" IsCheckable="True" IsChecked="{Binding link_fader}" />
+                        <usercontrols:CustomMenuItem Header="Dynamics" IsCheckable="True" IsChecked="{Binding link_dyn}" />
+                        <usercontrols:CustomMenuItem Header="Name" IsCheckable="True" IsChecked="{Binding link_ch_name}" />
+                        <usercontrols:CustomMenuItem Header="Insert FX" IsCheckable="True" IsChecked="{Binding link_ins_fx}" />
+                    </usercontrols:CustomMenuItem>
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <usercontrols:NumericUpDown Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" />
-            <usercontrols:NumericUpDown Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" />
-            <usercontrols:NumericUpDown Caption="Level" Value="{Binding hpf}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" />
-            <usercontrols:NumericUpDown Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" />
+            <usercontrols:NumericUpDown Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0"/>
+            <usercontrols:NumericUpDown Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
+            <usercontrols:NumericUpDown Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0"/>
+            <usercontrols:NumericUpDown Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />
         </StackPanel>
     </Grid>
 </Window>

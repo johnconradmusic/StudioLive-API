@@ -15,8 +15,7 @@ namespace Presonus.UCNet.Api.Models
 
 		public override event PropertyChangedEventHandler PropertyChanged;
 
-
-
+		public bool clipProtection { get; set; }
 		public bool clip { get => GetBoolean(); set => SetBoolean(value); }
 
 		public bool linkable => !(ChannelIndex % 2 == 0);

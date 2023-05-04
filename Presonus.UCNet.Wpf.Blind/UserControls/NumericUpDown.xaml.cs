@@ -48,6 +48,20 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 		public static readonly DependencyProperty UnitProperty =
 			DependencyProperty.Register("Unit", typeof(Units), typeof(NumericUpDown), new PropertyMetadata(Units.NONE));
 
+
+
+		public float Default
+		{
+			get { return (float)GetValue(DefaultProperty); }
+			set { SetValue(DefaultProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for Default.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty DefaultProperty =
+			DependencyProperty.Register("Default", typeof(float), typeof(NumericUpDown), new PropertyMetadata(0f));
+
+
+
 		public NumericUpDown()
 		{
 			InitializeComponent();
@@ -113,21 +127,29 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 		private void UpdateValueString()
 		{
 			ValueString = ValueTransformer.Transform(Value, Min, Max, Curve, Unit);
-			Speech.SpeechManager.Say($"{ValueString}");
+			if (IsFocused)
+				Speech.SpeechManager.Say($"{ValueString}");
 		}
 
 		private void RotaryKnob_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			float delta = 0f;
-			if (e.Key == Key.Up) 
-			{ 				
-				e.Handled = true; 
-				delta = 0.01f; 
-				
+			if (e.Key == Key.Enter)
+			{
+				Speech.SpeechManager.Say($"{ValueString}");
+			}
+			if (e.Key == Key.Delete)
+			{
+				Value = Default;
+			}
+			if (e.Key == Key.Up)
+			{
+				e.Handled = true;
+				delta = 0.01f;
 			}
 			else if (e.Key == Key.Down)
 			{
-				e.Handled = true; 
+				e.Handled = true;
 				delta = -0.01f;
 			}
 			else if (e.Key == Key.PageUp)
@@ -151,9 +173,9 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 			}
 		}
 
-        private void UserControl_GotFocus(object sender, RoutedEventArgs e)
-        {
+		private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+		{
 			Speech.SpeechManager.Say($"{Caption} ({ValueString})");
-        }
-    }
+		}
+	}
 }
