@@ -22,7 +22,7 @@ namespace Presonus.UCNet.Api.Helpers
 	}
 	public enum Units
 	{
-		NONE, DB, HZ, MS, PAN, HZ_24OFF
+		NONE, DB, HZ, MS, PAN, HZ_24OFF, RATIO
 	}
 	public class ValueTransformer
 	{
@@ -212,6 +212,9 @@ namespace Presonus.UCNet.Api.Helpers
 					break;
 				case Units.NONE:
 					unitString = "";
+					break;
+				case Units.RATIO:
+					unitString = "to 1";
 					break;
 				case Units.PAN:
 					int panPercentage;

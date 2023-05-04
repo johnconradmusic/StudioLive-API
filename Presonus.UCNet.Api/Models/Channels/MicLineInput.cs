@@ -117,6 +117,8 @@ namespace Presonus.UCNet.Api.Models.Channels
 		[ParameterPath("comp/release")] public float comp_release { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("comp/gain")] public float comp_gain { get => GetValue(); set => SetValue(value); }
 		[ParameterPath("comp/keyfilter")] public float comp_keyfilter { get => GetValue(); set => SetValue(value); }
+		[ParameterPath("comp/keylisten")] public bool comp_keylisten { get => GetBoolean(); set => SetBoolean(value); }
+
 
 
 		[ParameterPath("limt/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }

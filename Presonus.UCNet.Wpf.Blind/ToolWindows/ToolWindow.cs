@@ -16,6 +16,13 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
             PreviewKeyDown += ToolWindow_PreviewKeyDown;
             WindowStyle = WindowStyle.ToolWindow;
             Loaded += ToolWindow_Loaded;
+            GotFocus += ToolWindow_GotFocus;
+            SizeToContent = SizeToContent.WidthAndHeight;
+        }
+
+        private void ToolWindow_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Speech.SpeechManager.Say(Title + " - press escape to close.");
         }
 
         private void ToolWindow_Loaded(object sender, RoutedEventArgs e)

@@ -177,6 +177,7 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 
         private void UserControl_GotFocus(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             Speech.SpeechManager.Say($"{Caption} ({ValueString})");
         }
     }

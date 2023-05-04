@@ -8,7 +8,7 @@
         xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
         d:DataContext="{d:DesignInstance Type=api1:BlindViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
+        Title="Mixer Main Window" Height="450" Width="800" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
     <Window.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter" />
         <converters:VisibilityConverter x:Key="VisibilityConverter" />
@@ -21,33 +21,51 @@
             <RowDefinition Height="20" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ListBox SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
+        <Menu Grid.Row="0">
+            <usercontrols:CustomMenuItem Header="File">
+                <usercontrols:CustomMenuItem Header="Open Scene (not implemented)"/>
+                <usercontrols:CustomMenuItem Header="Save Scene (not implemented)"/>
+                <usercontrols:CustomMenuItem Header="Reset Scene (not implemented)"/>
+            </usercontrols:CustomMenuItem>
+            <usercontrols:CustomMenuItem Header="View">
+                <usercontrols:CustomMenuItem Tag="EQ" Header="EQ Window" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Comp" Header="Compressor Window" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Gate" Header="Gate Window" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window (not implemented)" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window (not implemented)" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window (not implemented)" Click="CustomMenuItem_Click"/>
+
+
+            </usercontrols:CustomMenuItem>
+        </Menu>
+        <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
          SelectionMode="Single"
          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Width="40" Height="20" Orientation="Horizontal" />
+                    <StackPanel KeyboardNavigation.TabNavigation="None" Width="40" Height="20" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding chnum}" />
+                    <TextBlock Focusable="False" Text="{Binding chnum}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
+        <StackPanel KeyboardNavigation.TabNavigation="Cycle" VerticalAlignment="Top" HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
             <StackPanel.ContextMenu>
-                <ContextMenu x:Name="contextMenu" Placement="Center" >
+                <ContextMenu x:Name="contextMenu" Placement="Center">
                     <usercontrols:CustomMenuItem Header="Mute" IsCheckable="True" IsChecked="{Binding mute}" />
                     <usercontrols:CustomMenuItem Header="Solo" IsCheckable="True" IsChecked="{Binding solo}" />
                     <usercontrols:CustomMenuItem Header="Phase Invert" IsCheckable="True" IsChecked="{Binding polarity}" />
                     <usercontrols:CustomMenuItem Header="Phantom" IsCheckable="True" IsChecked="{Binding phantom}" />
                     <usercontrols:CustomMenuItem Header="Clip Protection" IsCheckable="True" IsChecked="{Binding clipProtection}" />
-                    <Separator/>
+                    <Separator />
+                    <usercontrols:CustomMenuItem Header="Rename Channel (not implemented)"/>
                     <usercontrols:CustomMenuItem Header="Stereo Link Options">
                         <usercontrols:CustomMenuItem Header="Link" IsCheckable="True" IsChecked="{Binding link}" />
-                        <Separator/>
+                        <Separator />
                         <usercontrols:CustomMenuItem Header="Gain" IsCheckable="True" IsChecked="{Binding link_ch_gain}" />
                         <usercontrols:CustomMenuItem Header="Pan" IsCheckable="True" IsChecked="{Binding link_pan}" />
                         <usercontrols:CustomMenuItem Header="Fader" IsCheckable="True" IsChecked="{Binding link_fader}" />
@@ -57,10 +75,10 @@
                     </usercontrols:CustomMenuItem>
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <usercontrols:NumericUpDown Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0"/>
-            <usercontrols:NumericUpDown Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
-            <usercontrols:NumericUpDown Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0"/>
-            <usercontrols:NumericUpDown Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />
+            <usercontrols:NumericUpDown x:Name="trimControl" Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0" />
+            <usercontrols:NumericUpDown x:Name="volumeControl" Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
+            <usercontrols:NumericUpDown x:Name="hipassControl" Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0" />
+            <usercontrols:NumericUpDown x:Name="panControl" Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />
         </StackPanel>
     </Grid>
 </Window>
