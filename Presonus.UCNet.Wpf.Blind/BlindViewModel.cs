@@ -32,7 +32,9 @@ public class BlindViewModel : INotifyPropertyChanged
 
     public ObservableCollection<MicLineInput> Talkback { get; } = new ObservableCollection<MicLineInput>();
 
-    public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
+	public ObservableCollection<OutputDACBus> Auxes { get; } = new ObservableCollection<OutputDACBus>();
+
+	public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
 
     public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
 
@@ -80,7 +82,14 @@ public class BlindViewModel : INotifyPropertyChanged
             AllChannels.Add(chan);
         }
 
-        for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.MAIN]; i++)
+		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
+		{
+			var chan = new OutputDACBus(ChannelTypes.AUX, i + 1, _mixerStateService);
+			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Main));
+			Auxes.Add(chan);
+			AllChannels.Add(chan);
+		}
+		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.MAIN]; i++)
         {
             var chan = new OutputDACBus(ChannelTypes.MAIN, i + 1, _mixerStateService);
             chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Main));

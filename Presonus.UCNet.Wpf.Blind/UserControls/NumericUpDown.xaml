@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
              mc:Ignorable="d" 
-             PreviewKeyDown="RotaryKnob_PreviewKeyDown" GotFocus="UserControl_GotFocus" Focusable="True" Width="50" Height="50" IsTabStop="True">
-    <Grid Margin="5">
+             PreviewKeyDown="RotaryKnob_PreviewKeyDown" GotFocus="UserControl_GotFocus" Focusable="True" Width="50" Height="22" IsTabStop="True">
+    <Grid Margin="2">
         <TextBox Background="LightBlue" Focusable="False" Text="{Binding ValueString, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

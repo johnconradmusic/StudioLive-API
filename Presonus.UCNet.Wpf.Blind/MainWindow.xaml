@@ -8,20 +8,20 @@
         xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
         d:DataContext="{d:DesignInstance Type=api1:BlindViewModel}"
         mc:Ignorable="d"
-        Title="Mixer Main Window" Height="450" Width="800" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
+        Title="Mixer Main Window" SizeToContent="WidthAndHeight" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
     <Window.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter" />
         <converters:VisibilityConverter x:Key="VisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
     </Window.Resources>
-    <Grid>
+    <Grid Focusable="False"> 
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="20" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0">
+        <Menu IsTabStop="False" Grid.Row="0">
             <usercontrols:CustomMenuItem Header="File">
                 <usercontrols:CustomMenuItem Header="Open Scene (not implemented)"/>
                 <usercontrols:CustomMenuItem Header="Save Scene (not implemented)"/>
@@ -34,8 +34,6 @@
                 <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window (not implemented)" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window (not implemented)" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window (not implemented)" Click="CustomMenuItem_Click"/>
-
-
             </usercontrols:CustomMenuItem>
         </Menu>
         <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -62,7 +60,7 @@
                     <usercontrols:CustomMenuItem Header="Phantom" IsCheckable="True" IsChecked="{Binding phantom}" />
                     <usercontrols:CustomMenuItem Header="Clip Protection" IsCheckable="True" IsChecked="{Binding clipProtection}" />
                     <Separator />
-                    <usercontrols:CustomMenuItem Header="Rename Channel (not implemented)"/>
+                    <usercontrols:CustomMenuItem Click="CustomMenuItem_Click_1" Header="Rename Channel (not implemented)"/>
                     <usercontrols:CustomMenuItem Header="Stereo Link Options">
                         <usercontrols:CustomMenuItem Header="Link" IsCheckable="True" IsChecked="{Binding link}" />
                         <Separator />

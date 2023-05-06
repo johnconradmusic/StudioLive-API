@@ -7,6 +7,7 @@ using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Wpf.Blind.ToolWindows;
 using Presonus.UCNet.Wpf.Blind.UserControls;
 using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -99,6 +100,10 @@ namespace Presonus.UCNet.Wpf.Blind
 
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            if(Keyboard.FocusedElement is CustomMenuItem)
+            {
+                return;
+            }
             switch (e.Key)
             {
                 case Key.V:
@@ -207,9 +212,14 @@ namespace Presonus.UCNet.Wpf.Blind
                     //new EQ4ToolWindow(_channel).ShowDialog();
                     break;
                 case "Sends":
-                    //new EQ4ToolWindow(_channel).ShowDialog();
+                    new SendsView(_channel, blindViewModel).ShowDialog();
                     break;
             }
+        }
+
+        private void CustomMenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            new TextPrompt(_channel, _channel.GetType().GetProperty(nameof(_channel.username)), "Rename Channel").ShowDialog();
         }
     }
 }

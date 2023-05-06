@@ -14,6 +14,7 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 			GotFocus += CustomMenuItem_GotFocus;
 		}
 
+
 		private void CustomMenuItem_GotFocus(object sender, System.Windows.RoutedEventArgs e)
 		{
 			if (IsCheckable)
@@ -22,8 +23,9 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 				Speech.SpeechManager.Say($"{Header} ({checkState})");
 			}
 			else
+			{
 				Speech.SpeechManager.Say(Header);
-
+			}
 			e.Handled = true;
 		}
 	}
