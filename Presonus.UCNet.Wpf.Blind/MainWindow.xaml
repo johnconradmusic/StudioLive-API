@@ -15,7 +15,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:FloatToIndexConverter x:Key="FloatToIndexConverter" x:Shared="False" />
     </Window.Resources>
-    <Grid Focusable="False"> 
+    <Grid Focusable="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="20" />
@@ -23,17 +23,21 @@
         </Grid.RowDefinitions>
         <Menu IsTabStop="False" Grid.Row="0">
             <usercontrols:CustomMenuItem Header="File">
-                <usercontrols:CustomMenuItem Header="Open Scene (not implemented)"/>
-                <usercontrols:CustomMenuItem Header="Save Scene (not implemented)"/>
-                <usercontrols:CustomMenuItem Header="Reset Scene (not implemented)"/>
+                <usercontrols:CustomMenuItem Click="LoadProjectMenuButton_Click"  x:Name="LoadProjectMenuButton" Header="Load Project..."/>
+                <usercontrols:CustomMenuItem Click="LoadSceneMenuButton_Click" x:Name="LoadSceneMenuButton" Header="Load Scene..."/>
+                <usercontrols:CustomMenuItem Click="SaveProject_Click" x:Name="SaveProject" Header="Save Project"/>
+                <usercontrols:CustomMenuItem Click="SaveSceneButton_Click" x:Name="SaveSceneButton" Header="Save Scene"/>
+                <usercontrols:CustomMenuItem Click="SaveSceneAsButton_Click" x:Name="SaveSceneAsButton" Header="Save Scene As..."/>
             </usercontrols:CustomMenuItem>
             <usercontrols:CustomMenuItem Header="View">
                 <usercontrols:CustomMenuItem Tag="EQ" Header="EQ Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Comp" Header="Compressor Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Gate" Header="Gate Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window (not implemented)" Click="CustomMenuItem_Click"/>
-                <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window (not implemented)" Click="CustomMenuItem_Click"/>
-                <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window (not implemented)" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
+                <Separator/>
+                <usercontrols:CustomMenuItem Tag="Load" Header="Load Preset" Click="CustomMenuItem_Click"/>
             </usercontrols:CustomMenuItem>
         </Menu>
         <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"

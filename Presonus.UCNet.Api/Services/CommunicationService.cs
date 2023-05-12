@@ -4,16 +4,12 @@ using Presonus.UCNet.Api.Extensions;
 using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Messages;
 using Presonus.UCNet.Api.Messages.Readers;
-using Presonus.UCNet.Api.Messages;
-using Presonus.UCNet.Api.Messages.Readers;
 using Presonus.UCNet.Api.Models;
-
-using Presonus.UCNet.Api.Services;
 using Serilog;
+using Serilog.Core;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,7 +17,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace Presonus.UCNet.Api.Services
 {
@@ -45,22 +44,19 @@ namespace Presonus.UCNet.Api.Services
 
 			_mixerStateService.SendValueMethod = SendValue;
 			_mixerStateService.SendStringMethod = SendString;
-			_mixerStateService.RecallProject = RecallProject;
-			_mixerStateService.RecallScene = RecallScene;
+
+			_mixerStateService.FileOperationMethod = FileOperation;
+
 			_mixerStateService.GetProjects = RequestProjectList;
+			_mixerStateService.GetScenes = RequestSceneList;
+			_mixerStateService.GetPresets = RequestChannelPresets;
+
 			_listeningThread = new Thread(Listener) { IsBackground = true };
 			_writingThread = new Thread(KeepAlive) { IsBackground = true };
 		}
 
-		private void RequestProjectList()
-		{
-			var writer = new TcpMessageWriter(_deviceId);
-			var data = writer.CreateProjectsRequest();
-
-			SendMessage(data);
-		}
-
 		public static bool ConnectionEstablished { get; set; }
+
 		public bool IsConnected => _tcpClient?.Connected ?? false;
 
 		private static List<float> ReadValues(BinaryReader reader, int count)
@@ -72,7 +68,57 @@ namespace Presonus.UCNet.Api.Services
 			}
 			return values;
 		}
+		public const string CHANNEL_PRESETS = "presets/channel";
+		public const string PROJECTS = "presets/proj";
+		List<GenericListItem> requestedItems;
+		private async Task<List<GenericListItem>> RequestProjectList()
+		{
+			requestedItems = new();
+			requestCompleted = false;
 
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateFileRequest(PROJECTS);
+			SendMessage(data);
+
+			while (!requestCompleted)
+			{
+				await Task.Delay(10);
+			}
+			Console.WriteLine("request complete.");
+			return requestedItems;
+		}
+		private async Task<List<GenericListItem>> RequestChannelPresets()
+		{
+			requestedItems = new();
+			requestCompleted = false;
+
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateFileRequest(CHANNEL_PRESETS);
+			SendMessage(data);
+
+			while (!requestCompleted)
+			{
+				await Task.Delay(10);
+			}
+			Console.WriteLine("request complete.");
+			return requestedItems;
+		}
+		private async Task<List<GenericListItem>> RequestSceneList(string proj)
+		{
+			requestedItems = new();
+			requestCompleted = false;
+			string key = "presets/" + proj;
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateFileRequest(key);
+			Console.WriteLine($"requesting {key}");
+			SendMessage(data);
+			while (!requestCompleted)
+			{
+				await Task.Delay(10);
+			}
+			Console.WriteLine("request complete.");
+			return requestedItems;
+		}
 		private void RequestCommunicationMessage()
 		{
 			var networkStream = GetNetworkStream();
@@ -143,7 +189,6 @@ namespace Presonus.UCNet.Api.Services
 					var chunks = PackageHelper.ChuncksByIndicator(data).ToArray();
 					foreach (var chunk in chunks)
 					{
-						var messageType = PackageHelper.GetMessageType(chunk);
 						ProcessMessages(chunk);
 					}
 				}
@@ -156,14 +201,17 @@ namespace Presonus.UCNet.Api.Services
 
 		private void ProcessMessages(byte[] chunk)
 		{
+			//Console.WriteLine("msg");
 			var messageType = PackageHelper.GetMessageType(chunk);
 
 			Console.WriteLine(messageType);
 			switch (messageType)
 			{
 				case MessageCode.FileData:
-					Console.WriteLine("FILE DATA");
+					HandleFileData(chunk);
+
 					break;
+
 				case MessageCode.Unknown1:
 					break;
 
@@ -187,8 +235,8 @@ namespace Presonus.UCNet.Api.Services
 					break;
 
 				case MessageCode.JSON:
-					var jm = JM.GetJsonMessage(chunk);
-					ProcessJson(jm);
+					var jmsg = JM.GetJsonMessage(chunk);
+					ProcessJson(jmsg);
 					break;
 
 				case MessageCode.CompressedJSON:
@@ -213,7 +261,164 @@ namespace Presonus.UCNet.Api.Services
 					break;
 			}
 		}
+		Dictionary<int, ChunkSet> files = new Dictionary<int, ChunkSet>();
 
+		private void HandleFileData(byte[] data)
+		{
+			ChunkData ret;
+
+			var ids = UniqueRandom.Get(16);
+			var chunk = ParseChunk(data);
+			if (!ids.Active.Contains(chunk.id))
+			{
+				Console.WriteLine("Invalid FD Chunk");
+			}
+			if (chunk.totalSize == chunk.payloadSize)
+			{
+				ret = new ChunkData()
+				{
+					id = chunk.id,
+					data = chunk.data
+				};
+				ids.Release(ret.id);
+				var jm = Encoding.ASCII.GetString(ret.data);
+				File.WriteAllText("C:\\Dev\\jsonTest2.json", jm);
+				ProcessReceivedFileData(jm);
+			}
+			else
+			{
+				ChunkSet currChunkSet;
+				if (!files.TryGetValue(chunk.id, out currChunkSet))
+				{
+					// Create new entry for the chunk set
+					currChunkSet = new ChunkSet()
+					{
+						max = chunk.totalSize,
+						data = new byte[0]
+					};
+					files.Add(chunk.id, currChunkSet);
+				}
+				// Ensure the data buffer matches the chunk size
+				if (chunk.payloadSize != chunk.data.Length)
+				{
+					Console.WriteLine($"FD chunk with ID {chunk.id} was inconsistent in size (expected {chunk.payloadSize}, got {chunk.data.Length})");
+					return;
+				}
+
+				// Ensure consistent state
+				if (chunk.totalSize != currChunkSet.max || chunk.bytesRead != currChunkSet.data.Length)
+				{
+					Console.WriteLine($"FD chunk with ID {chunk.id} was not consistent with the chunk set information");
+					return;
+				}
+
+				currChunkSet.data = currChunkSet.data.Concat(chunk.data).ToArray();
+				if (currChunkSet.max == currChunkSet.data.Length)
+				{
+					ret = new ChunkData()
+					{
+						id = chunk.id,
+						data = currChunkSet.data
+					};
+					ids.Release(ret.id);
+					var jm = Encoding.ASCII.GetString(ret.data);
+					File.WriteAllText("C:\\Dev\\jsonTest2.json", jm);
+					ProcessReceivedFileData(jm);
+				}
+			}
+		}
+		bool requestCompleted = false;
+		private void ProcessReceivedFileData(string jm)
+		{
+			Console.WriteLine("start processing");
+			var jsonElement = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(jm);
+
+			if (jsonElement.TryGetProperty("files", out var files))
+			{
+				var array = files.EnumerateArray().ToArray();
+				foreach (var file in array)
+				{
+					file.TryGetProperty("name", out var name);
+					file.TryGetProperty("title", out var title);
+					if (!name.GetString().EndsWith(".cnfg") && !name.GetString().EndsWith(".lock"))
+					{
+						Console.WriteLine("added an item");
+						requestedItems.Add(new() { Name = name.GetString(), Title = title.GetString() });
+					}
+				}
+			}
+			Console.WriteLine("completed processing");
+			requestCompleted = true;
+		}
+
+		public class ChunkData
+		{
+			/**
+			 * Chunk ID
+			 */
+			public ushort id;
+
+			/**
+			 * Data buffer
+			 */
+			public byte[] data;
+
+			/**
+			 * Current position / Number of previous bytes in the chunk set
+			 */
+			public ushort bytesRead;
+
+			/**
+			 * Total size of the chunk set
+			 */
+			public ushort totalSize;
+
+			/**
+			 * Size of the current chunk
+			 **/
+			public ushort payloadSize;
+		}
+
+		public static ChunkData ParseChunk(byte[] data)
+		{
+			data = data.Skip(12).ToArray();
+			byte[] header = new byte[14];
+			Array.Copy(data, 0, header, 0, 14);
+
+			ChunkData chunkData = new ChunkData();
+
+			chunkData.id = ReadUInt16BE(header, 0);
+			header = header[2..];
+
+			chunkData.bytesRead = ReadUInt16LE(header, 0);
+			header = header[2..];
+
+			byte[] unknown1 = header[0..2];
+			header = header[2..];
+
+			chunkData.totalSize = ReadUInt16LE(header, 0);
+			header = header[2..];
+
+			byte[] unknown2 = header[0..4];
+			header = header[4..];
+
+			chunkData.payloadSize = ReadUInt16LE(header, 0);
+
+			chunkData.data = data[14..];
+
+			return chunkData;
+		}
+
+		public static ushort ReadUInt16BE(byte[] buffer, int offset)
+		{
+			byte[] reversedBytes = new byte[2] { buffer[offset + 1], buffer[offset] };
+			return BitConverter.ToUInt16(reversedBytes, 0);
+		}
+
+		public static ushort ReadUInt16LE(byte[] buffer, int offset)
+		{
+			return BitConverter.ToUInt16(buffer, offset);
+		}
 		private void ProcessColorData(byte[] data)
 		{
 			data = data.Skip(12).ToArray();
@@ -239,7 +444,7 @@ namespace Presonus.UCNet.Api.Services
 			var info = DeserializeZlibBuffer(chunk);
 
 			var jsonString = JsonConvert.SerializeObject(info, Formatting.Indented);
-			//File.WriteAllText("C:\\Dev\\jsondump1.json", jsonString);
+			//File.WriteAllText("C:\\Dev\\jsondump2.json", jsonString);
 			_mixerStateService.Synchronize(jsonString);
 		}
 
@@ -299,6 +504,9 @@ namespace Presonus.UCNet.Api.Services
 		private void ProcessJson(string json)
 		{
 			var jsonElement = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(json);
+
+
+
 			if (!jsonElement.TryGetProperty("id", out var idProperty))
 				return;
 
@@ -329,6 +537,7 @@ namespace Presonus.UCNet.Api.Services
 				case "RecalledPreset":
 					HandleRecalledPreset();
 					break;
+
 				case "StoredPreset":
 					HandleStoredPreset();
 					break;
@@ -416,6 +625,7 @@ namespace Presonus.UCNet.Api.Services
 			var split = str.Split('\0');
 			var route = split[0];
 			var value = split[3];
+			Console.WriteLine($"String changed: {route} ({value})");
 
 			_mixerStateService.SetString(route, value, false);
 		}
@@ -436,7 +646,7 @@ namespace Presonus.UCNet.Api.Services
 		{
 			data = data.Skip(20).ToArray();
 
-			var order = new ChannelTypes[] 
+			var order = new ChannelTypes[]
 			{ ChannelTypes.LINE, ChannelTypes.RETURN, ChannelTypes.FXRETURN, ChannelTypes.TALKBACK, ChannelTypes.AUX, ChannelTypes.FX, ChannelTypes.MAIN };
 
 			var values = new Dictionary<ChannelTypes, List<float>>();
@@ -478,18 +688,11 @@ namespace Presonus.UCNet.Api.Services
 				? _tcpClient.GetStream()
 				: null;
 		}
-		public void RecallScene(string projFile, string sceneFile)
+
+		public void FileOperation(Presets.Operation operation, string projFile, string sceneFile = null)
 		{
 			var writer = new TcpMessageWriter(_deviceId);
-			var data = writer.CreateSceneRecall(projFile, sceneFile);
-
-			SendMessage(data);
-		}
-		public void RecallProject(string projFile)
-		{
-			var writer = new TcpMessageWriter(_deviceId);
-			var data = writer.CreateProjectRecall(projFile);
-
+			byte[] data = writer.CreatePresetMessage(operation, projFile, sceneFile);
 			SendMessage(data);
 		}
 
@@ -540,12 +743,6 @@ namespace Presonus.UCNet.Api.Services
 		public void Dispose()
 		{
 			_tcpClient?.Dispose();
-		}
-
-		public struct SettingType
-		{
-			public char[] name;
-			public object value;
 		}
 	}
 }

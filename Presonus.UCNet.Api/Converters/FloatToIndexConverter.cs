@@ -44,5 +44,4 @@ namespace Presonus.UCNet.Api.Converters
 			return new object[] { selectedIndex / (_itemCount - 1) };
 		}
 	}
-
 }

@@ -83,11 +83,16 @@ namespace Presonus.UCNet.Api.Helpers
 			return CancelTransition;
 		}
 	}
-
+	public class ChunkSet
+	{
+		public int max;
+		public byte[] data;
+	}
 	public class UniqueRandom
 	{
 		private static readonly Dictionary<int, UniqueRandom> instances = new Dictionary<int, UniqueRandom>();
 
+		
 		public static UniqueRandom Get(int bits)
 		{
 			if (!instances.ContainsKey(bits)) instances[bits] = new UniqueRandom(bits);

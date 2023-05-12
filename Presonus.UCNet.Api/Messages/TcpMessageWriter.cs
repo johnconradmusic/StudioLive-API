@@ -2,14 +2,12 @@
 // The Assistant - Copyright (c) 2016-2023, John Conrad
 //------------------------------------------------------------------------------
 using Presonus.UCNet.Api.Helpers;
-using Presonus.UCNet.Api.Models;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Windows.Input;
-using System.Windows.Markup;
+using static Presonus.UCNet.Api.Models.Presets;
 
 namespace Presonus.UCNet.Api.Messages
 {
@@ -63,75 +61,29 @@ namespace Presonus.UCNet.Api.Messages
 
 			return data;
 		}
-		public const string CHANNEL_PRESETS = "presets/channel";
-		public const string PROJECTS = "presets/proj";
 
-		public byte[] CreateProjectsRequest()
+		public byte[] CreateFileRequest(string key)
 		{
 			List<byte> data = CreateHeader(_deviceId);
 
-			var key = PROJECTS;
-
 			ushort id = (ushort)UniqueRandom.Get(16).Request();
-			byte[] idBuffer = BitConverter.GetBytes(id);
-			Array.Reverse(idBuffer); // Convert to big-endian format
+			var idBuffer = new byte[2];
+			BinaryPrimitives.WriteUInt16BigEndian(idBuffer, id);
 
-			byte[] keyBuffer = Encoding.ASCII.GetBytes("List" + key.ToString());
+			byte[] keyBuffer = Encoding.ASCII.GetBytes("List" + key);
 
 			byte[] nullBuffer = new byte[] { 0x00, 0x00 };
 
 			List<byte> packetBuffer = new List<byte>();
+			packetBuffer.AddRange(data);
 			packetBuffer.AddRange(idBuffer);
 			packetBuffer.AddRange(keyBuffer);
 			packetBuffer.AddRange(nullBuffer);
 
 			return Create(packetBuffer, MessageCode.FileRequest);
+		}	
 
-		}
-
-		public byte[] CreateSceneRecall(string projFile, string sceneFile)
-		{
-			var data = CreateHeader(_deviceId);
-
-			string json = JsonSerializer.Serialize(new
-			{
-				id = "StorePreset",
-				url = "presets",
-				presetTarget = "",
-				presetTargetSlave = 0,
-				presetFile = $"presets/proj/{projFile}/{sceneFile}"
-			});
-
-			//JsonLength [12..16]:
-			data.AddRange(BitConverter.GetBytes(json.Length));
-
-			//Json [16..]
-			data.AddRange(Encoding.ASCII.GetBytes(json));
-
-			return Create(data, MessageCode.JSON);
-		}
-
-		public byte[] CreateProjectRecall(string projFile)
-		{
-			var data = CreateHeader(_deviceId);
-
-			string json = JsonSerializer.Serialize(new
-			{
-				id = "RestorePreset",
-				url = "presets",
-				presetTarget = "",
-				presetTargetSlave = 0,
-				presetFile = "presets/proj/" + projFile
-			});
-			//JsonLength [12..16]:
-			data.AddRange(BitConverter.GetBytes(json.Length));
-
-			//Json [16..]
-			data.AddRange(Encoding.ASCII.GetBytes(json));
-
-			return Create(data, MessageCode.JSON);
-
-		}
+	
 		public byte[] CreateClientInfoMessage()
 		{
 			var data = CreateHeader(_deviceId);
@@ -205,5 +157,66 @@ namespace Presonus.UCNet.Api.Messages
 
 			return Create(data, "PV");
 		}
+
+		public byte[] CreatePresetMessage(Operation operation, string projFile = "", string sceneFile = "")
+		{
+			var data = CreateHeader(_deviceId);
+
+			string id, url, presetFile;
+
+			switch (operation)
+			{
+				case Operation.StoreScene:
+					id = "StorePreset";
+					url = "presets";
+					presetFile = $"presets/proj/{projFile}/{sceneFile}";
+					break;
+				case Operation.RecallScene:
+					id = "RestorePreset";
+					url = "presets";
+					presetFile = $"presets/proj/{projFile}/{sceneFile}";
+					break;
+				case Operation.StoreChannel:
+					id = "StorePreset";
+					url = "presets";
+					presetFile = "presets/channel/" + projFile;
+					break;
+				case Operation.RecallChannel:
+					id = "RestorePreset";
+					url = "presets";
+					presetFile = "presets/channel/" + projFile;
+					break;
+				case Operation.StoreProject:
+					id = "StorePreset";
+					url = "presets";
+					presetFile = "presets/proj/" + projFile;
+					break;
+				case Operation.RecallProject:
+					id = "RestorePreset";
+					url = "presets";
+					presetFile = "presets/proj/" + projFile;
+					break;
+				default:
+					throw new ArgumentException("Invalid operation.");
+			}
+
+			string json = JsonSerializer.Serialize(new
+			{
+				id,
+				url,
+				presetTarget = "",
+				presetTargetSlave = 0,
+				presetFile
+			});
+
+			// JsonLength [12..16]:
+			data.AddRange(BitConverter.GetBytes(json.Length));
+
+			// Json [16..]
+			data.AddRange(Encoding.ASCII.GetBytes(json));
+
+			return Create(data, MessageCode.JSON);
+		}
+
 	}
 }

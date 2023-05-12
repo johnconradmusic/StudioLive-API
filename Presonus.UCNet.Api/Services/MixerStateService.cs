@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Presonus.UCNet.Api.Services;
 
@@ -12,10 +13,11 @@ public class MixerStateService
 	public delegate void SyncEvent();
 	internal Action<string, string> SendStringMethod;
 	internal Action<string, float> SendValueMethod;
-	internal Action<string> RecallProject;
-	internal Action<string, string> RecallScene;
-	internal Action GetProjects;
 
+	internal Func<Task<List<GenericListItem>>> GetProjects;
+	internal Func<string, Task<List<GenericListItem>>> GetScenes;
+	internal Func<Task<List<GenericListItem>>> GetPresets;
+	internal Action<Presets.Operation, string, string> FileOperationMethod;
 
 	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{
@@ -23,16 +25,12 @@ public class MixerStateService
 		_mixerStateSynchronizer = mixerStateSynchronizer;
 	}
 
+
 	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;
 
 	public event EventHandler<ValueChangedEventArgs<string>> StringChanged;
 
 	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
-
-	public void RequestProjects()
-	{
-		GetProjects();
-	}
 
 	public void Synchronize(string json)
 	{
@@ -70,14 +68,6 @@ public class MixerStateService
 		}
 	}
 
-	public void RecallProjectFile(string projFile)
-	{
-		RecallProject(projFile);
-	}
-	public void RecallSceneFile(string projFile, string sceneFile)
-	{
-		RecallScene(projFile, sceneFile);
-	}
 	public float GetValue(string route)
 	{
 		return _mixerState.GetValue(route);

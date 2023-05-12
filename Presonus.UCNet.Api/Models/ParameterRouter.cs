@@ -15,7 +15,7 @@ namespace Presonus.UCNet.Api.Models
 {
 	public abstract class ParameterRouter : INotifyPropertyChanged
 	{
-		private readonly MixerStateService _mixerStateService;
+		protected readonly MixerStateService _mixerStateService;
 
 		private ChannelTypes channelType;
 		private int _channelIndex;
@@ -43,8 +43,21 @@ namespace Presonus.UCNet.Api.Models
 
 			_debounceTimer = new(2000, () => _debounceTimerRunning = false);
 		}
+		public ParameterRouter(string routePrefix, int index, MixerStateService mixerStateService)
+		{
+			_routePrefix = routePrefix;
+			_channelIndex = index;
+			ChannelType = ChannelTypes.NONE;
+			_mixerStateService = mixerStateService;
+			_mixerStateService.ValueChanged += ValueStateUpdated;
+			_mixerStateService.StringChanged += StringStateUpdated;
+			_mixerStateService.StringsChanged += StringsStateUpdated;
 
+			InitMapRoutes();
 
+			_debounceTimer = new(2000, () => _debounceTimerRunning = false);
+		}
+		string _routePrefix;
 		public abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
 
 		public abstract event PropertyChangedEventHandler PropertyChanged;
@@ -77,7 +90,8 @@ namespace Presonus.UCNet.Api.Models
 		}
 		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
 		{
-			if (ChannelType == ChannelTypes.NONE) return propertyName;
+			if(_channelIndex == -1 && ChannelType == ChannelTypes.NONE) return _routePrefix + "/" + propertyName;
+			if (ChannelType == ChannelTypes.NONE) return _routePrefix + _channelIndex + "/" + propertyName;
 			return ChannelUtil.GetChannelString(new(ChannelType, _channelIndex, mixType, mixNum)) + $"/{propertyName}";
 		}
 

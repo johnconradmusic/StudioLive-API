@@ -25,6 +25,7 @@ public class MixerState
 
 	public void SetString(string path, string value)
 	{
+		Console.WriteLine($"Set string: {path} ({value})");
 		_strings[path] = value;
 	}
 

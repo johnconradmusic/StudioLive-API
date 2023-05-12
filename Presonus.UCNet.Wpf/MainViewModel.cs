@@ -63,6 +63,12 @@ public class MainViewModel : INotifyPropertyChanged
 			AllChannels.Add(chan);
 		}
 
+		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.FX]; i++)
+		{
+			var fx = new FX(i + 1, _mixerStateService);
+			fx.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(FX));
+			FX.Add(fx);
+		}
 		updateTimer = new DispatcherTimer
 		{
 			Interval = TimeSpan.FromMilliseconds(10) // Update every 100 milliseconds
@@ -86,6 +92,7 @@ public class MainViewModel : INotifyPropertyChanged
 	public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
 
 	public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
+	public ObservableCollection<FX> FX { get; } = new ObservableCollection<FX>();
 
 	public Presets Presets { get; }
 
@@ -104,7 +111,7 @@ public class MainViewModel : INotifyPropertyChanged
 
 	public void Test()
 	{
-		_mixerStateService.RequestProjects();
+		//_mixerStateService.RequestProjects();
 		// _mixerStateService.RecallSceneFile("02.test.proj", "02.testing.scn");
 	}
 }
