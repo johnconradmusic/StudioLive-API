@@ -17,6 +17,7 @@ namespace Presonus.UCNet.Api.Helpers
 		private void TraverseObject(JsonElement objectElement, string path, MixerStateService mixerState)
 		{
 			var properties = objectElement.EnumerateObject();
+
 			foreach (var property in properties)
 			{
 				switch (property.Name)
@@ -34,6 +35,8 @@ namespace Presonus.UCNet.Api.Helpers
 								Mixer.ChannelCounts[ChannelTypes.AUX]++;
 							else if (path.StartsWith("fx/"))
 								Mixer.ChannelCounts[ChannelTypes.FX]++;
+							else if (path.StartsWith("geq/"))
+								Mixer.ChannelCounts[ChannelTypes.GEQ]++;
 						}
 						Traverse(property.Value, CreatePath(path), mixerState);
 						continue;
@@ -67,7 +70,7 @@ namespace Presonus.UCNet.Api.Helpers
 
 			return propertyName != null ? $"{path}/{propertyName}" : path;
 		}
-		
+
 
 		public void Traverse(JsonElement element, string path, MixerStateService mixerState)
 		{
@@ -90,7 +93,7 @@ namespace Presonus.UCNet.Api.Helpers
 							else
 							{
 								if (data != 0)
-								buffer = BitConverter.GetBytes(data);
+									buffer = BitConverter.GetBytes(data);
 							}
 
 							Array.Reverse(buffer); // Reverse the byte order

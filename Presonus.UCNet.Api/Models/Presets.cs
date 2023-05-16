@@ -39,10 +39,10 @@ namespace Presonus.UCNet.Api.Models
 		public async Task<List<GenericListItem>> GetScenes() => await _mixerStateService.GetScenes(LoadedProjectName);
 
 
-		public void FileOperation(Operation operation, string projFile = "", string sceneFile = "")
+		public void FileOperation(Operation operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
 		{
 			if (operation == Operation.StoreScene || operation == Operation.RecallScene) projFile = LoadedProjectName;
-			_mixerStateService.FileOperationMethod(operation, projFile, sceneFile);
+			_mixerStateService.FileOperationMethod(operation, projFile, sceneFile, selector);
 		}
 
 		public override void OnPropertyChanged(PropertyChangedEventArgs eventArgs)

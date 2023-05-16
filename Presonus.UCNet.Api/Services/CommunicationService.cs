@@ -689,10 +689,10 @@ namespace Presonus.UCNet.Api.Services
 				: null;
 		}
 
-		public void FileOperation(Presets.Operation operation, string projFile, string sceneFile = null)
+		public void FileOperation(Presets.Operation operation, string projFile, string sceneFile = null, ChannelSelector selector = null)
 		{
 			var writer = new TcpMessageWriter(_deviceId);
-			byte[] data = writer.CreatePresetMessage(operation, projFile, sceneFile);
+			byte[] data = writer.CreatePresetMessage(operation, projFile, sceneFile, selector);
 			SendMessage(data);
 		}
 

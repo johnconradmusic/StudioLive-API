@@ -40,7 +40,10 @@ public class BlindViewModel : INotifyPropertyChanged
 	public ObservableCollection<OutputDACBus> Main { get; } = new ObservableCollection<OutputDACBus>();
 
 	public ObservableCollection<Channel> AllChannels { get; } = new ObservableCollection<Channel>();
+
 	public ObservableCollection<FX> FX { get; } = new ObservableCollection<FX>();
+
+	public ObservableCollection<GEQ> GEQ { get; } = new ObservableCollection<GEQ>();
 
 	public Presets Presets { get; set; }
 
@@ -104,6 +107,12 @@ public class BlindViewModel : INotifyPropertyChanged
 			chan.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Main));
 			Main.Add(chan);
 			AllChannels.Add(chan);
+		}
+		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
+		{
+			var geq = new GEQ(i + 1, mixerStateService);
+			geq.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(GEQ));
+			GEQ.Add(geq);
 		}
 	}
 

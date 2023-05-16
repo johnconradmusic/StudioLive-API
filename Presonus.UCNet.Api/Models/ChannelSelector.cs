@@ -13,7 +13,8 @@ namespace Presonus.UCNet.Api.Models
 		FX,
 		FXRETURN,
 		RETURN,
-		NONE
+		NONE,
+		GEQ
 	}
 
 	public class ChannelUtil
@@ -86,7 +87,14 @@ namespace Presonus.UCNet.Api.Models
 			MixType = mixType;
 			MixNumber = mixNumber;
 		}
-
+		public ChannelSelector(Channel channel)
+		{
+			Type = channel.ChannelType;
+			Channel = channel.ChannelIndex;
+			MixType = null;
+			MixNumber = null;
+		}
+		public string GetChannelString => ChannelUtil.GetChannelString(this);
 		public ChannelTypes Type { get; }
 		public int Channel { get; }
 		public ChannelTypes? MixType { get; }

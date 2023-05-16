@@ -1,0 +1,18 @@
+﻿<local:ToolWindow x:Class="Presonus.UCNet.Wpf.Blind.ToolWindows.GEQWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:channels="clr-namespace:Presonus.UCNet.Api.Models.Channels;assembly=Presonus.UCNet.Api"
+                  xmlns:local="clr-namespace:Presonus.UCNet.Wpf.Blind.ToolWindows"
+                  xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
+                  mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=channels:FX}"
+                  Height="auto" Width="auto"
+                  KeyboardNavigation.DirectionalNavigation="None">
+    <StackPanel KeyboardNavigation.DirectionalNavigation="None" Orientation="Horizontal">
+        <StackPanel x:Name="eqPanel" KeyboardNavigation.TabNavigation="Cycle" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical">
+
+        </StackPanel>
+    </StackPanel>
+</local:ToolWindow>
+

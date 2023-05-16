@@ -17,7 +17,7 @@ public class MixerStateService
 	internal Func<Task<List<GenericListItem>>> GetProjects;
 	internal Func<string, Task<List<GenericListItem>>> GetScenes;
 	internal Func<Task<List<GenericListItem>>> GetPresets;
-	internal Action<Presets.Operation, string, string> FileOperationMethod;
+	internal Action<Presets.Operation, string, string, ChannelSelector> FileOperationMethod;
 
 	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{

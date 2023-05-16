@@ -14,7 +14,8 @@ namespace Presonus.UCNet.Api.Models
 			{ChannelTypes.TALKBACK,1 },
 			{ChannelTypes.AUX,0 },
 			{ChannelTypes.FX, 0 },
-			{ChannelTypes.MAIN,1 }
+			{ChannelTypes.MAIN,1 },
+			{ChannelTypes.GEQ, 8 }
 		};
 
 		public static bool Counted { get; internal set; }

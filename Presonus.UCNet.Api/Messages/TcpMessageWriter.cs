@@ -2,6 +2,7 @@
 // The Assistant - Copyright (c) 2016-2023, John Conrad
 //------------------------------------------------------------------------------
 using Presonus.UCNet.Api.Helpers;
+using Presonus.UCNet.Api.Models;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -81,9 +82,9 @@ namespace Presonus.UCNet.Api.Messages
 			packetBuffer.AddRange(nullBuffer);
 
 			return Create(packetBuffer, MessageCode.FileRequest);
-		}	
+		}
 
-	
+
 		public byte[] CreateClientInfoMessage()
 		{
 			var data = CreateHeader(_deviceId);
@@ -158,11 +159,12 @@ namespace Presonus.UCNet.Api.Messages
 			return Create(data, "PV");
 		}
 
-		public byte[] CreatePresetMessage(Operation operation, string projFile = "", string sceneFile = "")
+		public byte[] CreatePresetMessage(Operation operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
 		{
 			var data = CreateHeader(_deviceId);
 
-			string id, url, presetFile;
+			string id, url, presetFile, presetTarget;
+			presetTarget = "";
 
 			switch (operation)
 			{
@@ -184,6 +186,7 @@ namespace Presonus.UCNet.Api.Messages
 				case Operation.RecallChannel:
 					id = "RestorePreset";
 					url = "presets";
+					presetTarget = selector.GetChannelString;
 					presetFile = "presets/channel/" + projFile;
 					break;
 				case Operation.StoreProject:
@@ -204,7 +207,7 @@ namespace Presonus.UCNet.Api.Messages
 			{
 				id,
 				url,
-				presetTarget = "",
+				presetTarget,
 				presetTargetSlave = 0,
 				presetFile
 			});

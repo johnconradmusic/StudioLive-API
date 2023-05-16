@@ -7,6 +7,8 @@ using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Wpf.Blind.ToolWindows;
 using Presonus.UCNet.Wpf.Blind.UserControls;
 using System;
+using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,6 +30,22 @@ namespace Presonus.UCNet.Wpf.Blind
 				_meterService.MeterDataReceived += _meterService_MeterDataReceived;
 
 				ChannelSelector.SelectedIndex = 0;
+
+				for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
+				{
+					var menuItem = new CustomMenuItem()
+					{
+						Header = "Graphic EQ " + (i + 1)
+					};
+					menuItem.Click += (s, e) =>
+					{
+						new GEQWindow(blindViewModel.GEQ[i]).ShowDialog();
+					};
+				viewMenu.Items.Add(menuItem);
+ ;
+
+
+				}
 			};
 			Activated += MainWindow_Activated;
 		}
@@ -74,7 +92,9 @@ namespace Presonus.UCNet.Wpf.Blind
 		{
 			if (ChannelSelector.SelectedItem is Channel channel)
 			{
+				e.RemovedItems.Cast<Channel>().ToList().ForEach(channel => channel.select = false);
 				_channel = channel;
+				channel.select = true;
 				Speech.SpeechManager.Say($"{channel.chnum} ({channel.username})");
 				if (channel.link)
 				{
@@ -217,8 +237,18 @@ namespace Presonus.UCNet.Wpf.Blind
 					break;
 				case "Load":
 					{
-						new FileOpenToolWindow(await blindViewModel.Presets.GetChannelPresets()).ShowDialog();
+						var win = new FileOpenToolWindow(await blindViewModel.Presets.GetChannelPresets());
+						win.ShowDialog();
+
+						if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
+						blindViewModel.Presets.FileOperation(Presets.Operation.RecallChannel, win.Selection, "", new(_channel));
 					}
+					break;
+				case "FXA":
+					new FXComponentWindow(blindViewModel.FX[0], blindViewModel).ShowDialog();
+					break;
+				case "FXB":
+					new FXComponentWindow(blindViewModel.FX[1], blindViewModel).ShowDialog();
 					break;
 			}
 		}
@@ -287,5 +317,26 @@ namespace Presonus.UCNet.Wpf.Blind
 
 			blindViewModel.Presets.FileOperation(Presets.Operation.StoreScene, null, $"{index}.{prompt.UserString}.{extension}");
 		}
+
+		private async void SaveProjectAs_Click(object sender, RoutedEventArgs e)
+		{
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects());
+			window.ShowDialog();
+
+			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
+
+			var saveFile = window.Selection;
+			var segments = saveFile.Split('.');
+			var index = segments[0];
+			var extension = segments[2];
+
+			var prompt = new TextPrompt("", "Enter a name for the project file, then press enter.");
+			prompt.ShowDialog();
+
+			if (!prompt.DialogResult.HasValue || !prompt.DialogResult.Value) return;
+
+			blindViewModel.Presets.FileOperation(Presets.Operation.StoreProject, null, $"{index}.{prompt.UserString}.{extension}");
+		}
+
 	}
 }
