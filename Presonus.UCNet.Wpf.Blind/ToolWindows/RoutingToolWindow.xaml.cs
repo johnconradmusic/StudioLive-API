@@ -30,6 +30,8 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 
 		private void RoutingToolWindow_Loaded(object sender, RoutedEventArgs e)
 		{
+
+
 			StackPanel panel = new();
 			if (_channel is InputChannel lineInput)
 			{
@@ -68,20 +70,63 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 				sdSrc.SetBinding(ListUpDown.ValueProperty, new Binding("sd_src"));
 
 				panel.Children.Add(sdSrc);
+				inputsrc.ValueChanged += Inputsrc_ValueChanged;
+				NewMethod(inputsrc.ValueString);
+
+			}
+			else if (_channel is FX outputBus)
+			{
+				var adcSrc = new ListUpDown();
+				adcSrc.Caption = "Aux Pre/Post";
+				adcSrc.Items = OutputBus.auxpremode_values;
+				adcSrc.SetBinding(ListUpDown.ValueProperty, new Binding("auxpremode"));
+
+				panel.Children.Add(adcSrc);
+			}
+			else if (_channel is OutputDACBus outputDACBus)
+			{
+				var auxmode = new ListUpDown();
+				auxmode.Caption = "Aux Pre/Post";
+				auxmode.Items = OutputBus.auxpremode_values;
+				auxmode.SetBinding(ListUpDown.ValueProperty, new Binding("auxpremode"));
+
+				panel.Children.Add(auxmode);
+
+				var busmode = new ListUpDown();
+				busmode.Caption = "Bus Mode";
+				busmode.Items = OutputDACBus.busmode_values;
+				busmode.SetBinding(ListUpDown.ValueProperty, new Binding("busmode"));
+
+				panel.Children.Add(busmode);
+
+				var bussource = new ListUpDown();
+				bussource.Caption = "Bus Source";
+				bussource.Items = OutputDACBus.bussource_values;
+				bussource.SetBinding(ListUpDown.ValueProperty, new Binding("bussrc"));
+
+				panel.Children.Add(bussource);
+
+				var lr = new BooleanUpDown();
+				lr.Caption = "LR Assign";
+				lr.SetBinding(BooleanUpDown.ValueProperty, new Binding("lr_assign"));
 			}
 			routingPanel.Children.Add(panel);
 
-			inputsrc.ValueChanged += Inputsrc_ValueChanged;
 		}
 
 		private void Inputsrc_ValueChanged(object sender, ListUpDownEventArgs e)
+		{
+			NewMethod(e.ValueString);
+		}
+
+		private void NewMethod(string e)
 		{
 			adcSrc.Visibility = Visibility.Collapsed;
 			avbSrc.Visibility = Visibility.Collapsed;
 			usbSrc.Visibility = Visibility.Collapsed;
 			sdSrc.Visibility = Visibility.Collapsed;
 
-			switch (e.ValueString)
+			switch (e)
 			{
 				case "Analog":
 					adcSrc.Visibility = Visibility.Visible;

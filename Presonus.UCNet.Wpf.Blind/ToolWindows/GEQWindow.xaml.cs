@@ -34,6 +34,9 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 
 		private void FXComponentWindow_Loaded(object sender, RoutedEventArgs e)
 		{
+			var on = CreateBooleanUpDown("Graphic EQ", "on");
+			eqPanel.Children.Add(on);
+
 			var gain1 = CreateNumericUpDownControl("20Hz", -12, 12, 0, Units.DB, CurveFormula.Linear, "gain1");
 			eqPanel.Children.Add(gain1);
 

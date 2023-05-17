@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ModifierKeys = Presonus.UCNet.Wpf.Blind.UserControls.ModifierKeys;
 
 namespace Presonus.UCNet.Wpf.Blind
 {
@@ -33,18 +34,16 @@ namespace Presonus.UCNet.Wpf.Blind
 
 				for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
 				{
+					int index = i;
 					var menuItem = new CustomMenuItem()
 					{
 						Header = "Graphic EQ " + (i + 1)
 					};
 					menuItem.Click += (s, e) =>
 					{
-						new GEQWindow(blindViewModel.GEQ[i]).ShowDialog();
+						new GEQWindow(blindViewModel.GEQ[index]).ShowDialog();
 					};
-				viewMenu.Items.Add(menuItem);
- ;
-
-
+					viewMenu.Items.Add(menuItem);
 				}
 			};
 			Activated += MainWindow_Activated;
@@ -192,7 +191,18 @@ namespace Presonus.UCNet.Wpf.Blind
 					newIndex = Math.Max(ChannelSelector.SelectedIndex - 1, 0);
 					ChannelSelector.SelectedIndex = newIndex;
 					break;
+				case Key.F:
+					if (ModifierKeys.IsCtrlDown())
+					{
+						var dialog = new ChannelSelectorToolWindow(blindViewModel);
+						dialog.ShowDialog();
 
+						if (dialog.DialogResult.HasValue && dialog.DialogResult.Value)
+						{
+							ChannelSelector.SelectedIndex = dialog.Selection;
+						}
+					}
+					break;
 				default:
 					break;
 			}
@@ -230,7 +240,8 @@ namespace Presonus.UCNet.Wpf.Blind
 					//implement this
 					break;
 				case "Routing":
-					new RoutingToolWindow(_channel).ShowDialog();
+					if (_channel is not StereoLineInput)
+						new RoutingToolWindow(_channel).ShowDialog();
 					break;
 				case "Sends":
 					new SendsView(_channel, blindViewModel).ShowDialog();

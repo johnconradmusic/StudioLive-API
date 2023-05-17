@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Presonus.UCNet.Api.Models.Channels
 {
-	public class FX : ParameterRouter
+	public class FX : OutputBus
 	{
 		public static Dictionary<string, string> FXNames = new Dictionary<string, string>()
 		{
@@ -66,7 +66,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 		"Long Small Room",
 		"Drum Garage"
 	};
-		public FX(int index, MixerStateService mixerStateService) : base("fx/ch", index, mixerStateService)
+		public FX(int index, MixerStateService mixerStateService) : base(ChannelTypes.FX, index, mixerStateService)
 		{
 		}
 

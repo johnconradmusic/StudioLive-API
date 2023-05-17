@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Presonus.UCNet.Wpf.Blind.UserControls
 {
@@ -46,9 +47,13 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 		{
 			InitializeComponent();
 			Loaded += ListUpDown_Loaded;
+			// Initialize the search timer
+			searchTimer = new DispatcherTimer();
+			searchTimer.Interval = TimeSpan.FromMilliseconds(750); // Adjust the delay as per your requirements
+			searchTimer.Tick += SearchTimer_Tick;
 		}
 		public delegate void ListUpDownValueChangedDelegate(object sender, ListUpDownEventArgs e);
-		public event ListUpDownValueChangedDelegate ValueChanged;
+		public event ListUpDownValueChangedDelegate? ValueChanged;
 
 		public int SelectedIndex
 		{
@@ -108,7 +113,27 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 		{
 			UpdateValueString();
 		}
+		private void SearchTimer_Tick(object? sender, EventArgs e)
+		{
+			searchTimer.Stop();
+			// Perform the search using the current search string
+			searchString = ""; // Reset the search string
+		}
 
+		private void SearchAndNavigateToListItem(string search)
+		{
+			foreach (var item in Items)
+			{
+				// Assuming each item has a Text property, modify this condition based on your list control
+				if (item.StartsWith(search, StringComparison.OrdinalIgnoreCase))
+				{
+					SelectedIndex = Items.IndexOf(item); // Set the selected item
+					Value = (float)SelectedIndex / (Items.Count - 1);
+
+					break; // Exit the loop after finding the first match
+				}
+			}
+		}
 		private void UpdateValueString()
 		{
 			ValueString = GetItemFromFloat();
@@ -135,7 +160,24 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 
 				Value = (float)SelectedIndex / (Items.Count - 1);
 			}
+
+			if ((e.Key >= Key.A && e.Key <= Key.Z) || (e.Key >= Key.D0 && e.Key <= Key.D9))
+			{
+				var pressedLetter = e.Key.ToString();
+				Speech.SpeechManager.Say(pressedLetter);
+
+				// Append the pressed letter to the search string
+				searchString += pressedLetter;
+				// Reset the search timer
+				searchTimer.Stop();
+				searchTimer.Start();
+				SearchAndNavigateToListItem(searchString);
+
+			}
 		}
+
+		private string searchString = "";
+		private DispatcherTimer searchTimer;
 
 		private void UserControl_GotFocus(object sender, RoutedEventArgs e)
 		{
