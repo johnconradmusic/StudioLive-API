@@ -25,30 +25,59 @@ namespace Presonus.UCNet.Wpf.Blind
         {
             DataContext = blindViewModel = viewModel;
             InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                _meterService = App.ServiceProvider.GetRequiredService<MeterService>();
-                _meterService.MeterDataReceived += _meterService_MeterDataReceived;
+            Loaded += MainWindow_Loaded;
 
-                ChannelSelector.SelectedIndex = 0;
-
-                for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
-                {
-                    int index = i;
-                    var menuItem = new CustomMenuItem()
-                    {
-                        Header = "Graphic EQ " + (i + 1)
-                    };
-                    menuItem.Click += (s, e) =>
-                    {
-                        new GEQWindow(blindViewModel.GEQ[index]).ShowDialog();
-                    };
-                    viewMenu.Items.Add(menuItem);
-                }
-            };
             Activated += MainWindow_Activated;
         }
 
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            _meterService = App.ServiceProvider.GetRequiredService<MeterService>();
+            _meterService.MeterDataReceived += _meterService_MeterDataReceived;
+
+            ChannelSelector.SelectedIndex = 0;
+
+            for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
+            {
+                int index = i;
+                var menuItem = new CustomMenuItem()
+                {
+                    Header = "Graphic EQ " + (i + 1)
+                };
+                menuItem.Click += (s, e) =>
+                {
+                    new GEQWindow(blindViewModel.GEQ[index]).ShowDialog();
+                };
+                viewMenu.Items.Add(menuItem);
+            }
+
+            for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.FX]; i++)
+            {
+                var letter = "";
+                switch (i)
+                {
+                    case 0:
+                        letter = "A";
+                        break;
+                    case 1:
+                        letter = "B";
+                        break;
+                    case 2:
+                        letter = "C";
+                        break;
+                    case 3:
+                        letter = "D";
+                        break;
+                }
+                //< usercontrols:CustomMenuItem Tag = "FXA" Header = "FXA" Click = "CustomMenuItem_Click" />     
+                //< usercontrols:CustomMenuItem Tag = "FXB" Header = "FXB" Click = "CustomMenuItem_Click" />
+                var menuItem = new CustomMenuItem();
+                menuItem.Header = $"FX{letter}";
+                menuItem.Tag = $"FX{letter}";
+                menuItem.Click += CustomMenuItem_Click;
+                viewMenu.Items.Add(menuItem);
+            }
+        }
         private void MainWindow_Activated(object? sender, EventArgs e)
         {
             Speech.SpeechManager.Say($"{Title} ");
@@ -262,6 +291,12 @@ namespace Presonus.UCNet.Wpf.Blind
                     break;
                 case "FXB":
                     new FXComponentWindow(blindViewModel.FX[1], blindViewModel).ShowDialog();
+                    break;
+                case "FXC":
+                    new FXComponentWindow(blindViewModel.FX[2], blindViewModel).ShowDialog();
+                    break;
+                case "FXD":
+                    new FXComponentWindow(blindViewModel.FX[3], blindViewModel).ShowDialog();
                     break;
             }
         }
