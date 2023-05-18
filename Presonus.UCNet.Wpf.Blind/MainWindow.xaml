@@ -34,7 +34,7 @@
                 <usercontrols:CustomMenuItem Tag="EQ" Header="EQ Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Comp" Header="Compressor Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Gate" Header="Gate Window" Click="CustomMenuItem_Click"/>
-                <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window (not implemented)" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="FXA" Header="FXA" Click="CustomMenuItem_Click"/>

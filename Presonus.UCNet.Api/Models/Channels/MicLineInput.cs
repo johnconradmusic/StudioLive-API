@@ -121,8 +121,8 @@ namespace Presonus.UCNet.Api.Models.Channels
 
 
 
-		[ParameterPath("limt/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
-		[ParameterPath("limt/threshold")] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
+		[ParameterPath("limit/limiteron")] public bool limiter_on { get => GetBoolean(); set => SetBoolean(value); }
+		[ParameterPath("limit/threshold")] public float limiter_threshold { get => GetValue(); set => SetValue(value); }
 
 		#endregion
 

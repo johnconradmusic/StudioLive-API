@@ -15,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static System.Security.Cryptography.ECCurve;
 
 namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 {
@@ -115,8 +114,5 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 			// Return the letter as a string
 			return letter.ToString();
 		}
-
-
-
 	}
 }

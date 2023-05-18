@@ -24,7 +24,7 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 		{
 			_channel = channel;
 			InitializeComponent();
-			Title = $"Sends Window - {channel.chnum} ({channel.username})";
+			Title = $"Routing Window - {channel.chnum} ({channel.username})";
 			Loaded += RoutingToolWindow_Loaded;
 		}
 
