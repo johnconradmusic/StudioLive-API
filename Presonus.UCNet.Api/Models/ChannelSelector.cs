@@ -26,7 +26,7 @@ namespace Presonus.UCNet.Api.Models
 		{ ChannelTypes.TALKBACK, "talkback" },
 		{ ChannelTypes.AUX, "aux" },
 		{ ChannelTypes.SUB, "sub" },
-		{ ChannelTypes.FX, "fxbus" },
+		{ ChannelTypes.FX, "fx" },
 		{ ChannelTypes.FXRETURN, "fxreturn" },
 		{ ChannelTypes.RETURN, "return" }
 	};

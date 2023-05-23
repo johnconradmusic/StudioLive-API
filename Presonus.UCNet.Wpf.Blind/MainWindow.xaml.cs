@@ -28,6 +28,7 @@ namespace Presonus.UCNet.Wpf.Blind
             Loaded += MainWindow_Loaded;
 
             Activated += MainWindow_Activated;
+            Title = blindViewModel.Global.devicename;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
