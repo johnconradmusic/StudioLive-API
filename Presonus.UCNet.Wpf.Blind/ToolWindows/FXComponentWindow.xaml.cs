@@ -5,6 +5,7 @@ using Presonus.UCNet.Api.Models.Channels;
 using Presonus.UCNet.Wpf.Blind.UserControls;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -40,6 +41,7 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 
 		private void ModelChooser_ValueChanged(object sender, ListUpDownEventArgs e)
 		{
+			Task.Delay(500).Wait();
 			fxPanel.Children.Clear();
 			BuildFXControls(fx.classId);
 		}
@@ -208,7 +210,7 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 
 		private void BuildVintagePlateReverb()
 		{
-			var type = CreateListUpDown("Reverb Type", FX.PAE335TypeList, "verbType");
+			var type = CreateListUpDown("Reverb Type", FX.VintageReverbTypeList, "verbType");
 			fxPanel.Children.Add(type);
 
 

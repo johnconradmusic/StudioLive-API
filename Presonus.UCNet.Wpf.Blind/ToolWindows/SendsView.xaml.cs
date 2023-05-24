@@ -24,17 +24,169 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 	public partial class SendsView : ToolWindow
 	{
 		BlindViewModel blindViewModel;
+		Channel _channel;
 		public SendsView(Channel channel, BlindViewModel viewModel) : base(channel)
 		{
 			blindViewModel = viewModel;
 			InitializeComponent();
 			Title = $"Sends Window - {channel.chnum} ({channel.username})";
-			Loaded += SendsView_Loaded;
+			_channel = channel;
+			if (channel is OutputDACBus)
+			{
+				if (viewModel.Main[0] != channel)
+				{
+					Loaded += BuildAuxLayout;
+				}
+			}
+			else
+			{
+				Loaded += BuildChannelLayout;
+			}
 		}
 
-		private void SendsView_Loaded(object sender, RoutedEventArgs e)
+		private void BuildAuxLayout(object sender, RoutedEventArgs e)
 		{
-			Console.WriteLine(Mixer.ChannelCounts[ChannelTypes.AUX]);
+			var panel = new StackPanel();
+
+			//WE ARE AN AUX.. WE NEED TO ENABLE EVERY CHANNEL TO SEND TO US
+			var auxString = "";
+			if (_channel.link) //WE ARE A STEREO LINKED AUX
+			{
+				var auxPanString = "";
+				if (_channel.linkmaster)//WE ARE THE LEFT (ODD) SIDE
+				{
+					auxString = $"aux{_channel.ChannelIndex}";
+					auxPanString = $"aux{_channel.ChannelIndex}{_channel.ChannelIndex + 1}_pan";
+
+				}
+				else //WE ARE THE RIGHT SIDE
+				{
+					auxString = $"aux{_channel.ChannelIndex}";
+					auxPanString = $"aux{_channel.ChannelIndex - 1}{_channel.ChannelIndex}_pan";
+				}
+				foreach (var channel in blindViewModel.MicLineInputs)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+
+					var sendPan = new NumericUpDown();
+					sendPan.Curve = Api.Helpers.CurveFormula.Linear;
+					sendPan.Unit = Api.Helpers.Units.PAN;
+					sendPan.Default = 0.5f;
+					sendPan.Min = 0f;
+					sendPan.Max = 1f;
+					sendPan.Caption = channel.username + " pan";
+					sendPan.SetBinding(NumericUpDown.ValueProperty, new Binding(auxPanString));
+
+					panel.Children.Add(sendPan);
+				}
+				foreach (var channel in blindViewModel.StereoLineInputs)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+
+					var sendPan = new NumericUpDown();
+					sendPan.Curve = Api.Helpers.CurveFormula.Linear;
+					sendPan.Unit = Api.Helpers.Units.PAN;
+					sendPan.Default = 0.5f;
+					sendPan.Min = 0f;
+					sendPan.Max = 1f;
+					sendPan.Caption = channel.username + " pan";
+					sendPan.SetBinding(NumericUpDown.ValueProperty, new Binding(auxPanString));
+
+					panel.Children.Add(sendPan);
+				}
+				foreach (var channel in blindViewModel.FXReturns)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+
+					var sendPan = new NumericUpDown();
+					sendPan.Curve = Api.Helpers.CurveFormula.Linear;
+					sendPan.Unit = Api.Helpers.Units.PAN;
+					sendPan.Default = 0.5f;
+					sendPan.Min = 0f;
+					sendPan.Max = 1f;
+					sendPan.Caption = channel.username + " pan";
+					sendPan.SetBinding(NumericUpDown.ValueProperty, new Binding(auxPanString));
+
+					panel.Children.Add(sendPan);
+				}
+			}
+			else
+			{
+				auxString = $"aux{_channel.ChannelIndex}";
+				foreach (var channel in blindViewModel.MicLineInputs)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+				}
+				foreach (var channel in blindViewModel.StereoLineInputs)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+				}
+				foreach (var channel in blindViewModel.FXReturns)
+				{
+					var sendVolume = new NumericUpDown();
+					sendVolume.Curve = Api.Helpers.CurveFormula.LinearToVolume;
+					sendVolume.Unit = Api.Helpers.Units.DB;
+					sendVolume.Min = -84;
+					sendVolume.Max = 10;
+					sendVolume.Default = 0.735f;
+					sendVolume.Caption = channel.username + " send";
+					sendVolume.SetBinding(NumericUpDown.ValueProperty, new Binding(auxString));
+
+					panel.Children.Add(sendVolume);
+				}
+			}
+			sendsPanel.Children.Add(panel);
+
+		}
+
+		private void BuildChannelLayout(object sender, RoutedEventArgs e)
+		{
+			//WE ARE A CHANNEL.. WE NEED TO SEND OURSELF TO EVERY AUX AND FX
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
 			{
 				var panel = new StackPanel();
@@ -64,7 +216,6 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 					panel.Children.Add(sendPan);
 
 				}
-				else if (blindViewModel.Auxes[i].link && !blindViewModel.Auxes[i].linkmaster) { }
 				else
 				{
 					var sendVolume = new NumericUpDown();
@@ -101,17 +252,13 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 		}
 		public string IntToLetter(int number)
 		{
-			// Check if the number is within the valid range (1-26)
 			if (number < 1 || number > 26)
 			{
 				throw new ArgumentOutOfRangeException(nameof(number), "The number must be between 1 and 26.");
 			}
 
-			// Convert number to ASCII value of the equivalent uppercase letter
-			// 'A' in ASCII is 65, so we add 64 to the input number
 			char letter = (char)(number + 64);
 
-			// Return the letter as a string
 			return letter.ToString();
 		}
 	}

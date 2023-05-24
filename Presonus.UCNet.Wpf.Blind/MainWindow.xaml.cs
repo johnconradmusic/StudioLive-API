@@ -188,14 +188,9 @@ namespace Presonus.UCNet.Wpf.Blind
                     break;
 
                 case Key.S:
-                    _channel.solo = !_channel.solo;
-                    if (_channel.solo)
-                        Speech.SpeechManager.Say($"Solo");
-                    else
-                        Speech.SpeechManager.Say($"Unsolo");
+					new SendsView(_channel, blindViewModel).ShowDialog();
                     break;
-
-                case Key.M:
+				case Key.M:
                     if (UserControls.ModifierKeys.IsCtrlDown())
                     {
                         Speech.SpeechManager.Say($"{ValueTransformer.LinearToVolume((float)Peak)}");
