@@ -17,14 +17,16 @@ public class MixerStateService
 	internal Func<Task<List<GenericListItem>>> GetProjects;
 	internal Func<string, Task<List<GenericListItem>>> GetScenes;
 	internal Func<Task<List<GenericListItem>>> GetPresets;
-	internal Action<Presets.Operation, string, string, ChannelSelector> FileOperationMethod;
+	internal Action<Presets.OperationType, string, string, ChannelSelector> FileOperationMethod;
+
+	internal Action<ChannelTypes, int> ChannelResetMethod;
+	internal Action<ChannelSelector, bool> ChannelCopyPaste;
 
 	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
 	{
 		_mixerState = mixerState;
 		_mixerStateSynchronizer = mixerStateSynchronizer;
 	}
-
 
 	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;
 

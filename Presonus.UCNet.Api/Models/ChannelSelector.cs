@@ -6,13 +6,13 @@ namespace Presonus.UCNet.Api.Models
 	public enum ChannelTypes
 	{
 		LINE,
-		MAIN,
-		TALKBACK,
-		AUX,
-		SUB,
-		FX,
-		FXRETURN,
 		RETURN,
+		TALKBACK,
+		FX,
+		AUX,
+		FXRETURN,
+		SUB,
+		MAIN,
 		NONE,
 		GEQ
 	}

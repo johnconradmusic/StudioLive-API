@@ -37,7 +37,7 @@
                 <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
-
+                
 
                 <Separator/>
             </usercontrols:CustomMenuItem>
@@ -66,8 +66,14 @@
                     <usercontrols:CustomMenuItem Header="Phantom" IsCheckable="True" IsChecked="{Binding phantom}" />
                     <usercontrols:CustomMenuItem Header="Clip Protection" IsCheckable="True" IsChecked="{Binding clipProtection}" />
                     <Separator />
+                    <usercontrols:CustomMenuItem Header="Copy Channel" x:Name="copyMenuItem" Tag="Copy" Click="copyPasteMenuItem_Click"/>
+                    <usercontrols:CustomMenuItem Header="Paste Channel" x:Name="PasteMenuItem" Tag="Paste" Click="copyPasteMenuItem_Click"/>
+
+                    <Separator/>
                     <usercontrols:CustomMenuItem Tag="Load" Header="Load Preset" Click="CustomMenuItem_Click"/>
+                    <usercontrols:CustomMenuItem x:Name="resetChannelMenuItem" Header="Reset Channel" Click="resetChannelMenuItem_Click"/>
                     <usercontrols:CustomMenuItem Click="CustomMenuItem_Click_1" Header="Rename Channel"/>
+                    
                     <usercontrols:CustomMenuItem Header="Stereo Link Options">
                         <usercontrols:CustomMenuItem Header="Link" IsCheckable="True" IsChecked="{Binding link}" />
                         <Separator />

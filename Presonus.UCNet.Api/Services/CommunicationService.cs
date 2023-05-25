@@ -51,13 +51,31 @@ namespace Presonus.UCNet.Api.Services
 			_mixerStateService.GetScenes = RequestSceneList;
 			_mixerStateService.GetPresets = RequestChannelPresets;
 
+			_mixerStateService.ChannelResetMethod = SendChannelReset;
+
+			_mixerStateService.ChannelCopyPaste = ChannelCopyOrPaste;
+
 			_listeningThread = new Thread(Listener) { IsBackground = true };
 			_writingThread = new Thread(KeepAlive) { IsBackground = true };
 		}
+		public void ChannelCopyOrPaste(ChannelSelector channel, bool paste)
+		{
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateChannelCopyOrPaste(channel, paste);
+			SendMessage(data);
+		}
+
 
 		public static bool ConnectionEstablished { get; set; }
 
 		public bool IsConnected => _tcpClient?.Connected ?? false;
+
+		public void SendChannelReset(ChannelTypes channelType, int channelIndex)
+		{
+			var writer = new TcpMessageWriter(_deviceId);
+			var data = writer.CreateResetChannelMessage(channelType, channelIndex);
+			SendMessage(data);
+		}
 
 		private static List<float> ReadValues(BinaryReader reader, int count)
 		{
@@ -689,7 +707,7 @@ namespace Presonus.UCNet.Api.Services
 				: null;
 		}
 
-		public void FileOperation(Presets.Operation operation, string projFile, string sceneFile = null, ChannelSelector selector = null)
+		public void FileOperation(Presets.OperationType operation, string projFile, string sceneFile = null, ChannelSelector selector = null)
 		{
 			var writer = new TcpMessageWriter(_deviceId);
 			byte[] data = writer.CreatePresetMessage(operation, projFile, sceneFile, selector);

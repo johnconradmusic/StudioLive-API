@@ -8,6 +8,7 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Input;
 using static Presonus.UCNet.Api.Models.Presets;
 
 namespace Presonus.UCNet.Api.Messages
@@ -159,7 +160,57 @@ namespace Presonus.UCNet.Api.Messages
 			return Create(data, "PV");
 		}
 
-		public byte[] CreatePresetMessage(Operation operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
+		public byte[] CreateChannelCopyOrPaste(ChannelSelector channel, bool paste)
+		{
+			List<byte> data = CreateHeader(_deviceId);
+
+			ushort id = (ushort)UniqueRandom.Get(16).Request();
+			var idBuffer = new byte[2];
+			BinaryPrimitives.WriteUInt16BigEndian(idBuffer, id);
+
+			byte[] keyBuffer = Encoding.ASCII.GetBytes((paste ? "presets/paste.channel" : "presets/copy.channel") + channel.GetChannelString);
+
+			byte[] nullBuffer = new byte[] { 0x00, 0x00 };
+
+			List<byte> packetBuffer = new List<byte>();
+			packetBuffer.AddRange(data);
+			packetBuffer.AddRange(idBuffer);
+			packetBuffer.AddRange(keyBuffer);
+			packetBuffer.AddRange(nullBuffer);
+
+			return Create(packetBuffer, MessageCode.FileRequest);
+		}
+
+		public byte[] CreateResetChannelMessage(ChannelTypes channelType, int channelIndex)
+		{
+			var data = CreateHeader(_deviceId);
+
+			string id, url;
+			int resetChannelType, resetChannelIndex;
+
+			id = "resetChannel";
+			url = "presets";
+			resetChannelType = (int)channelType;
+			resetChannelIndex = channelIndex - 1;
+
+			string json = JsonSerializer.Serialize(new
+			{
+				id,
+				url,
+				resetChannelType,
+				resetChannelIndex
+			});
+
+			// JsonLength [12..16]:
+			data.AddRange(BitConverter.GetBytes(json.Length));
+
+			// Json [16..]
+			data.AddRange(Encoding.ASCII.GetBytes(json));
+
+			return Create(data, MessageCode.JSON);
+		}
+
+		public byte[] CreatePresetMessage(OperationType operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
 		{
 			var data = CreateHeader(_deviceId);
 
@@ -168,33 +219,33 @@ namespace Presonus.UCNet.Api.Messages
 
 			switch (operation)
 			{
-				case Operation.StoreScene:
+				case OperationType.StoreScene:
 					id = "StorePreset";
 					url = "presets";
 					presetFile = $"presets/proj/{projFile}/{sceneFile}";
 					break;
-				case Operation.RecallScene:
+				case OperationType.RecallScene:
 					id = "RestorePreset";
 					url = "presets";
 					presetFile = $"presets/proj/{projFile}/{sceneFile}";
 					break;
-				case Operation.StoreChannel:
+				case OperationType.StoreChannel:
 					id = "StorePreset";
 					url = "presets";
 					presetFile = "presets/channel/" + projFile;
 					break;
-				case Operation.RecallChannel:
+				case OperationType.RecallChannel:
 					id = "RestorePreset";
 					url = "presets";
 					presetTarget = selector.GetChannelString;
 					presetFile = "presets/channel/" + projFile;
 					break;
-				case Operation.StoreProject:
+				case OperationType.StoreProject:
 					id = "StorePreset";
 					url = "presets";
 					presetFile = "presets/proj/" + projFile;
 					break;
-				case Operation.RecallProject:
+				case OperationType.RecallProject:
 					id = "RestorePreset";
 					url = "presets";
 					presetFile = "presets/proj/" + projFile;

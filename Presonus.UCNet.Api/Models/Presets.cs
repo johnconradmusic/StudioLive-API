@@ -9,9 +9,9 @@ namespace Presonus.UCNet.Api.Models
 {
 	public class Presets : ParameterRouter, INotifyPropertyChanged
 	{
-		public enum Operation
+		public enum OperationType
 		{
-			StoreScene, RecallScene, StoreChannel, RecallChannel, StoreProject, RecallProject
+			StoreScene, RecallScene, StoreChannel, RecallChannel, StoreProject, RecallProject, ResetScene, ResetProject, ResetChannel, CopyChannel, PasteChannel
 		}
 		public Presets(MixerStateService mixerStateService) : base("presets", -1, mixerStateService)
 		{
@@ -38,10 +38,19 @@ namespace Presonus.UCNet.Api.Models
 
 		public async Task<List<GenericListItem>> GetScenes() => await _mixerStateService.GetScenes(LoadedProjectName);
 
-
-		public void FileOperation(Operation operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
+		public void ChannelCopyPaste(ChannelSelector channel, bool paste)
 		{
-			if (operation == Operation.StoreScene || operation == Operation.RecallScene) projFile = LoadedProjectName;
+			_mixerStateService.ChannelCopyPaste(channel, paste);
+		}
+
+		public void ResetChannel(ChannelTypes channelTypes, int index)
+		{
+			_mixerStateService.ChannelResetMethod(channelTypes, index);
+		}
+
+		public void FileOperation(OperationType operation, string projFile = "", string sceneFile = "", ChannelSelector selector = null)
+		{
+			if (operation == OperationType.StoreScene || operation == OperationType.RecallScene) projFile = LoadedProjectName;
 			_mixerStateService.FileOperationMethod(operation, projFile, sceneFile, selector);
 		}
 
