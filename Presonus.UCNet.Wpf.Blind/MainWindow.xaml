@@ -37,9 +37,10 @@
                 <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
-                
-
                 <Separator/>
+            </usercontrols:CustomMenuItem>
+            <usercontrols:CustomMenuItem Header="Mix Selector" x:Name="mixMenu">
+
             </usercontrols:CustomMenuItem>
         </Menu>
         <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -73,7 +74,7 @@
                     <usercontrols:CustomMenuItem Tag="Load" Header="Load Preset" Click="CustomMenuItem_Click"/>
                     <usercontrols:CustomMenuItem x:Name="resetChannelMenuItem" Header="Reset Channel" Click="resetChannelMenuItem_Click"/>
                     <usercontrols:CustomMenuItem Click="CustomMenuItem_Click_1" Header="Rename Channel"/>
-                    
+
                     <usercontrols:CustomMenuItem Header="Stereo Link Options">
                         <usercontrols:CustomMenuItem Header="Link" IsCheckable="True" IsChecked="{Binding link}" />
                         <Separator />
@@ -86,10 +87,12 @@
                     </usercontrols:CustomMenuItem>
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <usercontrols:NumericUpDown x:Name="trimControl" Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0" />
-            <usercontrols:NumericUpDown x:Name="volumeControl" Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
-            <usercontrols:NumericUpDown x:Name="hipassControl" Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0" />
-            <usercontrols:NumericUpDown x:Name="panControl" Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />
+            <StackPanel x:Name="mixPanel" Orientation="Horizontal">
+                <usercontrols:NumericUpDown x:Name="trimControl" Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0" />
+                <usercontrols:NumericUpDown x:Name="volumeControl" Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
+                <usercontrols:NumericUpDown x:Name="hipassControl" Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0" />
+                <usercontrols:NumericUpDown x:Name="panControl" Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

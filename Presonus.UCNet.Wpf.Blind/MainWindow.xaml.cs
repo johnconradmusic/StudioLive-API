@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Presonus.UCNet.Api;
 using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
@@ -10,6 +11,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,6 +33,61 @@ namespace Presonus.UCNet.Wpf.Blind
 			Title = blindViewModel.Global.devicename;
 		}
 
+		private void BuildMixControls(ChannelSelector channelSelector)
+		{
+			if (_channel is OutputDACBus) return;
+
+			switch (channelSelector.Type)
+			{
+				case ChannelTypes.MAIN:
+					{
+						mixPanel.Children.Clear();
+						//< usercontrols:NumericUpDown x:Name = "trimControl" Caption = "Trim" Value = "{Binding preampgain}" Curve = "Linear" Min = "0" Max = "60" Unit = "DB" Default = "0" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "preampgain"));
+
+						//< usercontrols:NumericUpDown x:Name = "volumeControl" Caption = "Level" Value = "{Binding volume}" Curve = "LinearToVolume" Min = "-84" Max = "10" Unit = "DB" Default = "0.735" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, "volume"));
+
+						//< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Linear, "hpf"));
+
+						//< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 1, 0, Units.PAN, CurveFormula.Linear, "pan"));
+
+					}
+					break;
+				case ChannelTypes.AUX:
+					{
+						mixPanel.Children.Clear();
+
+						//< usercontrols:NumericUpDown x:Name = "trimControl" Caption = "Trim" Value = "{Binding preampgain}" Curve = "Linear" Min = "0" Max = "60" Unit = "DB" Default = "0" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "preampgain"));
+
+						//< usercontrols:NumericUpDown x:Name = "volumeControl" Caption = "Level" Value = "{Binding volume}" Curve = "LinearToVolume" Min = "-84" Max = "10" Unit = "DB" Default = "0.735" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, $"aux{channelSelector.Channel}"));
+
+						//< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Linear, "hpf"));
+
+						var chanNum = channelSelector.Channel;
+						var auxChan = blindViewModel.Auxes[chanNum - 1];
+						if (auxChan.linkmaster)
+						{
+							mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0, Units.PAN, CurveFormula.Linear, $"aux{chanNum}{chanNum + 1}_pan"));
+
+						}
+						else if (auxChan.link && !auxChan.linkmaster)
+						{
+							var channelbefore = blindViewModel.Auxes[channelSelector.Channel - 2];
+							mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0, Units.PAN, CurveFormula.Linear, $"aux{chanNum - 1}{chanNum}_pan"));
+
+						}
+
+					}
+					break;
+			}
+		}
+
 		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
 		{
 			_meterService = App.ServiceProvider.GetRequiredService<MeterService>();
@@ -38,6 +95,27 @@ namespace Presonus.UCNet.Wpf.Blind
 
 			ChannelSelector.SelectedIndex = 0;
 
+			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
+			{
+				var auxChannel = blindViewModel.Auxes[i];
+				var menuItem = new CustomMenuItem()
+				{
+					Header = auxChannel.username
+				};
+				menuItem.Click += (s, e) => BuildMixControls(new ChannelSelector(auxChannel));
+
+				mixMenu.Items.Add(menuItem);
+			}
+			{
+				var mainChannel = blindViewModel.Main[0];
+				var menuItem = new CustomMenuItem()
+				{
+					Header = mainChannel.username
+				};
+				menuItem.Click += (s, e) => BuildMixControls(new ChannelSelector(mainChannel));
+
+				mixMenu.Items.Add(menuItem);
+			}
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
 			{
 				int index = i;
