@@ -49,7 +49,7 @@ namespace Presonus.UCNet.Wpf.Blind
 						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, "volume"));
 
 						//< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
-						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Linear, "hpf"));
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
 
 						//< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
 						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 1, 0, Units.PAN, CurveFormula.Linear, "pan"));
@@ -67,7 +67,7 @@ namespace Presonus.UCNet.Wpf.Blind
 						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, $"aux{channelSelector.Channel}"));
 
 						//< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
-						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Linear, "hpf"));
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
 
 						var chanNum = channelSelector.Channel;
 						var auxChan = blindViewModel.Auxes[chanNum - 1];
@@ -94,7 +94,8 @@ namespace Presonus.UCNet.Wpf.Blind
 			_meterService.MeterDataReceived += _meterService_MeterDataReceived;
 
 			ChannelSelector.SelectedIndex = 0;
-
+			//var mainChannel = blindViewModel.Main[0];
+			//BuildMixControls(new(mainChannel));
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
 			{
 				var auxChannel = blindViewModel.Auxes[i];
