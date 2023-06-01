@@ -52,7 +52,7 @@ namespace Presonus.UCNet.Wpf.Blind
 						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
 
 						//< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
-						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 1, 0, Units.PAN, CurveFormula.Linear, "pan"));
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan"));
 
 					}
 					break;
@@ -346,7 +346,7 @@ namespace Presonus.UCNet.Wpf.Blind
 					new LimiterToolWindow(_channel).ShowDialog();
 					break;
 				case "Routing":
-					if (_channel is not StereoLineInput)
+					//if (_channel is not StereoLineInput)
 						new RoutingToolWindow(_channel).ShowDialog();
 					break;
 				case "Sends":

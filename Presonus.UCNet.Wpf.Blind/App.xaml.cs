@@ -26,7 +26,7 @@ namespace Presonus.UCNet.Wpf.Blind
 			//	.WriteTo.Console()
 			//	.CreateLogger();
 
-			//AllocConsole();
+			AllocConsole();
 #endif
 
 			var serviceCollection = new ServiceCollection();
@@ -50,6 +50,7 @@ namespace Presonus.UCNet.Wpf.Blind
 			ServiceProvider = serviceCollection.BuildServiceProvider();
 
 			ServiceProvider.GetRequiredService<BroadcastService>().StartReceive();
+			
 			while (!Mixer.Counted)
 			{
 				Task.Delay(100).Wait();
