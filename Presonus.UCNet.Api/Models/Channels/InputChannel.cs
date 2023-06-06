@@ -30,6 +30,9 @@ namespace Presonus.UCNet.Api.Models.Channels
 		public bool assign_fx7 { get => GetBoolean(); set => SetBoolean(value); }
 		public bool assign_fx8 { get => GetBoolean(); set => SetBoolean(value); }
 
+		public bool dawpostdsp { get => GetBoolean(); set => SetBoolean(value); }
+
+
 		public float FXA { get => GetValue(); set => SetValue(value); }
 		public float FXB { get => GetValue(); set => SetValue(value); }
 		public float FXC { get => GetValue(); set => SetValue(value); }

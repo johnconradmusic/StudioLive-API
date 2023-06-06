@@ -49,6 +49,12 @@ public class BlindViewModel : INotifyPropertyChanged
 
 	public Global Global { get; set; }
 
+	public Mastersection Mastersection { get; set; }
+
+	public AdvancedSceneFilters SceneFilters { get; set; }
+
+	public ProjectFilters ProjectFilters { get; set; }
+
 	private void BuildMixer()
 	{
 		Presets = new Presets(mixerStateService);
@@ -56,6 +62,14 @@ public class BlindViewModel : INotifyPropertyChanged
 
 		Global = new Global(mixerStateService);
 		Global.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Global));
+
+		Mastersection = new Mastersection(mixerStateService);
+		Mastersection.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Mastersection));
+
+		SceneFilters = new AdvancedSceneFilters(mixerStateService);
+		SceneFilters.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(SceneFilters));
+
+		ProjectFilters = new ProjectFilters(mixerStateService);
 
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.LINE]; i++)
 		{
@@ -114,6 +128,8 @@ public class BlindViewModel : INotifyPropertyChanged
 			geq.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(GEQ));
 			GEQ.Add(geq);
 		}
+
+
 	}
 
 	protected virtual void OnPropertyChanged(string propertyName)

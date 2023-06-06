@@ -25,11 +25,11 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 		List<GenericListItem> _items;
 		private ListUpDown listUpDown;
 
-		public FileOpenToolWindow(List<GenericListItem> items)
+		public FileOpenToolWindow(List<GenericListItem> items, string title)
 		{
 			InitializeComponent();
 			_items = items;
-			Title = $"Load File";
+			Title = title;
 			Loaded += FileOpenToolWindow_Loaded;
 			PreviewKeyDown += FileOpenToolWindow_PreviewKeyDown;
 		}

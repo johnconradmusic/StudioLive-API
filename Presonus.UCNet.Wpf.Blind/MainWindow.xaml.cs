@@ -52,7 +52,8 @@ namespace Presonus.UCNet.Wpf.Blind
 						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
 
 						//< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
-						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan"));
+						mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan"));
+
 
 					}
 					break;
@@ -94,8 +95,8 @@ namespace Presonus.UCNet.Wpf.Blind
 			_meterService.MeterDataReceived += _meterService_MeterDataReceived;
 
 			ChannelSelector.SelectedIndex = 0;
-			//var mainChannel = blindViewModel.Main[0];
-			//BuildMixControls(new(mainChannel));
+			var mainChannel = blindViewModel.Main[0];
+			BuildMixControls(new(mainChannel));
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
 			{
 				var auxChannel = blindViewModel.Auxes[i];
@@ -103,32 +104,62 @@ namespace Presonus.UCNet.Wpf.Blind
 				{
 					Header = auxChannel.username
 				};
-				menuItem.Click += (s, e) => BuildMixControls(new ChannelSelector(auxChannel));
+				menuItem.Click += (s, e) =>
+				{
+					foreach (var item in mixMenu.Items) ((CustomMenuItem)item).IsChecked = false;
+					BuildMixControls(new ChannelSelector(auxChannel));
+					menuItem.IsChecked = true;
+				};
 
 				mixMenu.Items.Add(menuItem);
 			}
 			{
-				var mainChannel = blindViewModel.Main[0];
 				var menuItem = new CustomMenuItem()
 				{
 					Header = mainChannel.username
 				};
-				menuItem.Click += (s, e) => BuildMixControls(new ChannelSelector(mainChannel));
-
+				menuItem.Click += (s, e) =>
+				{
+					foreach (var item in mixMenu.Items) ((CustomMenuItem)item).IsChecked = false;
+					BuildMixControls(new ChannelSelector(mainChannel));
+					menuItem.IsChecked = true;
+				};
+				menuItem.IsChecked = true;
 				mixMenu.Items.Add(menuItem);
 			}
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.GEQ]; i++)
 			{
 				int index = i;
-				var menuItem = new CustomMenuItem()
+				if (index < 6)
 				{
-					Header = "Graphic EQ " + (i + 1)
-				};
-				menuItem.Click += (s, e) =>
+					var linked = blindViewModel.Auxes[i].linkmaster;
+					var menuItem = new CustomMenuItem()
+					{
+						Header = $"Graphic EQ ({blindViewModel.Auxes[i].username})" + (linked ? " (linked pair)" : "")
+					};
+					if (linked)
+					{
+						i++;
+					}
+					menuItem.Click += (s, e) =>
+					{
+						new GEQWindow(blindViewModel.GEQ[index], blindViewModel).ShowDialog();
+					};
+					viewMenu.Items.Add(menuItem);
+				}
+				else
 				{
-					new GEQWindow(blindViewModel.GEQ[index]).ShowDialog();
-				};
-				viewMenu.Items.Add(menuItem);
+					var menuItem = new CustomMenuItem()
+					{
+						Header = $"Graphic EQ ({blindViewModel.Main[0].username})"
+					};
+					i++;
+					menuItem.Click += (s, e) =>
+					{
+						new GEQWindow(blindViewModel.GEQ[index], blindViewModel).ShowDialog();
+					};
+					viewMenu.Items.Add(menuItem);
+				}
 			}
 
 			for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.FX]; i++)
@@ -157,6 +188,7 @@ namespace Presonus.UCNet.Wpf.Blind
 				menuItem.Click += CustomMenuItem_Click;
 				viewMenu.Items.Add(menuItem);
 			}
+			trimControl.Focus();
 		}
 		private void MainWindow_Activated(object? sender, EventArgs e)
 		{
@@ -227,7 +259,7 @@ namespace Presonus.UCNet.Wpf.Blind
 		}
 
 
-		private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (Keyboard.FocusedElement is CustomMenuItem)
 			{
@@ -347,14 +379,14 @@ namespace Presonus.UCNet.Wpf.Blind
 					break;
 				case "Routing":
 					//if (_channel is not StereoLineInput)
-						new RoutingToolWindow(_channel).ShowDialog();
+					new RoutingToolWindow(_channel).ShowDialog();
 					break;
 				case "Sends":
 					new SendsView(_channel, blindViewModel).ShowDialog();
 					break;
 				case "Load":
 					{
-						var win = new FileOpenToolWindow(await blindViewModel.Presets.GetChannelPresets());
+						var win = new FileOpenToolWindow(await blindViewModel.Presets.GetChannelPresets(), "Load Channel");
 						win.ShowDialog();
 
 						if (!win.DialogResult.HasValue || !win.DialogResult.Value) return;
@@ -383,7 +415,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void LoadProjectMenuButton_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects(), "Load Project");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -393,7 +425,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void LoadSceneMenuButton_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes(), "Load Scene");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -403,7 +435,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void SaveProject_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects(), "Save Project");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -413,7 +445,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void SaveSceneButton_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes(), "Save Scene");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -423,7 +455,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void SaveSceneAsButton_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetScenes(), "Save Scene As");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -443,7 +475,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 		private async void SaveProjectAs_Click(object sender, RoutedEventArgs e)
 		{
-			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects());
+			var window = new FileOpenToolWindow(await blindViewModel.Presets.GetProjects(), "Save Project As");
 			window.ShowDialog();
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
@@ -480,6 +512,17 @@ namespace Presonus.UCNet.Wpf.Blind
 				}
 
 			}
+		}
+
+		private void projectFilterMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is CustomMenuItem item)
+				new ProjectSceneFiltersToolWindow(blindViewModel, (string)item.Tag).ShowDialog();
+		}
+
+		private void settingMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			new SettingsToolWindow(blindViewModel).ShowDialog();
 		}
 	}
 }

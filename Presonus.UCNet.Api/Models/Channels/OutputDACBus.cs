@@ -23,6 +23,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 		public static List<string> busmode_values = new() { "Aux", "Subgroup", "Matrix" };
 
 		public static List<string> bussource_values = new() { "Mixer", "Network" };
+		public bool dawpostdsp { get => GetBoolean(); set => SetBoolean(value); }
 
 		public bool lr_assign { get => GetBoolean(); set => SetBoolean(value); }
 

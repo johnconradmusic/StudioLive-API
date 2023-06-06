@@ -43,7 +43,7 @@ public class MixerStateService
 	{
 		if (_mixerState.GetString(route) != value) // Check if the same value is already present
 		{
-			Console.WriteLine($"new string value {route} = {value}");
+			//Console.WriteLine($"new string value {route} = {value}");
 			_mixerState.SetString(route, value);
 			if (broadcast)
 				SendStringMethod(route, value);

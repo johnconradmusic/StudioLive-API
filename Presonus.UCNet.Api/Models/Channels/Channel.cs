@@ -57,6 +57,8 @@ namespace Presonus.UCNet.Api.Models
 		public bool linkmaster
 		{ get { return GetBoolean(); } set { SetBoolean(value); OnPropertyChanged(new PropertyChangedEventArgs(nameof(linked_visibility))); } }
 
+		public bool linkslave => link && !linkmaster;
+
 		public string iconid { get => GetString(); set => SetString(value); }
 
 		public float meterpeak { get => GetValue(); set => SetValue(value); }

@@ -129,6 +129,13 @@ namespace Presonus.UCNet.Api.Models
 			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
 		}
 
+		protected string[] GetStrings([CallerMemberName] string propertyName = "")
+		{
+			
+			var list = _mixerStateService.GetStrings(propertyName);
+
+			return list;
+		}
 
 		protected string GetString([CallerMemberName] string propertyName = "")
 		{

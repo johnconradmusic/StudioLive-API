@@ -10,6 +10,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 		{
 		}
 
+
 		public override event PropertyChangedEventHandler PropertyChanged;
 
 		public float gain1 { get => GetValue(); set => SetValue(value); }
