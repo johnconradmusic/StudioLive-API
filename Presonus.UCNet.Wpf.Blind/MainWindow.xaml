@@ -22,7 +22,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu IsTabStop="False" Grid.Row="0">
-            <usercontrols:CustomMenuItem IsTabStop="False" Header="File">
+            <usercontrols:CustomMenuItem Header="File">
                 <usercontrols:CustomMenuItem Click="LoadProjectMenuButton_Click"  x:Name="LoadProjectMenuButton" Header="Load Project..."/>
                 <usercontrols:CustomMenuItem Click="LoadSceneMenuButton_Click" x:Name="LoadSceneMenuButton" Header="Load Scene..."/>
                 <usercontrols:CustomMenuItem Tag="Project" Header="Project Filters" Click="projectFilterMenuItem_Click"/>
@@ -32,7 +32,7 @@
                 <usercontrols:CustomMenuItem Click="SaveSceneButton_Click" x:Name="SaveSceneButton" Header="Save Scene"/>
                 <usercontrols:CustomMenuItem Click="SaveSceneAsButton_Click" x:Name="SaveSceneAsButton" Header="Save Scene As..."/>
             </usercontrols:CustomMenuItem>
-            <usercontrols:CustomMenuItem IsTabStop="False" x:Name="viewMenu" Header="View">
+            <usercontrols:CustomMenuItem x:Name="viewMenu" Header="View">
                 <usercontrols:CustomMenuItem Header="Settings" x:Name="settingMenuItem" Click="settingMenuItem_Click"/>
                 <Separator/>
                 <usercontrols:CustomMenuItem Tag="EQ" Header="EQ Window" Click="CustomMenuItem_Click"/>
@@ -43,7 +43,7 @@
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
                 <Separator/>
             </usercontrols:CustomMenuItem>
-            <usercontrols:CustomMenuItem IsTabStop="False" Header="Mix Selector" x:Name="mixMenu"/>
+            <usercontrols:CustomMenuItem Header="Mix Selector" x:Name="mixMenu"/>
 
 
         </Menu>
