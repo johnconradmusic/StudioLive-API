@@ -26,7 +26,7 @@ namespace Presonus.UCNet.Wpf.Blind
 			//	.WriteTo.Console()
 			//	.CreateLogger();
 
-			AllocConsole();
+			//AllocConsole();
 #endif
 
 			var serviceCollection = new ServiceCollection();
@@ -60,6 +60,8 @@ namespace Presonus.UCNet.Wpf.Blind
 			var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
 			mainWindow.Show();
 		}
+
+		
 
 		[System.Runtime.InteropServices.DllImport("kernel32.dll")]
 		internal static extern bool AllocConsole();
