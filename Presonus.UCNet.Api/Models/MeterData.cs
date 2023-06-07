@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Presonus.UCNet.Api.Models
 {
+	public class RTAData
+	{
+		public float[] Data { get; set; }
+	}
 	public class ReductionMeterData
 	{
 		public float[] InputGateReduction { get; set; }

@@ -16,12 +16,14 @@ namespace Presonus.UCNet.Api.Services
 	{
 		public event EventHandler<MeterDataEventArgs> MeterDataReceived;
 		public event EventHandler<ReductionDataEventArgs> ReductionDataReceived;
+		public event EventHandler<RTADataEventArgs> RTADataReceived;
 
 		private readonly UdpClient _udpClient;
 		private bool _disposed;
 
 		public MeterData MeterData = new();
 		public ReductionMeterData ReductionMeterData = new();
+		public RTAData RTAData = new RTAData();
 
 		public MeterService()
 		{
@@ -78,9 +80,23 @@ namespace Presonus.UCNet.Api.Services
 				ReadReductionValues(data);
 				ReductionDataReceived?.Invoke(this, new(ReductionMeterData));
 			}
+			else if (msg == MessageCode.RTA)
+			{
+				data = data.Skip(20).ToArray();
+				ReadRTAValues(data);
+				RTADataReceived?.Invoke(this, new(RTAData));
+			}
 		}
 
-		private float[] ReadValues(byte[] data, int count, int skipBytes = 0, int bytesPerValue = 2)
+		private void ReadRTAValues(byte[] data)
+		{
+			var val = ReadValues(data, 99, divisor: short.MaxValue);
+			RTAData.Data = val;
+		}
+
+
+
+		private float[] ReadValues(byte[] data, int count, int skipBytes = 0, int bytesPerValue = 2, float divisor = 65535f)
 		{
 			float[] values = new float[count];
 			int offset = skipBytes * bytesPerValue;
@@ -88,7 +104,7 @@ namespace Presonus.UCNet.Api.Services
 			for (int i = 0; i < count; i++)
 			{
 				float val = BitConverter.ToUInt16(data, offset);
-				values[i] = val / 65535f;
+				values[i] = val / divisor;
 				offset += bytesPerValue;
 			}
 
@@ -156,13 +172,24 @@ namespace Presonus.UCNet.Api.Services
 			Dispose(true);
 		}
 	}
+
+	public class RTADataEventArgs
+	{
+		public RTAData RTAData { get; }
+
+		public RTADataEventArgs(RTAData rtaData)
+		{
+			RTAData = rtaData;
+		}
+	}
+
 	public class MeterDataEventArgs : EventArgs
 	{
 		public MeterData MeterData { get; }
 
-		public MeterDataEventArgs(MeterData MeterData)
+		public MeterDataEventArgs(MeterData meterData)
 		{
-			MeterData = MeterData;
+			MeterData = meterData;
 		}
 	}
 

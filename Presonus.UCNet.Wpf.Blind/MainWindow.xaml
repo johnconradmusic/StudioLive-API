@@ -41,6 +41,7 @@
                 <usercontrols:CustomMenuItem Tag="Limit" Header="Limiter Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Routing" Header="Routing Window" Click="CustomMenuItem_Click"/>
                 <usercontrols:CustomMenuItem Tag="Sends" Header="Sends Window" Click="CustomMenuItem_Click"/>
+                <usercontrols:CustomMenuItem Tag="SignalGen" Header="Signal Generator" Click="CustomMenuItem_Click"/>
                 <Separator/>
             </usercontrols:CustomMenuItem>
             <usercontrols:CustomMenuItem Header="Mix Selector" x:Name="mixMenu"/>

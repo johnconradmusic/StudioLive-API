@@ -32,5 +32,6 @@ namespace Presonus.UCNet.Api.Messages
 
 		public const string Meter = "levl";
 		public const string Reduction = "redu";
+		public const string RTA = "rtan";
 	}
 }

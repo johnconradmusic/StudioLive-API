@@ -26,7 +26,7 @@ namespace Presonus.UCNet.Wpf.Blind
 			//	.WriteTo.Console()
 			//	.CreateLogger();
 
-			//AllocConsole();
+			AllocConsole();
 #endif
 
 			var serviceCollection = new ServiceCollection();

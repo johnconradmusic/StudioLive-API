@@ -54,6 +54,7 @@ public class BlindViewModel : INotifyPropertyChanged
 	public AdvancedSceneFilters SceneFilters { get; set; }
 
 	public ProjectFilters ProjectFilters { get; set; }
+	public SignalGen SignalGen { get; private set; }
 
 	private void BuildMixer()
 	{
@@ -70,6 +71,10 @@ public class BlindViewModel : INotifyPropertyChanged
 		SceneFilters.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(SceneFilters));
 
 		ProjectFilters = new ProjectFilters(mixerStateService);
+		ProjectFilters.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(ProjectFilters));
+
+		SignalGen = new SignalGen(mixerStateService);
+		SignalGen.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(SignalGen));
 
 		for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.LINE]; i++)
 		{

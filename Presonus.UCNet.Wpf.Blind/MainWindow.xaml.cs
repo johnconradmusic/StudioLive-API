@@ -93,7 +93,7 @@ namespace Presonus.UCNet.Wpf.Blind
 		{
 			_meterService = App.ServiceProvider.GetRequiredService<MeterService>();
 			_meterService.MeterDataReceived += _meterService_MeterDataReceived;
-
+			
 			ChannelSelector.SelectedIndex = 0;
 			var mainChannel = blindViewModel.Main[0];
 			BuildMixControls(new(mainChannel));
@@ -404,6 +404,9 @@ namespace Presonus.UCNet.Wpf.Blind
 					break;
 				case "FXD":
 					new FXComponentWindow(blindViewModel.FX[3], blindViewModel).ShowDialog();
+					break;
+				case "SignalGen":
+					new SignalGenToolWindow(blindViewModel.SignalGen).ShowDialog();
 					break;
 			}
 		}
