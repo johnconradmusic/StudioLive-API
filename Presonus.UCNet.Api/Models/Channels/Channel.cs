@@ -11,6 +11,8 @@ namespace Presonus.UCNet.Api.Models
 		{
 		}
 
+		
+
 		protected MeterData _meterData;
 
 		public override event PropertyChangedEventHandler PropertyChanged;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Presonus.UCNet.Api;
@@ -18,7 +19,10 @@ public class BlindViewModel : INotifyPropertyChanged
 	{
 		this.mixerStateService = mixerStateService;
 		BuildMixer();
+
 	}
+
+	public Dictionary<Channel, bool> channelVisibility { get; set; } = new();
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -55,6 +59,8 @@ public class BlindViewModel : INotifyPropertyChanged
 
 	public ProjectFilters ProjectFilters { get; set; }
 	public SignalGen SignalGen { get; private set; }
+
+	public List<Channel> VisibleChannels => AllChannels.Where((c) => channelVisibility[c]).ToList();
 
 	private void BuildMixer()
 	{
@@ -134,10 +140,13 @@ public class BlindViewModel : INotifyPropertyChanged
 			GEQ.Add(geq);
 		}
 
-
+		foreach(var c in AllChannels)
+		{
+			channelVisibility[c] = true;
+		}
 	}
 
-	protected virtual void OnPropertyChanged(string propertyName)
+	public virtual void OnPropertyChanged(string propertyName)
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}

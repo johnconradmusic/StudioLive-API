@@ -48,7 +48,7 @@
 
 
         </Menu>
-        <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding AllChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
+        <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding VisibleChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"
          SelectionMode="Single"
          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>

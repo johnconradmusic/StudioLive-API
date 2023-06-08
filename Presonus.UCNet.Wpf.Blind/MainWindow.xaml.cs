@@ -349,6 +349,14 @@ namespace Presonus.UCNet.Wpf.Blind
                         }
                     }
                     break;
+                case Key.Q:
+                    {
+                        e.Handled = true;
+                        blindViewModel.channelVisibility[_channel] = false;
+                        blindViewModel.OnPropertyChanged(nameof(blindViewModel.AllChannels));
+                        ChannelSelector.Items.Refresh();
+                    }
+                    break;
                 default:
                     break;
             }
