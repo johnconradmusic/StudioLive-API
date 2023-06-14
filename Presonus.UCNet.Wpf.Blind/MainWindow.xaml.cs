@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using Presonus.UCNet.Api;
 using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
@@ -8,21 +7,36 @@ using Presonus.UCNet.Api.Services;
 using Presonus.UCNet.Wpf.Blind.ToolWindows;
 using Presonus.UCNet.Wpf.Blind.UserControls;
 using System;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ModifierKeys = Presonus.UCNet.Wpf.Blind.UserControls.ModifierKeys;
 
+/*
+TODO LIST
+─────────
+
+[ ] make sure keyboard shortcuts for trim and others persist after mix selection is made
+[ ] fix the issue where aux levels/routing are volatile
+[ ] compression ratio default value should be 0
+[ ] keyboard shortcuts, with a focus on the left hand
+[ ] introduce aux assigns as mutes
+[ ] introduce the 'send to main' toggle
+
+*/
+
 namespace Presonus.UCNet.Wpf.Blind
 {
     public partial class MainWindow : Window
     {
-        BlindViewModel blindViewModel;
+        private BlindViewModel blindViewModel;
+        private Channel _channel;
+
+        private MeterService _meterService;
+
+        public float Peak;
+
         public MainWindow(BlindViewModel viewModel, Speech.SpeechManager speechManager)
         {
             DataContext = blindViewModel = viewModel;
@@ -34,6 +48,10 @@ namespace Presonus.UCNet.Wpf.Blind
 
             Closed += MainWindow_Closed;
         }
+
+        public float Meter => _channel?.ChannelType != null && _channel.ChannelIndex != null
+            ? _meterService.MeterData.GetData(new(_channel.ChannelType, _channel.ChannelIndex - 1))
+            : 0.0f;
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
@@ -60,10 +78,9 @@ namespace Presonus.UCNet.Wpf.Blind
 
                         //< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
                         mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan"));
-
-
                     }
                     break;
+
                 case ChannelTypes.AUX:
                     {
                         mixPanel.Children.Clear();
@@ -82,15 +99,12 @@ namespace Presonus.UCNet.Wpf.Blind
                         if (auxChan.linkmaster)
                         {
                             mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, $"aux{chanNum}{chanNum + 1}_pan"));
-
                         }
                         else if (auxChan.link && !auxChan.linkmaster)
                         {
                             var channelbefore = blindViewModel.Auxes[channelSelector.Channel - 2];
                             mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0, Units.PAN, CurveFormula.Linear, $"aux{chanNum - 1}{chanNum}_pan"));
-
                         }
-
                     }
                     break;
             }
@@ -180,17 +194,20 @@ namespace Presonus.UCNet.Wpf.Blind
                     case 0:
                         letter = "A";
                         break;
+
                     case 1:
                         letter = "B";
                         break;
+
                     case 2:
                         letter = "C";
                         break;
+
                     case 3:
                         letter = "D";
                         break;
                 }
-                //< usercontrols:CustomMenuItem Tag = "FXA" Header = "FXA" Click = "CustomMenuItem_Click" />     
+                //< usercontrols:CustomMenuItem Tag = "FXA" Header = "FXA" Click = "CustomMenuItem_Click" />
                 //< usercontrols:CustomMenuItem Tag = "FXB" Header = "FXB" Click = "CustomMenuItem_Click" />
                 var menuItem = new CustomMenuItem();
                 menuItem.Header = $"FX{letter}";
@@ -200,20 +217,13 @@ namespace Presonus.UCNet.Wpf.Blind
             }
             trimControl.Focus();
         }
+
         private void MainWindow_Activated(object? sender, EventArgs e)
         {
             Speech.SpeechManager.Say($"{Title} ");
             if (_channel != null)
                 Speech.SpeechManager.Say($"Channel {_channel.chnum} selected", false);
         }
-
-        public float Meter => _channel?.ChannelType != null && _channel.ChannelIndex != null
-            ? _meterService.MeterData.GetData(new(_channel.ChannelType, _channel.ChannelIndex - 1))
-            : 0.0f;
-        public float Peak;
-        private Channel _channel;
-        private MeterService _meterService;
-
 
         private void _meterService_MeterDataReceived(object? sender, MeterDataEventArgs e)
         {
@@ -238,6 +248,7 @@ namespace Presonus.UCNet.Wpf.Blind
                 }
             }
         }
+
         private void ChannelSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ChannelSelector.SelectedItem is Channel channel)
@@ -268,7 +279,6 @@ namespace Presonus.UCNet.Wpf.Blind
             }
         }
 
-
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (Keyboard.FocusedElement is CustomMenuItem)
@@ -281,18 +291,22 @@ namespace Presonus.UCNet.Wpf.Blind
                     e.Handled = true;
                     volumeControl.Focus();
                     break;
+
                 case Key.H:
                     e.Handled = true;
                     hipassControl.Focus();
                     break;
+
                 case Key.T:
                     e.Handled = true;
                     trimControl.Focus();
                     break;
+
                 case Key.P:
                     e.Handled = true;
                     panControl.Focus();
                     break;
+
                 case Key.G:
                     e.Handled = true;
                     new GateToolWindow(_channel).ShowDialog();
@@ -311,6 +325,7 @@ namespace Presonus.UCNet.Wpf.Blind
                 case Key.S:
                     new SendsView(_channel, blindViewModel).ShowDialog();
                     break;
+
                 case Key.M:
                     if (UserControls.ModifierKeys.IsCtrlDown())
                     {
@@ -337,6 +352,7 @@ namespace Presonus.UCNet.Wpf.Blind
                     newIndex = Math.Max(ChannelSelector.SelectedIndex - 1, 0);
                     ChannelSelector.SelectedIndex = newIndex;
                     break;
+
                 case Key.F:
                     if (ModifierKeys.IsCtrlDown())
                     {
@@ -349,6 +365,7 @@ namespace Presonus.UCNet.Wpf.Blind
                         }
                     }
                     break;
+
                 case Key.Q:
                     {
                         e.Handled = true;
@@ -357,10 +374,10 @@ namespace Presonus.UCNet.Wpf.Blind
                         ChannelSelector.Items.Refresh();
                     }
                     break;
+
                 default:
                     break;
             }
-
         }
 
         //TODO: channel copy and paste, focus first menu item on open
@@ -386,22 +403,28 @@ namespace Presonus.UCNet.Wpf.Blind
                 case "EQ":
                     new EQ4ToolWindow(_channel).ShowDialog();
                     break;
+
                 case "Comp":
                     new CompToolWindow(_channel).ShowDialog();
                     break;
+
                 case "Gate":
                     new GateToolWindow(_channel).ShowDialog();
                     break;
+
                 case "Limit":
                     new LimiterToolWindow(_channel).ShowDialog();
                     break;
+
                 case "Routing":
                     //if (_channel is not StereoLineInput)
                     new RoutingToolWindow(_channel).ShowDialog();
                     break;
+
                 case "Sends":
                     new SendsView(_channel, blindViewModel).ShowDialog();
                     break;
+
                 case "Load":
                     {
                         var win = new FileOpenToolWindow(await blindViewModel.Presets.GetChannelPresets(), "Load Channel");
@@ -411,18 +434,23 @@ namespace Presonus.UCNet.Wpf.Blind
                         blindViewModel.Presets.FileOperation(Presets.OperationType.RecallChannel, win.Selection, "", new(_channel));
                     }
                     break;
+
                 case "FXA":
                     new FXComponentWindow(blindViewModel.FX[0], blindViewModel).ShowDialog();
                     break;
+
                 case "FXB":
                     new FXComponentWindow(blindViewModel.FX[1], blindViewModel).ShowDialog();
                     break;
+
                 case "FXC":
                     new FXComponentWindow(blindViewModel.FX[2], blindViewModel).ShowDialog();
                     break;
+
                 case "FXD":
                     new FXComponentWindow(blindViewModel.FX[3], blindViewModel).ShowDialog();
                     break;
+
                 case "SignalGen":
                     new SignalGenToolWindow(blindViewModel.SignalGen).ShowDialog();
                     break;
@@ -511,7 +539,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
             if (!prompt.DialogResult.HasValue || !prompt.DialogResult.Value) return;
 
-            blindViewModel.Presets.FileOperation(Presets.OperationType.StoreProject, null, $"{index}.{prompt.UserString}.{extension}");
+            blindViewModel.Presets.FileOperation(Presets.OperationType.StoreProject, $"{index}.{prompt.UserString}.{extension}");
         }
 
         private void resetChannelMenuItem_Click(object sender, RoutedEventArgs e)
@@ -531,7 +559,6 @@ namespace Presonus.UCNet.Wpf.Blind
                 {
                     blindViewModel.Presets.ChannelCopyPaste(new(_channel), true);
                 }
-
             }
         }
 
