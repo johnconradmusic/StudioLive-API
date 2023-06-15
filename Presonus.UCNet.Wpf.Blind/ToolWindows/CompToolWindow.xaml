@@ -13,7 +13,7 @@
         <StackPanel KeyboardNavigation.TabNavigation="Cycle" VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical">
             <usercontrols:BooleanUpDown Caption="Compressor" Value="{Binding comp_on}" />
             <usercontrols:NumericUpDown Caption="Threshold" Value="{Binding comp_threshold}" Unit="DB" Min="-56" Max="0" Curve="Linear" />
-            <usercontrols:NumericUpDown Caption="Ratio" Value="{Binding comp_ratio}" Unit="RATIO" Min="1" Max="20" Curve="Logarithmic" />
+            <usercontrols:NumericUpDown Caption="Ratio" Value="{Binding comp_ratio}" Unit="RATIO" Min="1" Max="20" Default="0.463" Curve="Logarithmic" />
             <usercontrols:NumericUpDown Caption="Attack" Value="{Binding comp_attack}" Unit="MS" Min="0.2" Max="150" Curve="Exponential" />
             <usercontrols:NumericUpDown Caption="Release" Value="{Binding comp_release}" Unit="MS" Min="2.5" Max="900" Curve="Exponential" />
             <usercontrols:BooleanUpDown Caption="Auto" Value="{Binding comp_automode}" />

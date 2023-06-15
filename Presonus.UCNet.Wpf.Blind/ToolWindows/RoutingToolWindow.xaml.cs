@@ -47,6 +47,13 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 
 				sdSrc = ControlFactory.CreateListUpDown(panel, "Left SD Source", stereoInput.sd_src_values, "sd_src");
 				sdSrc2 = ControlFactory.CreateListUpDown(panel, "Right SD Source", stereoInput.sd_src_values, "sd_src2");
+
+				ControlFactory.CreateBooleanUpDown(panel, "Send to Main", "lr");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 1", "sub1");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 2", "sub2");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 3", "sub3");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 4", "sub4");
+
 			}
 			else if (_channel is InputChannel lineInput)
 			{
@@ -89,7 +96,11 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 				ControlFactory.CreateListUpDown(panel, "DAW Pre Post", new List<string>() { "Pre", "Post" }, "dawpostdsp");
 
 				inputsrc.ValueChanged += Inputsrc_ValueChanged;
-
+				ControlFactory.CreateBooleanUpDown(panel, "Send to Main", "lr");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 1", "sub1");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 2", "sub2");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 3", "sub3");
+				ControlFactory.CreateBooleanUpDown(panel, "Subgroup 4", "sub4");
 				NewMethod(inputsrc.ValueString);
 			}
 			else if (_channel is FX outputBus)
@@ -100,6 +111,8 @@ namespace Presonus.UCNet.Wpf.Blind.ToolWindows
 				adcSrc.SetBinding(ListUpDown.ValueProperty, new Binding("auxpremode"));
 
 				panel.Children.Add(adcSrc);
+				ControlFactory.CreateBooleanUpDown(panel, "Send to Main", "lr");
+
 			}
 			else if (_channel is OutputDACBus outputDACBus)
 			{

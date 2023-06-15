@@ -219,6 +219,20 @@ namespace Presonus.UCNet.Api.Messages
 
 			switch (operation)
 			{
+				case OperationType.ResetProject:
+					{
+						string resetMsg = "{\"id\": \"ResetMixer\",\"resetSceneSettings\": 0,\"resetProjectSettings\": 1,\"url\": \"presets\",\"src\": \"presets\"}";
+						data.AddRange(BitConverter.GetBytes(resetMsg.Length));
+						data.AddRange(Encoding.ASCII.GetBytes(resetMsg));
+						return Create(data, MessageCode.JSON);
+					}
+				case OperationType.ResetScene:
+					{
+						string resetMsg = "{\"id\": \"ResetMixer\",\"resetSceneSettings\": 1,\"resetProjectSettings\": 0,\"url\": \"presets\",\"src\": \"presets\"}";
+						data.AddRange(BitConverter.GetBytes(resetMsg.Length));
+						data.AddRange(Encoding.ASCII.GetBytes(resetMsg));
+						return Create(data, MessageCode.JSON);
+					}
 				case OperationType.StoreScene:
 					id = "StorePreset";
 					url = "presets";
