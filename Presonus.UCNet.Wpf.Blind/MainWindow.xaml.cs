@@ -439,10 +439,10 @@ namespace Presonus.UCNet.Wpf.Blind
 			}
 			else volumeControl.Visibility = Visibility.Visible;
 
-			if (_channel is not StereoLineInput) trimControl.Visibility = Visibility.Collapsed;
+			if (_channel is not MicLineInput) trimControl.Visibility = Visibility.Collapsed;
 			else trimControl.Visibility = Visibility.Visible;
 
-			if (_channel is not StereoLineInput) hipassControl.Visibility = Visibility.Collapsed;
+			if (_channel is not MicLineInput) hipassControl.Visibility = Visibility.Collapsed;
 			else hipassControl.Visibility = Visibility.Visible;
 		}
 
