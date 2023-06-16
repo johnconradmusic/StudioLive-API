@@ -241,7 +241,7 @@ namespace Presonus.UCNet.Api.Messages
 				case OperationType.RecallScene:
 					id = "RestorePreset";
 					url = "presets";
-					presetFile = $"presets/proj/{projFile}/{sceneFile}";
+					presetFile = $"presets/{projFile}/{sceneFile}";
 					break;
 				case OperationType.StoreChannel:
 					id = "StorePreset";

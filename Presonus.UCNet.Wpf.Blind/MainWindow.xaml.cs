@@ -442,7 +442,7 @@ namespace Presonus.UCNet.Wpf.Blind
 			if (_channel is not MicLineInput) trimControl.Visibility = Visibility.Collapsed;
 			else trimControl.Visibility = Visibility.Visible;
 
-			if (_channel is not MicLineInput) hipassControl.Visibility = Visibility.Collapsed;
+			if (_channel is StereoLineInput) hipassControl.Visibility = Visibility.Collapsed;
 			else hipassControl.Visibility = Visibility.Visible;
 		}
 
@@ -554,7 +554,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 			if (!window.DialogResult.HasValue || !window.DialogResult.Value) return;
 
-			blindViewModel.Presets.FileOperation(Presets.OperationType.RecallScene, null, window.Selection);
+			blindViewModel.Presets.FileOperation(Presets.OperationType.RecallScene, blindViewModel.Presets.LoadedProjectName, window.Selection);
 		}
 
 		private async void SaveProject_Click(object sender, RoutedEventArgs e)
