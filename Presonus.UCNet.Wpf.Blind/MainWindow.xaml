@@ -70,6 +70,7 @@
         <StackPanel KeyboardNavigation.TabNavigation="Cycle" VerticalAlignment="Top" HorizontalAlignment="Center" DataContext="{Binding ElementName=ChannelSelector, Path=SelectedItem}" Grid.Row="2" Orientation="Horizontal">
             <StackPanel.ContextMenu>
                 <ContextMenu x:Name="contextMenu" Placement="Center">
+                    <usercontrols:CustomMenuItem x:Name="preampMenuItem" Header="Preamp"/>
                     <usercontrols:CustomMenuItem Header="Mute" IsCheckable="True" IsChecked="{Binding mute}" />
                     <usercontrols:CustomMenuItem Header="Solo" IsCheckable="True" IsChecked="{Binding solo}" />
                     <usercontrols:CustomMenuItem Header="Phase Invert" IsCheckable="True" IsChecked="{Binding polarity}" />
@@ -97,7 +98,7 @@
                 </ContextMenu>
             </StackPanel.ContextMenu>
             <StackPanel x:Name="mixPanel" Orientation="Horizontal">
-                <usercontrols:NumericUpDown x:Name="trimControl" Caption="Trim" Value="{Binding preampgain}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0" />
+                <usercontrols:NumericUpDown x:Name="trimControl" Caption="Trim" Value="{Binding trim}" Curve="Linear" Min="0" Max="60" Unit="DB" Default="0" />
                 <usercontrols:NumericUpDown x:Name="volumeControl" Caption="Level" Value="{Binding volume}" Curve="LinearToVolume" Min="-84" Max="10" Unit="DB" Default="0.735" />
                 <usercontrols:NumericUpDown x:Name="hipassControl" Caption="Hi Pass Filter" Value="{Binding hpf}" Curve="Logarithmic" Min="24" Max="1000" Unit="HZ_24OFF" Default="0" />
                 <usercontrols:NumericUpDown x:Name="panControl" Caption="Pan" Value="{Binding pan}" Curve="Linear" Min="0" Max="1" Unit="PAN" Default="0.5" />

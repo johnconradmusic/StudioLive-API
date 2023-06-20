@@ -19,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="ToolWindows\EQ6ToolWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UserControls\ListUpDown.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -37,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="ToolWindows\EQ6ToolWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="UserControls\ListUpDown.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

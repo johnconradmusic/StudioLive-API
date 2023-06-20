@@ -20,7 +20,7 @@ namespace Presonus.UCNet.Api.Models.Channels
 
         [ParameterPath("opt/swapcompeq")] public bool swapcompeq { get => GetBoolean(); set => SetBoolean(value); }
 
-        public float trim { get => GetValue(); set => SetValue(value); }
+        [ParameterPath("digitalgain")] public float trim { get => GetValue(); set => SetValue(value); }
 
         [ParameterPath("eq/eqallon")]
         public bool eq_on { get => GetBoolean(); set => SetBoolean(value); }

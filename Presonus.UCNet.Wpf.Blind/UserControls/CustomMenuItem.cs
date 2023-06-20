@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Presonus.UCNet.Wpf.Blind.UserControls
@@ -14,8 +15,7 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 			GotFocus += CustomMenuItem_GotFocus;
 		}
 
-
-		private void CustomMenuItem_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        private void CustomMenuItem_GotFocus(object sender, System.Windows.RoutedEventArgs e)
 		{
 			if (IsCheckable)
 			{
