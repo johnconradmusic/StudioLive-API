@@ -227,12 +227,12 @@ namespace Presonus.UCNet.Api.Services
 			{
 				case MessageCode.FileData:
 					HandleFileData(chunk);
-
 					break;
 
 				case MessageCode.Unknown1:
 					break;
-
+				case MessageCode.Unknown3:
+					break;
 				case MessageCode.Chunk:
 					CK(chunk);
 					break;

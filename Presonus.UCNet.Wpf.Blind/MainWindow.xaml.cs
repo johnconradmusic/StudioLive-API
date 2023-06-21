@@ -67,6 +67,10 @@ namespace Presonus.UCNet.Wpf.Blind
             shortcutActions[Key.T] = () => trimControl.Focus();
             shortcutActions[Key.B] = () => panControl.Focus();
             shortcutActions[Key.G] = () => new GateToolWindow(_channel).ShowDialog();
+
+            //DEBUG 
+            shortcutActions[Key.I] = () => blindViewModel.Mutegroup.SetChannelMuteStatus(1, new(_channel), true);
+
             shortcutActions[Key.E] = () =>
             {
                 if (_channel is OutputDACBus)
