@@ -19,6 +19,8 @@ public class MixerStateService
 	internal Func<Task<List<GenericListItem>>> GetPresets;
 	internal Action<Presets.OperationType, string, string, ChannelSelector> FileOperationMethod;
 
+	internal Action<int> AssignMutes;
+
 	internal Action<ChannelTypes, int> ChannelResetMethod;
 	internal Action<ChannelSelector, bool> ChannelCopyPaste;
 
@@ -85,6 +87,4 @@ public class MixerStateService
 	{
 		return _mixerState.GetStrings(route);
 	}
-
-
 }

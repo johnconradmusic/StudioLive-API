@@ -160,6 +160,30 @@ namespace Presonus.UCNet.Api.Messages
 			return Create(data, "PV");
 		}
 
+		public byte[] CreateMuteGroupAssign(int index)
+        {
+			var data = CreateHeader(_deviceId);
+
+			string id = "presetMuteGroup";
+			string url = "mutegroup";
+			string presetMuteGroupIndex = index.ToString();
+
+			string json = JsonSerializer.Serialize(new
+			{
+				id,
+				url,
+				presetMuteGroupIndex
+			});
+
+			// JsonLength [12..16]:
+			data.AddRange(BitConverter.GetBytes(json.Length));
+
+			// Json [16..]
+			data.AddRange(Encoding.ASCII.GetBytes(json));
+
+			return Create(data, MessageCode.JSON);
+		}
+
 		public byte[] CreateChannelCopyOrPaste(ChannelSelector channel, bool paste)
 		{
 			List<byte> data = CreateHeader(_deviceId);

@@ -44,7 +44,10 @@ namespace Presonus.UCNet.Api.Models
         public string mutegroup7mutes { get => GetString(); set => SetString(value); }
         public string mutegroup8mutes { get => GetString(); set => SetString(value); }
 
-
+        public void AssignMutesToAGroup(int index)
+        {
+            _mixerStateService.AssignMutes(index);
+        }
 
         public static List<ChannelTypes> ChannelOrder = new()
         {

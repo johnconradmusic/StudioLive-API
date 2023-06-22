@@ -8,7 +8,7 @@
         xmlns:usercontrols="clr-namespace:Presonus.UCNet.Wpf.Blind.UserControls"
         d:DataContext="{d:DesignInstance Type=api1:BlindViewModel}"
         mc:Ignorable="d"
-        Title="Mixer Main Window" SizeToContent="WidthAndHeight" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
+        Title="{Binding windowTitle}" SizeToContent="WidthAndHeight" Background="DarkGray" PreviewKeyDown="Window_PreviewKeyDown" PreviewKeyUp="Window_PreviewKeyUp">
     <Window.Resources>
         <converters:HexStringToSolidColorBrushConverter x:Key="HexStringToSolidColorBrushConverter" />
         <converters:VisibilityConverter x:Key="VisibilityConverter" />
@@ -49,7 +49,55 @@
                 <Separator/>
             </usercontrols:CustomMenuItem>
             <usercontrols:CustomMenuItem Header="Mix Selector" x:Name="mixMenu"/>
+            <usercontrols:CustomMenuItem Header="Mute Groups">
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup1username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup1}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="1" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="1" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
 
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup2username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup2}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="2" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="2" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup3username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup3}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="3" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="3" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup4username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup4}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="4" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="4" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup5username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup5}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="5" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="5" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup6username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup6}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="6" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="6" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup7username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup7}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="7" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="7" Click="renameMuteGroup"/> 7
+                </usercontrols:CustomMenuItem>
+
+                <usercontrols:CustomMenuItem Header="{Binding Mutegroup.mutegroup8username}">
+                    <usercontrols:CustomMenuItem Header="Muted" IsCheckable="True" IsChecked="{Binding Mutegroup.mutegroup8}"/>
+                    <usercontrols:CustomMenuItem Header="Assign Current Mutes" Tag="8" Click="assignMutes"/>
+                    <usercontrols:CustomMenuItem Header="Rename Mute Group" Tag="8" Click="renameMuteGroup"/>
+                </usercontrols:CustomMenuItem>
+            </usercontrols:CustomMenuItem>
 
         </Menu>
         <ListBox IsTabStop="False" Focusable="False" SelectionChanged="ChannelSelector_SelectionChanged" x:Name="ChannelSelector" Grid.Row="1" Width="800" ItemsSource="{Binding VisibleChannels}" HorizontalAlignment="Left" VerticalAlignment="Top"

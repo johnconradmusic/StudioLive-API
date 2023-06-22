@@ -25,8 +25,10 @@ TODO LIST
 [ ] introduce aux assigns as mutes
 [x] introduce the 'send to main' toggle
 [x] scene and project resetting
-[ ] handle hpf and trim knobs when selecting different channel types (trim knob should be digital gain on stereolineinput?
-[ ] mute groups
+[x] handle hpf and trim knobs when selecting different channel types (trim knob should be digital gain on stereolineinput?
+[x] mute groups
+[ ] gate time curves
+[ ] multi channel clip protection
 */
 
 namespace Presonus.UCNet.Wpf.Blind
@@ -40,7 +42,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
         private MeterService _meterService;
 
-        private Dictionary<Key, Action> shortcutActions = new Dictionary<Key, Action>();
+        private Dictionary<Key, RoutedEventHandler> shortcutActions = new Dictionary<Key, RoutedEventHandler>();
         public float Peak;
 
         public MainWindow(BlindViewModel viewModel, Speech.SpeechManager speechManager)
@@ -50,7 +52,6 @@ namespace Presonus.UCNet.Wpf.Blind
             Loaded += MainWindow_Loaded;
 
             Activated += MainWindow_Activated;
-            Title = blindViewModel.Global.devicename;
 
             Closed += MainWindow_Closed;
             InitializeShortcuts();
@@ -60,27 +61,192 @@ namespace Presonus.UCNet.Wpf.Blind
             ? _meterService.MeterData.GetData(new(_channel.ChannelType, _channel.ChannelIndex - 1))
             : 0.0f;
 
+        void SelectMixWithShortcut(Channel channel)
+        {
+            foreach (CustomMenuItem item in mixMenu.Items)
+            {
+                if ((string)item.Header == channel.username) item.IsChecked = true;
+                else item.IsChecked = false;
+            }
+            MixSelected(new(channel));
+
+            if (channel.link && channel.linkmaster)
+                Speech.SpeechManager.Say(channel.username + " stereo pair");
+            else
+                Speech.SpeechManager.Say(channel.username);
+        }
+
+        //HACK: 
+        int MaxBank = 1;
+        int curBank = 0;
+
+        void HandleFunctionKeys(int number)
+        {
+            switch (number)
+            {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    var auxChannel = blindViewModel.Auxes[(number - 1) + (curBank * 8)];
+                    if (auxChannel.linkslave)
+                        SelectMixWithShortcut(blindViewModel.Auxes[(number - 2) + (curBank * 8)]);
+                    else
+                        SelectMixWithShortcut(auxChannel);
+                    break;
+                case 10: //bank up
+                    if (curBank + 1 <= MaxBank)
+                    {
+                        curBank++;
+                    }
+                    Speech.SpeechManager.Say("Mixes " + ((curBank * 8) + 1) + " through " + ((curBank * 8) + 8));
+                    break;
+                case 9:
+                    if (curBank - 1 >= 0)
+                    {
+                        curBank--;
+                    }
+                    Speech.SpeechManager.Say("Mixes " + ((curBank * 8) + 1) + " through " + ((curBank * 8) + 8));
+                    break;
+            }
+        }
+
+        void HandleNumberKey(int number)
+        {
+            if (ModifierKeys.IsCtrlDown())
+            {
+                ToggleMuteGroup(number);
+                return;
+            }
+        }
+
+        void ToggleMuteGroup(int num)
+        {
+            bool state = false;
+            switch (num)
+            {
+                case 1:
+                    state = blindViewModel.Mutegroup.mutegroup1 = !blindViewModel.Mutegroup.mutegroup1;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup1username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 2:
+                    state = blindViewModel.Mutegroup.mutegroup2 = !blindViewModel.Mutegroup.mutegroup2;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup2username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 3:
+                    state = blindViewModel.Mutegroup.mutegroup3 = !blindViewModel.Mutegroup.mutegroup3;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup3username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 4:
+                    state = blindViewModel.Mutegroup.mutegroup4 = !blindViewModel.Mutegroup.mutegroup4;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup4username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 5:
+                    state = blindViewModel.Mutegroup.mutegroup5 = !blindViewModel.Mutegroup.mutegroup5;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup5username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 6:
+                    state = blindViewModel.Mutegroup.mutegroup6 = !blindViewModel.Mutegroup.mutegroup6;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup6username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 7:
+                    state = blindViewModel.Mutegroup.mutegroup7 = !blindViewModel.Mutegroup.mutegroup7;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup7username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+                case 8:
+                    state = blindViewModel.Mutegroup.mutegroup8 = !blindViewModel.Mutegroup.mutegroup8;
+                    Speech.SpeechManager.Say($"{blindViewModel.Mutegroup.mutegroup8username} " + (state ? "Muted" : "Unmuted"));
+                    break;
+            }
+        }
+
+        public int IncrementToNextMultipleOfEight(int value)
+        {
+            int remainder = value % 8;
+            if (remainder == 0)
+            {
+                // 'value' is already a multiple of 8
+                return value + 8;
+            }
+            else
+            {
+                // Calculate the next multiple of 8
+                int nextMultipleOfEight = value + (8 - remainder);
+                return nextMultipleOfEight;
+            }
+        }
+
+        public int DecrementToPreviousMultipleOfEight(int value)
+        {
+            int remainder = value % 8;
+            if (remainder == 0)
+            {
+                // 'value' is already a multiple of 8
+                return value - 8;
+            }
+            else
+            {
+                // Calculate the previous multiple of 8
+                int previousMultipleOfEight = value - remainder;
+                return previousMultipleOfEight;
+            }
+        }
+
         private void InitializeShortcuts()
         {
-            shortcutActions[Key.V] = () => volumeControl.Focus();
-            shortcutActions[Key.F] = () => hipassControl.Focus();
-            shortcutActions[Key.T] = () => trimControl.Focus();
-            shortcutActions[Key.B] = () => panControl.Focus();
-            shortcutActions[Key.G] = () => new GateToolWindow(_channel).ShowDialog();
+            //MIX SELECTION
+            shortcutActions[Key.D0] = (s, e) => HandleNumberKey(0);
+            shortcutActions[Key.D1] = (s, e) => HandleNumberKey(1);
+            shortcutActions[Key.D2] = (s, e) => HandleNumberKey(2);
+            shortcutActions[Key.D3] = (s, e) => HandleNumberKey(3);
+            shortcutActions[Key.D4] = (s, e) => HandleNumberKey(4);
+            shortcutActions[Key.D5] = (s, e) => HandleNumberKey(5);
+            shortcutActions[Key.D6] = (s, e) => HandleNumberKey(6);
+            shortcutActions[Key.D7] = (s, e) => HandleNumberKey(7);
+            shortcutActions[Key.D8] = (s, e) => HandleNumberKey(8);
+            shortcutActions[Key.D9] = (s, e) => HandleNumberKey(9);
+
+            shortcutActions[Key.F1] = (s, e) => HandleFunctionKeys(1);
+            shortcutActions[Key.F2] = (s, e) => HandleFunctionKeys(2);
+            shortcutActions[Key.F3] = (s, e) => HandleFunctionKeys(3);
+            shortcutActions[Key.F4] = (s, e) => HandleFunctionKeys(4);
+            shortcutActions[Key.F5] = (s, e) => HandleFunctionKeys(5);
+            shortcutActions[Key.F6] = (s, e) => HandleFunctionKeys(6);
+            shortcutActions[Key.F7] = (s, e) => HandleFunctionKeys(7);
+            shortcutActions[Key.F8] = (s, e) => HandleFunctionKeys(8);
+            shortcutActions[Key.F9] = (s, e) => HandleFunctionKeys(9);
+            shortcutActions[Key.F10] = (s, e) => HandleFunctionKeys(10);
+            shortcutActions[Key.F11] = (s, e) => HandleFunctionKeys(11);
+            shortcutActions[Key.F12] = (s, e) => HandleFunctionKeys(12);
+
+            shortcutActions[Key.Escape] = (s, e) => SelectMixWithShortcut(blindViewModel.Main[0]);
+
+            shortcutActions[Key.V] = (s, e) => volumeControl.Focus();
+            shortcutActions[Key.F] = (s, e) => hipassControl.Focus();
+            shortcutActions[Key.T] = (s, e) => trimControl.Focus();
+            shortcutActions[Key.B] = (s, e) => panControl.Focus();
+            shortcutActions[Key.G] = (s, e) => new GateToolWindow(_channel).ShowDialog();
 
             //DEBUG 
-            shortcutActions[Key.I] = () => blindViewModel.Mutegroup.SetChannelMuteStatus(1, new(_channel), true);
+            shortcutActions[Key.I] = (s, e) => blindViewModel.Mutegroup.AssignMutesToAGroup(0);
 
-            shortcutActions[Key.E] = () =>
+            shortcutActions[Key.O] = (s, e) => blindViewModel.Mutegroup.mutegroup1 = !blindViewModel.Mutegroup.mutegroup1;
+
+
+            shortcutActions[Key.E] = (s, e) =>
             {
                 if (_channel is OutputDACBus)
                     new EQ6ToolWindow(_channel).ShowDialog();
                 else
                     new EQ4ToolWindow(_channel).ShowDialog();
             };
-            shortcutActions[Key.C] = () => new CompToolWindow(_channel).ShowDialog();
-            shortcutActions[Key.A] = () => new SendsView(_channel, blindViewModel).ShowDialog();
-            shortcutActions[Key.X] = () =>
+            shortcutActions[Key.C] = (s, e) => new CompToolWindow(_channel).ShowDialog();
+            shortcutActions[Key.A] = (s, e) => new SendsView(_channel, blindViewModel).ShowDialog();
+            shortcutActions[Key.X] = (s, e) =>
             {
                 _channel.mute = !_channel.mute;
                 if (_channel.mute)
@@ -88,7 +254,7 @@ namespace Presonus.UCNet.Wpf.Blind
                 else
                     Speech.SpeechManager.Say($"Unmuted");
             };
-            shortcutActions[Key.S] = () =>
+            shortcutActions[Key.S] = (s, e) =>
             {
                 _channel.solo = !_channel.solo;
                 if (_channel.solo)
@@ -96,7 +262,7 @@ namespace Presonus.UCNet.Wpf.Blind
                 else
                     Speech.SpeechManager.Say($"Solo Off");
             };
-            shortcutActions[Key.M] = () =>
+            shortcutActions[Key.M] = (s, e) =>
             {
                 if (UserControls.ModifierKeys.IsCtrlDown())
                 {
@@ -104,19 +270,27 @@ namespace Presonus.UCNet.Wpf.Blind
                 }
 
             };
-            shortcutActions[Key.Right] = () =>
+            shortcutActions[Key.Right] = (s, e) =>
             {
-                int newIndex = Math.Min(ChannelSelector.SelectedIndex + 1, ChannelSelector.Items.Count - 1);
+                int newIndex = 0;
+                if (ModifierKeys.IsCtrlDown())
+                    newIndex = Math.Min(IncrementToNextMultipleOfEight(ChannelSelector.SelectedIndex), ChannelSelector.Items.Count - 1);
+                else
+                    newIndex = Math.Min(ChannelSelector.SelectedIndex + 1, ChannelSelector.Items.Count - 1);
                 ChannelSelector.SelectedIndex = newIndex;
                 ChannelSelected();
             };
-            shortcutActions[Key.Left] = () =>
+            shortcutActions[Key.Left] = (s, e) =>
             {
-                int newIndex = Math.Max(ChannelSelector.SelectedIndex - 1, 0);
+                int newIndex = 0;
+                if (ModifierKeys.IsCtrlDown())
+                    newIndex = Math.Max(DecrementToPreviousMultipleOfEight(ChannelSelector.SelectedIndex), 0);
+                else
+                    newIndex = Math.Max(ChannelSelector.SelectedIndex - 1, 0);
                 ChannelSelector.SelectedIndex = newIndex;
                 ChannelSelected();
             };
-            shortcutActions[Key.F] = () => //CTRL+F channel finder
+            shortcutActions[Key.F] = (s, e) => //CTRL+F channel finder
             {
                 if (ModifierKeys.IsCtrlDown())
                 {
@@ -148,16 +322,16 @@ namespace Presonus.UCNet.Wpf.Blind
                         currentMixType = ChannelTypes.MAIN;
                         mixPanel.Children.Clear();
                         //< usercontrols:NumericUpDown x:Name = "trimControl" Caption = "Trim" Value = "{Binding preampgain}" Curve = "Linear" Min = "0" Max = "60" Unit = "DB" Default = "0" />
-                        mixPanel.Children.Add(trimControl = ControlFactory.CreateNumericUpDownControl("Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "trim"));
+                        trimControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "trim");
 
                         //< usercontrols:NumericUpDown x:Name = "volumeControl" Caption = "Level" Value = "{Binding volume}" Curve = "LinearToVolume" Min = "-84" Max = "10" Unit = "DB" Default = "0.735" />
-                        mixPanel.Children.Add(volumeControl = ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, "volume"));
+                        volumeControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, "volume");
 
                         //< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
-                        mixPanel.Children.Add(hipassControl = ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
+                        hipassControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf");
 
                         //< usercontrols:NumericUpDown x:Name = "panControl" Caption = "Pan" Value = "{Binding pan}" Curve = "Linear" Min = "0" Max = "1" Unit = "PAN" Default = "0.5" />
-                        mixPanel.Children.Add(panControl = ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan"));
+                        panControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, "pan");
                     }
                     break;
 
@@ -168,24 +342,24 @@ namespace Presonus.UCNet.Wpf.Blind
                         mixPanel.Children.Clear();
 
                         //< usercontrols:NumericUpDown x:Name = "trimControl" Caption = "Trim" Value = "{Binding preampgain}" Curve = "Linear" Min = "0" Max = "60" Unit = "DB" Default = "0" />
-                        mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "trim"));
+                        trimControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Trim", 0, 60, 0, Units.DB, CurveFormula.Linear, "trim");
 
                         //< usercontrols:NumericUpDown x:Name = "volumeControl" Caption = "Level" Value = "{Binding volume}" Curve = "LinearToVolume" Min = "-84" Max = "10" Unit = "DB" Default = "0.735" />
-                        mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, $"aux{channelSelector.Channel}"));
+                        volumeControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Send Level", -84, 10, 0.735f, Units.DB, CurveFormula.LinearToVolume, $"aux{channelSelector.Channel}");
 
                         //< usercontrols:NumericUpDown x:Name = "hipassControl" Caption = "Hi Pass Filter" Value = "{Binding hpf}" Curve = "Logarithmic" Min = "24" Max = "1000" Unit = "HZ_24OFF" Default = "0" />
-                        mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf"));
+                        hipassControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Hi Pass Filter", 24, 1000, 0, Units.HZ_24OFF, CurveFormula.Logarithmic, "hpf");
 
                         var chanNum = channelSelector.Channel;
                         var auxChan = blindViewModel.Auxes[chanNum - 1];
                         if (auxChan.linkmaster)
                         {
-                            mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, $"aux{chanNum}{chanNum + 1}_pan"));
+                            panControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Pan", 0, 1, 0.5f, Units.PAN, CurveFormula.Linear, $"aux{chanNum}{chanNum + 1}_pan");
                         }
                         else if (auxChan.link && !auxChan.linkmaster)
                         {
                             var channelbefore = blindViewModel.Auxes[channelSelector.Channel - 2];
-                            mixPanel.Children.Add(ControlFactory.CreateNumericUpDownControl("Pan", 0, 1, 0, Units.PAN, CurveFormula.Linear, $"aux{chanNum - 1}{chanNum}_pan"));
+                            panControl = ControlFactory.CreateNumericUpDownControl(mixPanel, "Pan", 0, 1, 0, Units.PAN, CurveFormula.Linear, $"aux{chanNum - 1}{chanNum}_pan");
                         }
                     }
                     break;
@@ -276,6 +450,19 @@ namespace Presonus.UCNet.Wpf.Blind
             }
         }
 
+        Dictionary<int, Key> numberKeys = new Dictionary<int, Key>() {
+            { 0, Key.D0 },
+            { 1, Key.D1 },
+            { 2, Key.D2 },
+            { 3, Key.D3 },
+            { 4, Key.D4 },
+            { 5, Key.D5 },
+            { 6, Key.D6 },
+            { 7, Key.D7 },
+            { 8, Key.D8 },
+        };
+
+
         private void BuildMixMenu(OutputDACBus mainChannel)
         {
             for (int i = 0; i < Mixer.ChannelCounts[ChannelTypes.AUX]; i++)
@@ -285,11 +472,11 @@ namespace Presonus.UCNet.Wpf.Blind
                 {
                     Header = auxChannel.username
                 };
+                menuItem1.IsCheckable = true;
                 menuItem1.Click += (s, e) =>
                 {
                     foreach (var item in mixMenu.Items) ((CustomMenuItem)item).IsChecked = false;
                     menuItem1.IsChecked = true;
-                    menuItem1.IsCheckable = true;
                     MixSelected(new ChannelSelector(auxChannel));
                 };
 
@@ -300,6 +487,7 @@ namespace Presonus.UCNet.Wpf.Blind
             {
                 Header = mainChannel.username
             };
+            menuItem.IsCheckable = true;
             menuItem.Click += (s, e) =>
             {
                 foreach (var item in mixMenu.Items) ((CustomMenuItem)item).IsChecked = false;
@@ -308,7 +496,6 @@ namespace Presonus.UCNet.Wpf.Blind
 
             };
             menuItem.IsChecked = true;
-            menuItem.IsCheckable = true;
 
             mixMenu.Items.Add(menuItem);
 
@@ -372,9 +559,28 @@ namespace Presonus.UCNet.Wpf.Blind
                 }
             }
         }
+        //protected override void OnKeyDown(KeyEventArgs e)
+        //{
+        //    if (e.Key >= Key.F1 && e.Key <= Key.F12 && e.Key == Key.System)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //    else
+        //    {
+        //        base.OnKeyDown(e);
+        //    }
+        //}
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.System)
+            {
+                if (shortcutActions.ContainsKey(e.SystemKey))
+                {
+                    shortcutActions[e.SystemKey]?.Invoke(null, null);
+                    e.Handled = true;
+                }
+            }
             if (Keyboard.FocusedElement is CustomMenuItem)
             {
                 return;
@@ -383,7 +589,7 @@ namespace Presonus.UCNet.Wpf.Blind
             if (shortcutActions.ContainsKey(e.Key))
             {
                 e.Handled = true;
-                shortcutActions[e.Key]?.Invoke();
+                shortcutActions[e.Key]?.Invoke(null, null);
             }
         }
 
@@ -415,11 +621,14 @@ namespace Presonus.UCNet.Wpf.Blind
                     }
                     else //preamp
                     {
-                        trimControl.Min = -20;
+                        trimControl.Min = 0;
                         trimControl.Max = 20;
 
                         trimControl.Default = 0.5f;
+
                     }
+                    var expr = trimControl.GetBindingExpression(NumericUpDown.ValueProperty);
+                    expr.UpdateSource();
                 }
             }
 
@@ -458,6 +667,7 @@ namespace Presonus.UCNet.Wpf.Blind
         private void MixSelected(ChannelSelector channelSelector)
         {
             currentMixType = channelSelector.Type;
+            BuildMixControls(channelSelector);
             ValidateControls();
         }
 
@@ -624,6 +834,21 @@ namespace Presonus.UCNet.Wpf.Blind
         private void resetChannelMenuItem_Click(object sender, RoutedEventArgs e)
         {
             blindViewModel.Presets.ResetChannel(_channel.ChannelType, _channel.ChannelIndex);
+        }
+
+        private void assignMutes(object sender, RoutedEventArgs e)
+        {
+            if (sender is CustomMenuItem item)
+            {
+                var tag = int.Parse((string)item.Tag);
+                blindViewModel.Mutegroup.AssignMutesToAGroup(tag - 1);
+
+            }
+        }
+
+        private void renameMuteGroup(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void copyPasteMenuItem_Click(object sender, RoutedEventArgs e)

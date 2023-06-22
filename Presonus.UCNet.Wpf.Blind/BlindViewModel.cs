@@ -22,6 +22,8 @@ public class BlindViewModel : INotifyPropertyChanged
 
     }
 
+    public string windowTitle => $"{Global.devicename} - {Presets.LoadedProjectTitle}, {Presets.LoadedSceneTitle}";
+
     public Dictionary<Channel, bool> channelVisibility { get; set; } = new();
 
     public event PropertyChangedEventHandler? PropertyChanged;

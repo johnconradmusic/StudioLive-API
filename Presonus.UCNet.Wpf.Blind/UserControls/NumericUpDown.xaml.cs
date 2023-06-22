@@ -21,12 +21,12 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
         // Using a DependencyProperty as the backing store for Min. This enables animation, styling,
         // binding, etc...
         public static readonly DependencyProperty MinProperty =
-            DependencyProperty.Register("Min", typeof(float), typeof(NumericUpDown), new PropertyMetadata(0f));
+            DependencyProperty.Register("Min", typeof(float), typeof(NumericUpDown), new FrameworkPropertyMetadata(0f, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
         // Using a DependencyProperty as the backing store for Max. This enables animation, styling,
         // binding, etc...
         public static readonly DependencyProperty MaxProperty =
-            DependencyProperty.Register("Max", typeof(float), typeof(NumericUpDown), new PropertyMetadata(0f));
+            DependencyProperty.Register("Max", typeof(float), typeof(NumericUpDown), new FrameworkPropertyMetadata(0f, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
         // Using a DependencyProperty as the backing store for Mid. This enables animation, styling,
         // binding, etc...
