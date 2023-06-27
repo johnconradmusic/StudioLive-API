@@ -15,8 +15,8 @@
             <usercontrols:BooleanUpDown Caption="Expander" Value="{Binding gate_expander}" />
             <usercontrols:NumericUpDown Caption="Threshold" Value="{Binding gate_threshold}" Unit="DB" Min="-84" Max="0" Curve="Linear" />
             <usercontrols:NumericUpDown Caption="Range"  Value="{Binding gate_range}" Unit="DB" Min="-84" Max="0" Curve="Ratio" />
-            <usercontrols:NumericUpDown Caption="Attack"  Value="{Binding gate_attack}" Unit="MS" Min="0.02" Max="500" Curve="Exponential" />
-            <usercontrols:NumericUpDown Caption="Release" Value="{Binding gate_release}" Unit="MS" Min="50" Max="2000" Curve="Exponential" />
+            <usercontrols:NumericUpDown Caption="Attack"  Value="{Binding gate_attack}" Unit="MS" Mid="5" Min="0.02" Max="500" Curve="Exponential" />
+            <usercontrols:NumericUpDown Caption="Release" Value="{Binding gate_release}" Unit="MS" Min="50" Mid="700" Max="2000" Curve="Exponential" />
             <usercontrols:NumericUpDown Caption="Key Filter" Value="{Binding gate_keyfilter}" Unit="HZ_24OFF" Min="40" Max="16000" Curve="Logarithmic" />
             <usercontrols:BooleanUpDown Caption="Key Filter Listen" Value="{Binding gate_keylisten}" />
         </StackPanel>

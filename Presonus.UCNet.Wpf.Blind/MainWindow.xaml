@@ -22,6 +22,9 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu IsTabStop="False" Grid.Row="0">
+            <usercontrols:CustomMenuItem Header="System">
+                <usercontrols:CustomMenuItem x:Name="exitMenuItem" Header="Exit" Click="exitMenuItem_Click"/>
+            </usercontrols:CustomMenuItem>
             <usercontrols:CustomMenuItem Header="Project">
                 <usercontrols:CustomMenuItem Click="LoadProjectMenuButton_Click"  x:Name="LoadProjectMenuButton" Header="Load Project..."/>
                 <usercontrols:CustomMenuItem Tag="Project" Header="Project Filters" Click="projectFilterMenuItem_Click"/>

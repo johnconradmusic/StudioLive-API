@@ -128,7 +128,7 @@ namespace Presonus.UCNet.Wpf.Blind.UserControls
 
         private void UpdateValueString()
         {
-            ValueString = ValueTransformer.Transform(Value, Min, Max, Curve, Unit);
+            ValueString = ValueTransformer.Transform(Value, Min, Max, Mid, Curve, Unit);
             if (IsFocused)
                 Speech.SpeechManager.Say($"{ValueString}");
         }
