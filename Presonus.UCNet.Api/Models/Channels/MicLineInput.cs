@@ -13,7 +13,7 @@ namespace Presonus.UCNet.Api.Models.Channels
         }
 
         [ParameterPath("48v")]
-        public float phantom { get => GetValue(); set => SetValue(value); }
+        public bool phantom { get => GetBoolean(); set => SetBoolean(value); }
 
         public bool polarity { get => GetBoolean(); set => SetBoolean(value); }
 

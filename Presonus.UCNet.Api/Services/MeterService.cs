@@ -60,7 +60,7 @@ namespace Presonus.UCNet.Api.Services
 					continue;
 				}
 				ProcessMeteringData(data);
-				await Task.Delay(20);
+				await Task.Delay(10);
 
 			}
 		}

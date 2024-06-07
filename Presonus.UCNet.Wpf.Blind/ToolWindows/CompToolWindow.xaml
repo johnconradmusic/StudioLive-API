@@ -14,8 +14,8 @@
             <usercontrols:BooleanUpDown Caption="Compressor" Value="{Binding comp_on}" />
             <usercontrols:NumericUpDown Caption="Threshold" Value="{Binding comp_threshold}" Unit="DB" Min="-56" Max="0" Curve="Linear" />
             <usercontrols:NumericUpDown Caption="Ratio" Value="{Binding comp_ratio}" Unit="RATIO" Min="1" Max="20" Default="0.463" Curve="Logarithmic" />
-            <usercontrols:NumericUpDown Caption="Attack" Value="{Binding comp_attack}" Unit="MS" Min="0.2" Max="150" Curve="Exponential" />
-            <usercontrols:NumericUpDown Caption="Release" Value="{Binding comp_release}" Unit="MS" Min="2.5" Max="900" Curve="Exponential" />
+            <usercontrols:NumericUpDown Caption="Attack" Value="{Binding comp_attack}" Unit="MS" Min="0.2" Mid="20" Max="150" Curve="Exponential" />
+            <usercontrols:NumericUpDown Caption="Release" Value="{Binding comp_release}" Unit="MS" Min="2.5" Mid="150" Max="900" Curve="Exponential" />
             <usercontrols:BooleanUpDown Caption="Auto" Value="{Binding comp_automode}" />
             <usercontrols:BooleanUpDown Caption="Soft Knee" Value="{Binding comp_softknee}" />
             <usercontrols:NumericUpDown Caption="Makeup Gain" Value="{Binding comp_gain}" Unit="DB" Min="0" Max="28" Curve="Linear" />

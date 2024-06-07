@@ -11,9 +11,9 @@ using System.Threading;
 namespace Presonus.UCNet.Api.Services
 {
     /// <summary>
-    /// This service is used to get broadcast UDP messages.
-    /// This is how the PreSonusHardwareAccessService.exe broadcasts it's TCP port.
-    /// This can also pick up things like UC Surface Apps on Tablets etc.
+    /// Service for listening to broadcast messages from the console.
+    /// All messages are broadcasted on port 47809.
+    /// The mixer sends a broadcast message every three seconds.
     /// </summary>
     public class BroadcastService : IDisposable
     {
@@ -73,10 +73,10 @@ namespace Presonus.UCNet.Api.Services
                         continue;
 
                     var messageType = PackageHelper.GetMessageType(data);
-
+                    //if the message is not a device announcement, ignore it
                     if (messageType != "DA")
                     {
-                        //Known type:
+                        
                         if (messageType != "NO")
                         {
                             Log.Information("[{className}] {messageType} not DA", nameof(BroadcastService), messageType);

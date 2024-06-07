@@ -115,9 +115,34 @@ namespace Presonus.UCNet.Api.Helpers
             return a * Math.Exp(b * position);
         }
 
+		public static double CustomCurveInterpolation(double input, double min, double mid, double max)
+		{
+			if (input < 0 || input > 1)
+				throw new ArgumentOutOfRangeException(nameof(input), "Input value must be between 0 and 1.");
 
+			if (input <= 0.5)
+			{
+				// Logarithmic interpolation from min to mid
+				return LogInterpolate(input * 2, min, mid);
+			}
+			else
+			{
+				// Logarithmic interpolation from mid to max
+				return LogInterpolate((input - 0.5) * 2, mid, max);
+			}
+		}
 
-        static double Interpolate(double input, double input1, double output1, double input2, double output2)
+		private static double LogInterpolate(double t, double start, double end)
+		{
+            var power = 1;
+
+			double logStart = Math.Log10(start);
+			double logEnd = Math.Log10(end);
+			double logResult = logStart + Math.Pow(t, power) * (logEnd - logStart);
+			return Math.Pow(10, logResult);
+		}
+
+		static double Interpolate(double input, double input1, double output1, double input2, double output2)
         {
             return output1 + ((input - input1) * (output2 - output1) / (input2 - input1));
         }
@@ -169,7 +194,7 @@ namespace Presonus.UCNet.Api.Helpers
 
             var strVal = curve_formula switch
             {
-                CurveFormula.Exponential => MapToPseudoExponential(input_value, min_value, max_value, mid_value),
+                CurveFormula.Exponential => CustomCurveInterpolation(input_value, min_value, mid_value, max_value),
                 CurveFormula.Logarithmic => MapValueToLogarithmicRange(input_value, min_value, max_value),
                 CurveFormula.Linear => MapValueToLinearRange(input_value, min_value, max_value),
                 CurveFormula.LinearToVolume => LinearToVolume(input_value),
