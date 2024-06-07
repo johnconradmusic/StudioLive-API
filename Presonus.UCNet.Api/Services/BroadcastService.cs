@@ -75,16 +75,16 @@ namespace Presonus.UCNet.Api.Services
                     var messageType = PackageHelper.GetMessageType(data);
                     //if the message is not a device announcement, ignore it
                     if (messageType != "DA")
-                    {
-                        
+                    {                        
                         if (messageType != "NO")
                         {
                             Log.Information("[{className}] {messageType} not DA", nameof(BroadcastService), messageType);
                         }
                         continue;
                     }
+                    Console.WriteLine("DA message");
 
-                    if (!_communicationService.IsConnected)
+					if (!_communicationService.IsConnected)
                     {
                         var deviceId = BitConverter.ToUInt16(data.Range(8, 10), 0);
                         var tcpPort = BitConverter.ToUInt16(data.Range(4, 6), 0);
