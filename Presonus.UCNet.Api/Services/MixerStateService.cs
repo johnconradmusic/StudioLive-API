@@ -36,6 +36,8 @@ public class MixerStateService
 
 	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
 
+	public event EventHandler<ValueChangedEventArgs<MixingStationNode>> NodeChanged;
+
 	public void Synchronize(string json)
 	{
 		_mixerStateSynchronizer.Synchronize(json, this);
@@ -58,6 +60,17 @@ public class MixerStateService
 		_mixerState.SetStrings(route, value);
 
 		StringsChanged?.Invoke(this, new(route, value));
+	}
+
+	public void SetNode(MixingStationNode node)
+	{
+		_mixerState.SetNode(node);
+		NodeChanged?.Invoke(this, new(node.Path, node));
+	}
+
+	public MixingStationNode GetNode(string path)
+	{
+		return _mixerState.GetNode(path);
 	}
 
 	public bool TryGetValue(string route, out float value) => _mixerState.TryGetValue(route, out value);

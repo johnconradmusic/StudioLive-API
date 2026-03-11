@@ -19,17 +19,7 @@ namespace Presonus.UCNet.Api.Models
 
 	public class ChannelUtil
 	{
-		private static readonly Dictionary<ChannelTypes, string> ChannelStrings = new Dictionary<ChannelTypes, string>()
-	{
-		{ ChannelTypes.LINE, "line" },
-		{ ChannelTypes.MAIN, "main" },
-		{ ChannelTypes.TALKBACK, "talkback" },
-		{ ChannelTypes.AUX, "aux" },
-		{ ChannelTypes.SUB, "sub" },
-		{ ChannelTypes.FX, "fx" },
-		{ ChannelTypes.FXRETURN, "fxreturn" },
-		{ ChannelTypes.RETURN, "return" }
-	};
+
 
 		public static string GetChannelString(ChannelSelector selector)
 		{
@@ -73,8 +63,13 @@ namespace Presonus.UCNet.Api.Models
 				}
 			}
 
-			var channelString = $"{ChannelStrings[channelType]}/ch{channelIndex}";
-			return channelString;
+			if (Mixer.ChannelLayouts.TryGetValue(channelType, out var layout))
+			{
+				return $"ch/{layout.Offset + channelIndex - 1}";
+			}
+
+			return $"ch/{channelIndex - 1}";
+
 		}
 	}
 

@@ -551,48 +551,22 @@ namespace Presonus.UCNet.Api.Services
 
         private void ProcessJson(string json)
         {
-            var jsonElement = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(json);
-
-
-
-            if (!jsonElement.TryGetProperty("id", out var idProperty))
-                return;
-
-            var id = idProperty.GetString();
-
-            switch (id)
+            try
             {
-                case "SynchronizePart":
-                    HandleSynchronizePart();
-                    break;
+                var jsonElement = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(json);
 
-                case "Synchronize":
+                if (jsonElement.ValueKind != JsonValueKind.Object)
+                    return;
+
+                // Mixing Station payloads are either channel info metadata or tree payloads.
+                if (jsonElement.TryGetProperty("channelTypes", out _) || jsonElement.TryGetProperty("child", out _))
+                {
                     _mixerStateService.Synchronize(json);
-                    break;
-
-                case "SubscriptionReply":
-                    HandleSubscriptionReply();
-                    break;
-
-                case "SubscriptionLost":
-                    RequestCommunicationMessage();
-                    break;
-
-                case "UserLoggedIn":
-                    HandleUserLoggedIn();
-                    break;
-
-                case "RecalledPreset":
-                    HandleRecalledPreset();
-                    break;
-
-                case "StoredPreset":
-                    HandleStoredPreset();
-                    break;
-
-                default:
-                    Log.Warning("[{className}] Unknown json id {messageType}", nameof(CommunicationService), id);
-                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("[{className}] Failed to process json payload: {message}", nameof(CommunicationService), ex.Message);
             }
         }
 
