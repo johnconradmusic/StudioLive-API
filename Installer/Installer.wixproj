@@ -1,5 +1,5 @@
 ﻿<Project Sdk="WixToolset.Sdk/4.0.0">
   <ItemGroup>
-    <ProjectReference Include="..\Presonus.UCNet.Wpf.Blind\Presonus.UCNet.Wpf.Blind.csproj" />
+    <ProjectReference Include="..\MixingStation.Wpf.Blind\MixingStation.Wpf.Blind.csproj" />
   </ItemGroup>
 </Project>

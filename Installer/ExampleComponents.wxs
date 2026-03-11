@@ -2,7 +2,7 @@
   <Fragment>
     <ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
       <Component>
-        <File Source="Presonus.UCNet.Wpf.Blind.exe" />
+        <File Source="MixingStation.Wpf.Blind.exe" />
       </Component>
     </ComponentGroup>
   </Fragment>
