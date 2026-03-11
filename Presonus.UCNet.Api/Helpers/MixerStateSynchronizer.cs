@@ -1,50 +1,52 @@
 ﻿using Presonus.UCNet.Api.Helpers;
 using Presonus.UCNet.Api.Models;
 using Presonus.UCNet.Api.Services;
-using System;
-using System.IO;
+using System.Linq;
 using System.Text.Json;
-using System.Windows.Shapes;
 
 namespace Presonus.UCNet.Api;
 public class MixerStateSynchronizer
 {
-    private readonly MixerStateTraverser _traverser;
+    private readonly MixingStationStateTraverser _mixingStationTraverser;
 
-    public MixerStateSynchronizer(MixerStateTraverser traverser)
+    public MixerStateSynchronizer(MixingStationStateTraverser mixingStationTraverser)
     {
-        _traverser = traverser;
+        _mixingStationTraverser = mixingStationTraverser;
     }
 
     public void Synchronize(string json, MixerStateService mixerState)
     {
         var doc = JsonSerializer.Deserialize<JsonDocument>(json);
+        if (doc == null)
+            return;
 
-        File.WriteAllText("C:\\Dev\\jsonDump.json", json);
-
-        if (doc == null) return;
-
-        if (doc.RootElement.TryGetProperty("id", out var id))
+        if (doc.RootElement.TryGetProperty("channelTypes", out _))
         {
-            if (id is JsonElement ID)
+            var channelInfo = JsonSerializer.Deserialize<MixingStationChannelInfo>(json);
+            if (channelInfo != null)
             {
-                var jsonID = ID.GetString();
-                if (jsonID == "SynchronizePart")
-                {
-                    var part = doc.RootElement.GetProperty("part").GetString() + "/";
-                    var classId = doc.RootElement.GetProperty("classId").GetString();
-                    mixerState.SetString(part + "classId", classId, false);
-                    var values = doc.RootElement.GetProperty("values");
-
-                    _traverser.Traverse(values, part, mixerState);
-                }
+                Mixer.ApplyMixingStationChannelInfo(channelInfo);
+                mixerState.SetValue("meta/totalChannels", channelInfo.TotalChannels, false);
             }
+            return;
         }
 
-        if (doc.RootElement.TryGetProperty("children", out var children))
+        if (!doc.RootElement.TryGetProperty("child", out _))
+            return;
+
+        _mixingStationTraverser.Traverse(doc.RootElement, mixerState);
+
+        if (doc.RootElement.TryGetProperty("child", out var rootChild) &&
+            rootChild.TryGetProperty("ch", out var channels) &&
+            channels.TryGetProperty("child", out var channelChildren) &&
+            channelChildren.ValueKind == JsonValueKind.Object)
         {
-            _traverser.Traverse(children, string.Empty, mixerState);
-            Mixer.Counted = true;
+            var count = channelChildren.EnumerateObject().Count();
+            if (count > 0)
+            {
+                mixerState.SetValue("meta/totalChannels", count, false);
+                Mixer.Synchronized = true;
+            }
         }
     }
 }

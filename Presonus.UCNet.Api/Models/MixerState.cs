@@ -1,7 +1,5 @@
-﻿using Presonus.UCNet.Api.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 
 namespace Presonus.UCNet.Api.Models;
 
@@ -10,6 +8,7 @@ public class MixerState
 	private readonly Dictionary<string, float> _values = new();
 	private readonly Dictionary<string, string> _strings = new();
 	private readonly Dictionary<string, string[]> _stringArrays = new();
+	private readonly Dictionary<string, MixingStationNode> _nodes = new();
 
 	public void SetValue(string path, float value)
 	{
@@ -25,7 +24,6 @@ public class MixerState
 
 	public void SetString(string path, string value)
 	{
-		//Console.WriteLine($"Set string: {path} ({value})");
 		_strings[path] = value;
 	}
 
@@ -42,6 +40,18 @@ public class MixerState
 	public string[] GetStrings(string path)
 	{
 		return _stringArrays.TryGetValue(path, out var value) ? value : Array.Empty<string>();
+	}
+
+	public void SetNode(MixingStationNode node)
+	{
+		_nodes[node.Path] = node;
+	}
+
+	public MixingStationNode GetNode(string path)
+	{
+		return _nodes.TryGetValue(path, out var node)
+			? node
+			: new MixingStationNode { Path = path };
 	}
 }
 

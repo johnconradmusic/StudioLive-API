@@ -33,7 +33,7 @@ namespace Presonus.UCNet.Wpf.Blind
 
 			// Register the new classes and their dependencies
 			serviceCollection.AddSingleton<MixerState>();
-			serviceCollection.AddSingleton<MixerStateTraverser>();
+			serviceCollection.AddSingleton<MixingStationStateTraverser>();
 			serviceCollection.AddSingleton<MixerStateSynchronizer>();
 			serviceCollection.AddSingleton<MixerStateService>();
 
