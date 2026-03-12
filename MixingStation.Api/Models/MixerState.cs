@@ -8,6 +8,11 @@ public sealed class MixerState
     private readonly Dictionary<string, object?> _values = new(StringComparer.Ordinal);
     private readonly Dictionary<string, MixingStationNode> _nodes = new(StringComparer.Ordinal);
 
+    public List<string> GetAllPaths()
+    {
+        return new List<string>(_values.Keys);
+    }
+
     public bool TryGetValue<T>(string path, out T value)
     {
         if (_values.TryGetValue(path, out var raw) && raw is T typed)

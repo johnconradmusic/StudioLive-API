@@ -2,7 +2,10 @@
 using MixingStation.Api;
 using MixingStation.Api.Helpers;
 using MixingStation.Api.Models;
+using MixingStation.Api.Schema;
 using MixingStation.Api.Services;
+using MixingStation.Api.ViewModels;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,51 +16,55 @@ using System.Windows;
 
 namespace MixingStation.Wpf.Blind
 {
-	public partial class App : Application
-	{
-		public static ServiceProvider ServiceProvider { get; set; }
-		protected override void OnStartup(StartupEventArgs e)
-		{
-			base.OnStartup(e);
+    public partial class App : Application
+    {
+        public static ServiceProvider ServiceProvider { get; set; }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
 #if DEBUG
             AllocConsole();
-			Serilog.Log.Logger = new Serilog.LoggerConfiguration().CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
 #endif
-			var serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
 
-			// Register the new classes and their dependencies
-			serviceCollection.AddSingleton<MixerState>();
-			serviceCollection.AddSingleton<MixingStationStateTraverser>();
-			serviceCollection.AddSingleton<MixerStateSynchronizer>();
-			serviceCollection.AddSingleton<MixerStateService>();
-
-			serviceCollection.AddSingleton<MixingStationSessionService>();
-			serviceCollection.AddSingleton<MeterService>();
+            // Register the new classes and their dependencies
+            serviceCollection.AddSingleton<MixerState>();
+            serviceCollection.AddSingleton<MixingStationStateTraverser>();
+            serviceCollection.AddSingleton<MixerStateSynchronizer>();
+            serviceCollection.AddSingleton<MixerStateService>();
 
 
-			// WPF UI
-			serviceCollection.AddSingleton<Speech.SpeechManager>();
-			serviceCollection.AddSingleton<BlindViewModel>();
-			serviceCollection.AddSingleton<MainWindow>();
+            serviceCollection.AddSingleton<MixingStationSessionService>();
+            serviceCollection.AddSingleton<MeterService>();
 
-			ServiceProvider = serviceCollection.BuildServiceProvider();
-            ServiceProvider.GetRequiredService<MixingStationSessionService>().ConnectAsync().Wait();
 
+            // WPF UI
+            serviceCollection.AddSingleton<Speech.SpeechManager>();
+            serviceCollection.AddSingleton<MixerRootViewModel>();
+            serviceCollection.AddSingleton<MainWindow>();
+
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+            var pssech = ServiceProvider.GetRequiredService<Speech.SpeechManager>();
 
             //while (!Mixer.Counted)
             //{
             //	Task.Delay(100).Wait();
             //}
-            //var mixerConnectWindow = new MixerConnectWindow();
-           // mixerConnectWindow.Show();
+            var mixerConnectWindow = new MixerConnectWindow();
+            mixerConnectWindow.Show();
             // Run application:
 
-		}
+        }
 
-		
 
-		[System.Runtime.InteropServices.DllImport("kernel32.dll")]
-		internal static extern bool AllocConsole();
-	}
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        internal static extern bool AllocConsole();
+    }
 }

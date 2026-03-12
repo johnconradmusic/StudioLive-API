@@ -14,11 +14,12 @@ public class SpeechManager
     public SpeechManager()
     {
         _instance ??= this;
-        _outputs = new IAccessibleOutput[] { new NvdaOutput(), new SapiOutput() };
+        _outputs = [new NvdaOutput(), new SapiOutput()];
 
-        replacements = new();
-
-        replacements.Add("StudioLive", "Studio Live");
+        replacements = new()
+        {
+            { "StudioLive", "Studio Live" }
+        };
     }
 
     public IAccessibleOutput ScreenReader => GetFirstAvailableOutput();

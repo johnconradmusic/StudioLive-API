@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -44,6 +45,7 @@ public class MixerChannelLayout
     public string ShortName { get; set; } = string.Empty;
 }
 
+[DebuggerDisplay("{Name} ({Path})")]
 public class MixingStationNode
 {
     public string Path { get; set; } = string.Empty;
@@ -86,7 +88,7 @@ public static class MixingStationNodeParser
 
         foreach (var child in childElement.EnumerateObject())
         {
-            var childPath = string.IsNullOrWhiteSpace(path) ? child.Name : $"{path}/{child.Name}";
+            var childPath = string.IsNullOrWhiteSpace(path) ? child.Name : $"{path}.{child.Name}";
             Walk(child.Value, childPath, nodes);
         }
     }

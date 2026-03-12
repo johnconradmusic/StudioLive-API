@@ -1,5 +1,6 @@
 using MixingStation.Api.Models;
 using MixingStation.Api.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
@@ -9,15 +10,17 @@ public class MixingStationStateTraverser
 {
     public void Traverse(JsonElement element, MixerStateService mixerState)
     {
-        foreach (var node in MixingStationNodeParser.Flatten(element))
+        IEnumerable<MixingStationNode> nodes = MixingStationNodeParser.Flatten(element);
+        foreach (var node in nodes)
         {
             mixerState.SetNode(node);
 
             if (!string.IsNullOrWhiteSpace(node.Name))
-                mixerState.SetString(Join(node.Path, "$name"), node.Name, false);
+                mixerState.SetString(Join(node.Path, "name"), node.Name, false);
 
-            if (node.Keys.Count > 0)
-                mixerState.SetStrings(Join(node.Path, "$val"), node.Keys.ToArray(), false);
+           foreach(var key in node.Keys)
+                mixerState.SetString(Join(node.Path, key), string.Empty, false);
+
         }
     }
 
@@ -26,6 +29,6 @@ public class MixingStationStateTraverser
         if (string.IsNullOrWhiteSpace(path))
             return next;
 
-        return $"{path}/{next}";
+        return $"{path}.{next}";
     }
 }

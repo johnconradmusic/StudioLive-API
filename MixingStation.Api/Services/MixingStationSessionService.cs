@@ -1,4 +1,5 @@
 ﻿using MixingStation.Api.Models;
+using MixingStation.Api.Schema;
 using Serilog;
 using System;
 using System.Buffers;
@@ -49,11 +50,12 @@ public sealed class MixingStationSessionService : IDisposable
     {
         try
         {
-            await DisconnectAsync().ConfigureAwait(false);
-
             _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
             var appState = await GetAppStateAsync(_cts.Token).ConfigureAwait(false);
+
+            //await DisconnectAsync().ConfigureAwait(false);
+
+
             Log.Debug("[{ClassName}] App state before connect: {AppState}", nameof(MixingStationSessionService), appState);
 
             await EnsureMixerConnectedAsync(_cts.Token).ConfigureAwait(false);
@@ -128,12 +130,23 @@ public sealed class MixingStationSessionService : IDisposable
             _receiveLoop = null;
         }
     }
+    public class AppState
+    {
+        public MixingStationState State;
+        public int Progress;
 
-    private enum AppState
+        public override string ToString()
+        {
+            return $"State={State}, Progress={Progress}%";
+        }
+    }
+    public enum MixingStationState
     {
         Idle,
         Connecting,
         Connected,
+        Syncing,
+        Searching,
         Unknown
     }
 
@@ -149,19 +162,29 @@ public sealed class MixingStationSessionService : IDisposable
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
+            Log.Debug(
+                "[{ClassName}] Retrieved app state: {AppStateJson}",
+                nameof(MixingStationSessionService),
+                root.GetRawText());
+
             if (root.TryGetProperty("state", out var stateElement) &&
                 stateElement.ValueKind == JsonValueKind.String &&
-                Enum.TryParse<AppState>(stateElement.GetString(), ignoreCase: true, out var state))
+                Enum.TryParse<MixingStationState>(stateElement.GetString(), ignoreCase: true, out var state))
             {
-                return state;
+                root.TryGetProperty("progress", out var progressElement);
+                return new AppState
+                {
+                    State = state,
+                    Progress = progressElement.GetInt32()
+                };
             }
 
-            return AppState.Unknown;
+            return null;
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "[{ClassName}] Failed to get app state", nameof(MixingStationSessionService));
-            return AppState.Unknown;
+            return null;
         }
     }
 
@@ -187,20 +210,45 @@ public sealed class MixingStationSessionService : IDisposable
         var selected = SelectMixerResult(results);
         if (selected.ValueKind == JsonValueKind.Undefined)
             throw new InvalidOperationException("Mixing Station search returned no matching mixers.");
+        await Task.Delay(TimeSpan.FromMilliseconds(750), cancellationToken).ConfigureAwait(false);
 
         await ConnectMixerAsync(selected, cancellationToken).ConfigureAwait(false);
+        var state = await GetAppStateAsync(cancellationToken).ConfigureAwait(false);
+        while (state.State != MixingStationState.Connected)
+        {
+            Log.Debug(
+                "[{ClassName}] Waiting for mixer connection... {State}%",
+                nameof(MixingStationSessionService),
+                state);
+            await Task.Delay(500, cancellationToken).ConfigureAwait(false);
+            state = await GetAppStateAsync(cancellationToken).ConfigureAwait(false);
+        }
 
-        await Task.Delay(TimeSpan.FromMilliseconds(750), cancellationToken).ConfigureAwait(false);
+        Log.Debug("[{ClassName}] App state after connect attempt: {AppState}", nameof(MixingStationSessionService), state);
+        await Task.Delay(TimeSpan.FromMilliseconds(3000), cancellationToken).ConfigureAwait(false);
 
         var connected = await GetCurrentMixerAsync(cancellationToken).ConfigureAwait(false);
         if (!IsMeaningfulJson(connected))
             throw new InvalidOperationException("Mixer connect request completed, but no current mixer is active.");
     }
 
+    public async Task<UiNode> GetUINodes()
+    {
+        var paths = _mixerStateService.GetAllPaths();
+        var service = new MixingStationUiSchemaService(new(_httpClient), new());
+        var nodes = await service.BuildUiTreeAsync(paths).ConfigureAwait(false);
+
+        return nodes;
+    }
+
     private async Task InitialStateSyncAsync(CancellationToken cancellationToken)
     {
         await FetchAndProcessRestJsonAsync("console/information", cancellationToken).ConfigureAwait(false);
         await FetchAndProcessRestJsonAsync("console/data/paths", cancellationToken).ConfigureAwait(false);
+
+
+        // Log.Debug(nodes.DumpTree());
+
         await SubscribeConsoleDataAsync(cancellationToken).ConfigureAwait(false);
 
         Log.Debug(
@@ -216,7 +264,7 @@ public sealed class MixingStationSessionService : IDisposable
 
         var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(json))
-            ProcessRestPayload(json);
+            ProcessRestPayload(json, null);
     }
 
     private async Task<JsonElement?> GetCurrentMixerAsync(CancellationToken cancellationToken)
@@ -312,23 +360,25 @@ public sealed class MixingStationSessionService : IDisposable
 
     private async Task SubscribeConsoleDataAsync(CancellationToken cancellationToken)
     {
-        var body = JsonSerializer.Serialize(new
+        var subscription = new
         {
-            paths = Array.Empty<string>()
-        });
+            path = "/console/data/subscribe",
+            method = "POST",
+            body = new
+            {
+                path = "ch.0.mix.lvl",           // or more specific e.g. "ch.*.mix.lvl" for main LR faders only
+                format = new[] { "val" } // or "norm" / "number" may work in some versions, but "val" is standard
+                                         // format = "number"     // ← this key is usually NOT used; see notes below
+            }
+        };
 
-        using var content = new StringContent(body, Encoding.UTF8, "application/json");
-        using var response = await _httpClient.PostAsync("console/data/subscribe", content, cancellationToken).ConfigureAwait(false);
+        var json = JsonSerializer.Serialize(subscription);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var error = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            Log.Warning(
-                "[{ClassName}] /console/data/subscribe returned {StatusCode}: {Body}",
-                nameof(MixingStationSessionService),
-                (int)response.StatusCode,
-                error);
-        }
+        await _webSocket.SendAsync(
+            new ArraySegment<byte>(Encoding.UTF8.GetBytes(json)),
+            WebSocketMessageType.Text,
+            true,
+            cancellationToken).ConfigureAwait(false);
     }
 
     private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
@@ -372,6 +422,8 @@ public sealed class MixingStationSessionService : IDisposable
             if (root.ValueKind != JsonValueKind.Object)
                 return;
 
+            var path = root.GetProperty("path").GetString(); // quick check to skip irrelevant messages without "path"
+
             if (root.TryGetProperty("body", out var body))
             {
                 if (root.TryGetProperty("error", out var error) &&
@@ -381,15 +433,15 @@ public sealed class MixingStationSessionService : IDisposable
                     Log.Warning(
                         "[{ClassName}] WebSocket API error for path {Path}: {Error}",
                         nameof(MixingStationSessionService),
-                        root.TryGetProperty("path", out var pathProp) ? pathProp.GetString() : "?",
+                        path,
                         error.ToString());
                 }
 
-                ProcessBodyElement(body);
+                ProcessBodyElement(body, path);
                 return;
             }
 
-            ProcessBodyElement(root);
+            ProcessBodyElement(root, path);
         }
         catch (Exception ex)
         {
@@ -397,12 +449,12 @@ public sealed class MixingStationSessionService : IDisposable
         }
     }
 
-    private void ProcessRestPayload(string json)
+    private void ProcessRestPayload(string json, string? path)
     {
         try
         {
             using var doc = JsonDocument.Parse(json);
-            ProcessBodyElement(doc.RootElement);
+            ProcessBodyElement(doc.RootElement, path);
         }
         catch (Exception ex)
         {
@@ -410,7 +462,7 @@ public sealed class MixingStationSessionService : IDisposable
         }
     }
 
-    private void ProcessBodyElement(JsonElement element)
+    private void ProcessBodyElement(JsonElement element, string? path)
     {
         if (element.ValueKind == JsonValueKind.Object)
         {
@@ -420,29 +472,33 @@ public sealed class MixingStationSessionService : IDisposable
                 return;
             }
 
-            if (TryApplySingleValueUpdate(element))
+            if (TryApplySingleValueUpdate(element, path))
                 return;
         }
 
         if (element.ValueKind == JsonValueKind.Array)
         {
             foreach (var item in element.EnumerateArray())
-                ProcessBodyElement(item);
+                ProcessBodyElement(item, path);
         }
     }
 
-    private bool TryApplySingleValueUpdate(JsonElement element)
+    private bool TryApplySingleValueUpdate(JsonElement element, string? path)
     {
-        if (!element.TryGetProperty("path", out var pathElement) ||
-            pathElement.ValueKind != JsonValueKind.String ||
-            !element.TryGetProperty("value", out var valueElement))
+        Log.Debug(
+            "[{ClassName}] Attempting to apply single value update from payload: {Payload}",
+            nameof(MixingStationSessionService),
+            element.GetRawText());
+
+        if (!element.TryGetProperty("value", out var valueElement))
         {
             return false;
         }
 
-        var path = pathElement.GetString();
         if (string.IsNullOrWhiteSpace(path))
             return false;
+
+        path = path.Replace("/console/data/get/", "");
 
         switch (valueElement.ValueKind)
         {
@@ -489,11 +545,10 @@ public sealed class MixingStationSessionService : IDisposable
 
         var request = new
         {
-            path = "/console/data/set",
+            path = $"/console/data/set/{path}/val",
             method = "POST",
             body = new
             {
-                path,
                 format = ChooseFormat(path, value),
                 value
             }
@@ -506,9 +561,13 @@ public sealed class MixingStationSessionService : IDisposable
     {
         return value switch
         {
-            float => "norm",
-            double => "norm",
-            _ => "val"
+            float => "number",
+            double => "number",
+            int => "number",
+            bool => "boolean",
+            string => "string",
+            _ => "string"
+
         };
     }
 
@@ -578,14 +637,14 @@ public sealed class MixingStationSessionService : IDisposable
 
     private static JsonElement SelectMixerResult(List<JsonElement> results)
     {
-        var consoleId = GetConsoleId();
+        var model = 0;
 
         foreach (var result in results)
         {
             if (result.TryGetProperty("modelId", out var modelId) &&
                 modelId.ValueKind == JsonValueKind.Number &&
                 modelId.TryGetInt32(out var parsedModelId) &&
-                parsedModelId == consoleId)
+                parsedModelId == model)
             {
                 return result;
             }
@@ -596,7 +655,7 @@ public sealed class MixingStationSessionService : IDisposable
 
     private static int GetConsoleId()
     {
-        return GetIntEnv("MIXING_STATION_CONSOLE_ID") ?? 18;
+        return GetIntEnv("MIXING_STATION_CONSOLE_ID") ?? 2;
     }
 
     private static bool TryGetArrayProperty(JsonElement element, string name, out JsonElement array)

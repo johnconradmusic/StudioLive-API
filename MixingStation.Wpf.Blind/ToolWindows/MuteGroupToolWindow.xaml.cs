@@ -1,5 +1,6 @@
 ﻿using MixingStation.Api;
 using MixingStation.Api.Models;
+using MixingStation.Api.ViewModels;
 using MixingStation.Wpf.Blind.UserControls;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,12 @@ namespace MixingStation.Wpf.Blind.ToolWindows
     {
 
         List<bool> mutes { get; set; } = new();
-        BlindViewModel viewModel;
+        MixerRootViewModel viewModel;
 
-        public MuteGroupToolWindow(int index, Mutegroup mutegroup, BlindViewModel blindViewModel)
+        public MuteGroupToolWindow(MixerRootViewModel blindViewModel)
         {
             InitializeComponent();
-            Title = $"Mute Group {index} Assigns";
+            //Title = $"Mute Group {index} Assigns";
             Loaded += MuteGroupToolWindow_Loaded;
             viewModel = blindViewModel;
         }

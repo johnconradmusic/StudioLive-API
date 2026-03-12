@@ -1,5 +1,7 @@
 ﻿using MixingStation.Api.Models;
 using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace MixingStation.Api.Services;
 
@@ -132,6 +134,11 @@ public sealed class MixerStateService
     public MixingStationNode? GetNode(string path)
     {
         return _state.GetNode(path);
+    }
+
+    public List<string> GetAllPaths()
+    {
+        return _state.GetAllPaths();
     }
 
     public bool TryGetNode(string path, out MixingStationNode node)
