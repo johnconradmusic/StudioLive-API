@@ -34,13 +34,13 @@ namespace MixingStation.Api.Models
 
 		public bool solo { get => GetBoolean(); set => SetBoolean(value); }
 
-		public float volume { get => GetValue(); set => SetValue(value); }
+		public float volume { get => GetFloat(); set => SetValue(value); }
 
 		public bool mute { get => GetBoolean(); set => SetBoolean(value); }
 
-		public float pan { get => GetValue(); set => SetValue(value); }
+		public float pan { get => GetFloat(); set => SetValue(value); }
 
-		public float stereopan { get => GetValue(); set => SetValue(value); }
+		public float stereopan { get => GetFloat(); set => SetValue(value); }
 
 		public bool panlinkstate { get => GetBoolean(); set => SetBoolean(value); }
 
@@ -63,11 +63,11 @@ namespace MixingStation.Api.Models
 
 		public string iconid { get => GetString(); set => SetString(value); }
 
-		public float meterpeak { get => GetValue(); set => SetValue(value); }
+		public float meterpeak { get => GetFloat(); set => SetValue(value); }
 
-		public float meter2 { get => GetValue(); set => SetValue(value); }
+		public float meter2 { get => GetFloat(); set => SetValue(value); }
 
-		public float meter2peak { get => GetValue(); set => SetValue(value); }
+		public float meter2peak { get => GetFloat(); set => SetValue(value); }
 
 		public bool rta_active { get => GetBoolean(); set => SetBoolean(value); }
 

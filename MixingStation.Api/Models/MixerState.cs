@@ -3,66 +3,56 @@ using System.Collections.Generic;
 
 namespace MixingStation.Api.Models;
 
-public class MixerState
+public sealed class MixerState
 {
-	private readonly Dictionary<string, float> _values = new();
-	private readonly Dictionary<string, string> _strings = new();
-	private readonly Dictionary<string, string[]> _stringArrays = new();
-	private readonly Dictionary<string, MixingStationNode> _nodes = new();
+    private readonly Dictionary<string, object?> _values = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, MixingStationNode> _nodes = new(StringComparer.Ordinal);
 
-	public void SetValue(string path, float value)
-	{
-		_values[path] = value;
-	}
+    public bool TryGetValue<T>(string path, out T value)
+    {
+        if (_values.TryGetValue(path, out var raw) && raw is T typed)
+        {
+            value = typed;
+            return true;
+        }
 
-	public bool TryGetValue(string path, out float value) => _values.TryGetValue(path, out value);
+        value = default!;
+        return false;
+    }
 
-	public float GetValue(string path)
-	{
-		return _values.TryGetValue(path, out var value) ? value : default;
-	}
+    public T? GetValue<T>(string path)
+    {
+        return _values.TryGetValue(path, out var raw) && raw is T typed
+            ? typed
+            : default;
+    }
 
-	public void SetString(string path, string value)
-	{
-		_strings[path] = value;
-	}
+    public object? GetValue(string path)
+    {
+        return _values.TryGetValue(path, out var raw) ? raw : null;
+    }
 
-	public string GetString(string path)
-	{
-		return _strings.TryGetValue(path, out var value) ? value : default;
-	}
+    public bool SetValue(string path, object? value)
+    {
+        if (_values.TryGetValue(path, out var existing) && Equals(existing, value))
+            return false;
 
-	public void SetStrings(string path, string[] values)
-	{
-		_stringArrays[path] = values;
-	}
+        _values[path] = value;
+        return true;
+    }
 
-	public string[] GetStrings(string path)
-	{
-		return _stringArrays.TryGetValue(path, out var value) ? value : Array.Empty<string>();
-	}
+    public void SetNode(MixingStationNode node)
+    {
+        _nodes[node.Path] = node;
+    }
 
-	public void SetNode(MixingStationNode node)
-	{
-		_nodes[node.Path] = node;
-	}
+    public MixingStationNode? GetNode(string path)
+    {
+        return _nodes.TryGetValue(path, out var node) ? node : null;
+    }
 
-	public MixingStationNode GetNode(string path)
-	{
-		return _nodes.TryGetValue(path, out var node)
-			? node
-			: new MixingStationNode { Path = path };
-	}
-}
-
-public class ValueChangedEventArgs<T> : EventArgs
-{
-	public string Path { get; }
-	public T Value { get; }
-
-	public ValueChangedEventArgs(string path, T value)
-	{
-		Path = path;
-		Value = value;
-	}
+    public bool TryGetNode(string path, out MixingStationNode node)
+    {
+        return _nodes.TryGetValue(path, out node!);
+    }
 }

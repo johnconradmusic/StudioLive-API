@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text.Json;
 
 namespace MixingStation.Api;
-public class MixerStateSynchronizer
+
+public sealed class MixerStateSynchronizer
 {
     private readonly MixingStationStateTraverser _mixingStationTraverser;
 
@@ -14,29 +15,41 @@ public class MixerStateSynchronizer
         _mixingStationTraverser = mixingStationTraverser;
     }
 
-    public void Synchronize(string json, MixerStateService mixerState)
+    public void Synchronize(string json, MixerStateService mixerStateService)
     {
-        var doc = JsonSerializer.Deserialize<JsonDocument>(json);
-        if (doc == null)
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        if (root.ValueKind != JsonValueKind.Object)
             return;
 
-        if (doc.RootElement.TryGetProperty("channelTypes", out _))
+        if (root.TryGetProperty("channelTypes", out _))
         {
-            var channelInfo = JsonSerializer.Deserialize<MixingStationChannelInfo>(json);
-            if (channelInfo != null)
-            {
-                Mixer.ApplyMixingStationChannelInfo(channelInfo);
-                mixerState.SetValue("meta/totalChannels", channelInfo.TotalChannels, false);
-            }
+            SynchronizeChannelInfo(root, mixerStateService);
             return;
         }
 
-        if (!doc.RootElement.TryGetProperty("child", out _))
+        if (!root.TryGetProperty("child", out _))
             return;
 
-        _mixingStationTraverser.Traverse(doc.RootElement, mixerState);
+        _mixingStationTraverser.Traverse(root, mixerStateService);
 
-        if (doc.RootElement.TryGetProperty("child", out var rootChild) &&
+        UpdateDerivedMetadata(root, mixerStateService);
+    }
+
+    private static void SynchronizeChannelInfo(JsonElement root, MixerStateService mixerStateService)
+    {
+        var channelInfo = JsonSerializer.Deserialize<MixingStationChannelInfo>(root.GetRawText());
+        if (channelInfo == null)
+            return;
+
+        mixerStateService.Topology.ApplyChannelInfo(channelInfo);
+        mixerStateService.SetValue("meta.totalChannels", channelInfo.TotalChannels, false);
+    }
+
+    private static void UpdateDerivedMetadata(JsonElement root, MixerStateService mixerStateService)
+    {
+        if (root.TryGetProperty("child", out var rootChild) &&
             rootChild.TryGetProperty("ch", out var channels) &&
             channels.TryGetProperty("child", out var channelChildren) &&
             channelChildren.ValueKind == JsonValueKind.Object)
@@ -44,8 +57,8 @@ public class MixerStateSynchronizer
             var count = channelChildren.EnumerateObject().Count();
             if (count > 0)
             {
-                mixerState.SetValue("meta/totalChannels", count, false);
-                Mixer.Synchronized = true;
+                mixerStateService.SetValue("meta.totalChannels", count, false);
+                mixerStateService.Topology.IsSynchronized = true;
             }
         }
     }

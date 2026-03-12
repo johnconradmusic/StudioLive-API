@@ -3,7 +3,6 @@ using MixingStation.Api;
 using MixingStation.Api.Helpers;
 using MixingStation.Api.Models;
 using MixingStation.Api.Services;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,13 +21,9 @@ namespace MixingStation.Wpf.Blind
 			base.OnStartup(e);
 
 #if DEBUG
-			//Log.Logger = new LoggerConfiguration()
-			//	.WriteTo.Console()
-			//	.CreateLogger();
-
-			AllocConsole();
+            AllocConsole();
+			Serilog.Log.Logger = new Serilog.LoggerConfiguration().CreateLogger();
 #endif
-
 			var serviceCollection = new ServiceCollection();
 
 			// Register the new classes and their dependencies
@@ -37,8 +32,7 @@ namespace MixingStation.Wpf.Blind
 			serviceCollection.AddSingleton<MixerStateSynchronizer>();
 			serviceCollection.AddSingleton<MixerStateService>();
 
-			serviceCollection.AddSingleton<BroadcastService>();
-			serviceCollection.AddSingleton<CommunicationService>();
+			serviceCollection.AddSingleton<MixingStationSessionService>();
 			serviceCollection.AddSingleton<MeterService>();
 
 
@@ -48,17 +42,17 @@ namespace MixingStation.Wpf.Blind
 			serviceCollection.AddSingleton<MainWindow>();
 
 			ServiceProvider = serviceCollection.BuildServiceProvider();
+            ServiceProvider.GetRequiredService<MixingStationSessionService>().ConnectAsync().Wait();
 
-			ServiceProvider.GetRequiredService<BroadcastService>().StartReceive();
-			
-			while (!Mixer.Counted)
-			{
-				Task.Delay(100).Wait();
-			}
 
-			// Run application:
-			var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-			mainWindow.Show();
+            //while (!Mixer.Counted)
+            //{
+            //	Task.Delay(100).Wait();
+            //}
+            //var mixerConnectWindow = new MixerConnectWindow();
+           // mixerConnectWindow.Show();
+            // Run application:
+
 		}
 
 		

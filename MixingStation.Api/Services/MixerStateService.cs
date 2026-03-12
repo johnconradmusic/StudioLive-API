@@ -1,103 +1,141 @@
 ﻿using MixingStation.Api.Models;
-
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MixingStation.Api.Services;
 
-public class MixerStateService
+public sealed class MixerStateService
 {
-	private readonly MixerState _mixerState;
-	private readonly MixerStateSynchronizer _mixerStateSynchronizer;
-	public delegate void SyncEvent();
-	internal Action<string, string> SendStringMethod;
-	internal Action<string, float> SendValueMethod;
+    private readonly MixerState _state;
+    private readonly MixerStateSynchronizer _synchronizer;
 
-	internal Func<Task<List<GenericListItem>>> GetProjects;
-	internal Func<string, Task<List<GenericListItem>>> GetScenes;
-	internal Func<Task<List<GenericListItem>>> GetPresets;
-	internal Action<Presets.OperationType, string, string, ChannelSelector> FileOperationMethod;
+    internal Action<string, object?>? SendMethod;
 
-	internal Action<int> AssignMutes;
+    public MixerTopology Topology { get; } = new();
 
-	internal Action<ChannelTypes, int> ChannelResetMethod;
-	internal Action<ChannelSelector, bool> ChannelCopyPaste;
+    public MixerStateService(MixerState state, MixerStateSynchronizer synchronizer)
+    {
+        _state = state;
+        _synchronizer = synchronizer;
+    }
 
-	public MixerStateService(MixerState mixerState, MixerStateSynchronizer mixerStateSynchronizer)
-	{
-		_mixerState = mixerState;
-		_mixerStateSynchronizer = mixerStateSynchronizer;
-	}
+    public event EventHandler<ValueChangedEventArgs>? ValueChanged;
+    public event EventHandler<ValueChangedEventArgs<float>>? FloatChanged;
+    public event EventHandler<ValueChangedEventArgs<string>>? StringChanged;
+    public event EventHandler<ValueChangedEventArgs<bool>>? BoolChanged;
+    public event EventHandler<ValueChangedEventArgs<string[]>>? StringArrayChanged;
+    public event EventHandler<ValueChangedEventArgs<MixingStationNode>>? NodeChanged;
 
-	public event EventHandler<ValueChangedEventArgs<float>> ValueChanged;
+    public void Synchronize(string json)
+    {
+        _synchronizer.Synchronize(json, this);
+    }
 
-	public event EventHandler<ValueChangedEventArgs<string>> StringChanged;
+    public object? GetValue(string path)
+    {
+        return _state.GetValue(path);
+    }
 
-	public event EventHandler<ValueChangedEventArgs<string[]>> StringsChanged;
+    public T? GetValue<T>(string path)
+    {
+        return _state.GetValue<T>(path);
+    }
 
-	public event EventHandler<ValueChangedEventArgs<MixingStationNode>> NodeChanged;
+    public bool TryGetValue<T>(string path, out T value)
+    {
+        return _state.TryGetValue(path, out value);
+    }
 
-	public void Synchronize(string json)
-	{
-		_mixerStateSynchronizer.Synchronize(json, this);
-	}
+    public float GetFloat(string path)
+    {
+        return _state.GetValue<float>(path);
+    }
 
-	public void SetString(string route, string value, bool broadcast = true)
-	{
-		if (_mixerState.GetString(route) != value) // Check if the same value is already present
-		{
-			//Console.WriteLine($"new string value {route} = {value}");
-			_mixerState.SetString(route, value);
-			if (broadcast)
-				SendStringMethod(route, value);
-			StringChanged?.Invoke(this, new(route, value));
-		}
-	}
+    public string? GetString(string path)
+    {
+        return _state.GetValue<string>(path);
+    }
 
-	public void SetStrings(string route, string[] value, bool broadcast = true)
-	{
-		_mixerState.SetStrings(route, value);
+    public bool GetBool(string path)
+    {
+        return _state.GetValue<bool>(path);
+    }
 
-		StringsChanged?.Invoke(this, new(route, value));
-	}
+    public string[]? GetStrings(string path)
+    {
+        return _state.GetValue<string[]>(path);
+    }
 
-	public void SetNode(MixingStationNode node)
-	{
-		_mixerState.SetNode(node);
-		NodeChanged?.Invoke(this, new(node.Path, node));
-	}
+    public void SetValue(string path, object? value, bool broadcast = true)
+    {
+        if (!_state.SetValue(path, value))
+            return;
 
-	public MixingStationNode GetNode(string path)
-	{
-		return _mixerState.GetNode(path);
-	}
+        if (broadcast)
+            SendMethod?.Invoke(path, value);
 
-	public bool TryGetValue(string route, out float value) => _mixerState.TryGetValue(route, out value);
+        ValueChanged?.Invoke(this, new ValueChangedEventArgs(path, value));
 
-	public void SetValue(string route, float value, bool broadcast = true)
-	{
-		if (_mixerState.GetValue(route) != value) // Check if the same value is already present
-		{
-			_mixerState.SetValue(route, value);
-			if (broadcast)
-				SendValueMethod(route, value);
-			ValueChanged?.Invoke(this, new(route, value));
-		}
-	}
+        switch (value)
+        {
+            case float f:
+                FloatChanged?.Invoke(this, new ValueChangedEventArgs<float>(path, f));
+                break;
 
-	public float GetValue(string route)
-	{
-		return _mixerState.GetValue(route);
-	}
+            case double d:
+                FloatChanged?.Invoke(this, new ValueChangedEventArgs<float>(path, (float)d));
+                break;
 
-	public string GetString(string route)
-	{
-		return _mixerState.GetString(route);
-	}
+            case int i:
+                FloatChanged?.Invoke(this, new ValueChangedEventArgs<float>(path, i));
+                break;
 
-	public string[] GetStrings(string route)
-	{
-		return _mixerState.GetStrings(route);
-	}
+            case string s:
+                StringChanged?.Invoke(this, new ValueChangedEventArgs<string>(path, s));
+                break;
+
+            case bool b:
+                BoolChanged?.Invoke(this, new ValueChangedEventArgs<bool>(path, b));
+                break;
+
+            case string[] arr:
+                StringArrayChanged?.Invoke(this, new ValueChangedEventArgs<string[]>(path, arr));
+                break;
+        }
+    }
+
+    public void SetFloat(string path, float value, bool broadcast = true)
+    {
+        SetValue(path, value, broadcast);
+    }
+
+    public void SetString(string path, string value, bool broadcast = true)
+    {
+        SetValue(path, value, broadcast);
+    }
+
+    public void SetBool(string path, bool value, bool broadcast = true)
+    {
+        SetValue(path, value, broadcast);
+    }
+
+    public void SetStrings(string path, string[] values, bool broadcast = true)
+    {
+        SetValue(path, values, broadcast);
+    }
+
+    public void SetNode(MixingStationNode node)
+    {
+        _state.SetNode(node);
+        NodeChanged?.Invoke(this, new ValueChangedEventArgs<MixingStationNode>(node.Path, node));
+    }
+
+    public MixingStationNode? GetNode(string path)
+    {
+        return _state.GetNode(path);
+    }
+
+    public bool TryGetNode(string path, out MixingStationNode node)
+    {
+        return _state.TryGetNode(path, out node);
+    }
 }

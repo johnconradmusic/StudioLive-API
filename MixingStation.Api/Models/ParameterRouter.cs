@@ -1,253 +1,297 @@
 ﻿using MixingStation.Api.Attributes;
 using MixingStation.Api.Helpers;
-using MixingStation.Api.Models;
-
 using MixingStation.Api.Services;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Timers;
 
-namespace MixingStation.Api.Models
+namespace MixingStation.Api.Models;
+
+public abstract class ParameterRouter : INotifyPropertyChanged, IDisposable
 {
-	public abstract class ParameterRouter : INotifyPropertyChanged
-	{
-		protected readonly MixerStateService _mixerStateService;
+    protected readonly MixerStateService _mixerStateService;
 
-		private ChannelTypes channelType;
-		private int _channelIndex;
-		public static bool loadingFromScene = false;
-		private Dictionary<string, string> _propertyValueNameRoute = new();
-		private Dictionary<string, string> _propertyStringNameRoute = new();
-		private Dictionary<string, string> _propertyStringsNameRoute = new();
+    private readonly Dictionary<string, string> _propertyToPath = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, string> _pathToProperty = new(StringComparer.Ordinal);
 
-		private readonly DebounceTimer _debounceTimer;
-		private bool _debounceTimerRunning;
+    private readonly DebounceTimer _debounceTimer;
+    private bool _debounceTimerRunning;
+    private bool _disposed;
 
-		public int ChannelIndex { get => _channelIndex; }
-		public ChannelTypes ChannelType { get => channelType; set => channelType = value; }
+    private readonly string? _routePrefix;
+    private readonly int _channelIndex;
 
-		public ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
-		{
-			_channelIndex = index;
-			ChannelType = channelType;
-			_mixerStateService = mixerStateService;
-			_mixerStateService.ValueChanged += ValueStateUpdated;
-			_mixerStateService.StringChanged += StringStateUpdated;
-			_mixerStateService.StringsChanged += StringsStateUpdated;
+    public static bool LoadingFromScene = false;
 
-			InitMapRoutes();
+    public int ChannelIndex => _channelIndex;
+    public ChannelTypes ChannelType { get; }
 
-			_debounceTimer = new(2000, () => _debounceTimerRunning = false);
-		}
-		public ParameterRouter(string routePrefix, int index, MixerStateService mixerStateService)
-		{
-			_routePrefix = routePrefix;
-			_channelIndex = index;
-			ChannelType = ChannelTypes.NONE;
-			_mixerStateService = mixerStateService;
-			_mixerStateService.ValueChanged += ValueStateUpdated;
-			_mixerStateService.StringChanged += StringStateUpdated;
-			_mixerStateService.StringsChanged += StringsStateUpdated;
+    protected ParameterRouter(ChannelTypes channelType, int index, MixerStateService mixerStateService)
+    {
+        ChannelType = channelType;
+        _channelIndex = index;
+        _mixerStateService = mixerStateService;
 
-			InitMapRoutes();
+        InitRouteMaps();
+        _mixerStateService.ValueChanged += MixerStateChanged;
 
-			_debounceTimer = new(2000, () => _debounceTimerRunning = false);
-		}
-		string _routePrefix;
-		public abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
+        _debounceTimer = new DebounceTimer(2000, () => _debounceTimerRunning = false);
+    }
 
-		public abstract event PropertyChangedEventHandler PropertyChanged;
-		private void InitMapRoutes()
-		{
-			var type = this.GetType();
+    protected ParameterRouter(string routePrefix, int index, MixerStateService mixerStateService)
+    {
+        _routePrefix = routePrefix;
+        _channelIndex = index;
+        ChannelType = ChannelTypes.NONE;
+        _mixerStateService = mixerStateService;
 
-			var properties = type.GetProperties();
-			foreach (var property in properties)
-			{
-				if (property is null)
-					continue;
+        InitRouteMaps();
+        _mixerStateService.ValueChanged += MixerStateChanged;
 
-				var parameterAttribute = property.GetCustomAttribute<ParameterPathAttribute>();
+        _debounceTimer = new DebounceTimer(2000, () => _debounceTimerRunning = false);
+    }
 
-				string parameterName = parameterAttribute == null ? property.Name : parameterAttribute.ParameterPath;
-				if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(int) || property.PropertyType == typeof(float) || property.PropertyType.IsEnum)
-				{
-					_propertyValueNameRoute[property.Name] = GetPropertyPath(parameterName);
-				}
-				if (property.PropertyType == typeof(string))
-				{
-					_propertyStringNameRoute[property.Name] = GetPropertyPath(parameterName);
-				}
-				if (property.PropertyType == typeof(string[]))
-				{
-					_propertyStringsNameRoute[property.Name] = GetPropertyPath(parameterName);
-				}
-			}
-		}
-		private string GetPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
-		{
-			if(_channelIndex == -1 && ChannelType == ChannelTypes.NONE) return _routePrefix + "/" + propertyName;
-			if (ChannelType == ChannelTypes.NONE) return _routePrefix + _channelIndex + "/" + propertyName;
-			return ChannelUtil.GetChannelString(new(ChannelType, _channelIndex, mixType, mixNum)) + $"/{propertyName}";
-		}
+    public abstract event PropertyChangedEventHandler? PropertyChanged;
 
-		private void ValueStateUpdated(object sender, ValueChangedEventArgs<float> args)
-		{
-			if (_debounceTimerRunning) return;
-			var propertyName = _propertyValueNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
-			if (propertyName is null)
-				return;
+    public abstract void OnPropertyChanged(PropertyChangedEventArgs eventArgs);
 
-			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-		}
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
 
-		private void StringStateUpdated(object sender, ValueChangedEventArgs<string> args)
-		{
-			if (_debounceTimerRunning) return;
+        _mixerStateService.ValueChanged -= MixerStateChanged;
+        _disposed = true;
+    }
 
-			var propertyName = _propertyStringNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
+    private void InitRouteMaps()
+    {
+        var type = GetType();
+        var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-			if (propertyName is null)
-			{
-				return;
-			}
-			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-		}
+        foreach (var property in properties)
+        {
+            var parameterAttribute = property.GetCustomAttribute<ParameterPathAttribute>();
+            var parameterName = parameterAttribute?.ParameterPath ?? property.Name;
+            var path = BuildPropertyPath(parameterName);
 
-		private void StringsStateUpdated(object sender, ValueChangedEventArgs<string[]> args)
-		{
-			if (_debounceTimerRunning) return;
+            _propertyToPath[property.Name] = path;
+            _pathToProperty[path] = property.Name;
+        }
+    }
 
-			var propertyName = _propertyStringsNameRoute.SingleOrDefault(pair => pair.Value == args.Path).Key;
-			if (propertyName is null)
-				return;
+    private string BuildPropertyPath(string propertyName, ChannelTypes? mixType = null, int? mixNum = null)
+    {
+        if (_channelIndex == -1 && ChannelType == ChannelTypes.NONE)
+            return $"{_routePrefix}/{propertyName}";
 
-			OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-		}
+        if (ChannelType == ChannelTypes.NONE)
+            return $"{_routePrefix}{_channelIndex}/{propertyName}";
 
-		protected string[] GetStrings([CallerMemberName] string propertyName = "")
-		{
-			
-			var list = _mixerStateService.GetStrings(propertyName);
+        return $"{ChannelUtil.GetChannelString(new ChannelSelector(ChannelType, _channelIndex, mixType, mixNum))}/{propertyName}";
+    }
 
-			return list;
-		}
+    private void MixerStateChanged(object? sender, ValueChangedEventArgs args)
+    {
+        if (_debounceTimerRunning)
+            return;
 
-		protected string GetString([CallerMemberName] string propertyName = "")
-		{
-			var path = _propertyStringNameRoute[propertyName];
-			var value = _mixerStateService.GetString(path);
+        if (!_pathToProperty.TryGetValue(args.Path, out var propertyName))
+            return;
 
-			return value;
-		}
+        OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+    }
 
-		protected bool GetBoolean([CallerMemberName] string propertyName = "")
-		{
-			var path = _propertyValueNameRoute[propertyName];
-			var value = _mixerStateService.GetValue(path);
-			var result = value > 0.5f;
-			return result;
-		}
+    protected string GetPath([CallerMemberName] string propertyName = "")
+    {
+        return _propertyToPath[propertyName];
+    }
 
-		public List<string> GetValueList(string propertyName)
-		{
-			List<string> result = new();
-			if (TryGetRange(propertyName, out var range))
-			{
-				for (int i = (int)range.Min; i <= range.Max; i++)
-				{
-					result.Add((i + 1).ToString());
-				}
-			}
-			return result;
-		}
+    protected T? Get<T>([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+        return _mixerStateService.GetValue<T>(path);
+    }
 
-		public bool TryGetRange(string propertyName, out MixingStation.Api.Models.Range range)
-		{
-			var path = _propertyValueNameRoute[propertyName];
-			range = new();
-			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
-			{
-				range.Max = max;
-				_mixerStateService.TryGetValue(path + "/min", out float min);
-				range.Min = min;
-				_mixerStateService.TryGetValue(path + "/def", out float def);
-				range.Default = def;
-				return true;
-			}
-			return false;
-		}
+    protected float GetFloat([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+        return _mixerStateService.GetValue<float>(path);
+    }
 
-		protected int GetIntInRange([CallerMemberName] string propertyName = "")
-		{
-			var path = _propertyValueNameRoute[propertyName];
-			var value = _mixerStateService.GetValue(path);
+    protected string? GetString([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+        return _mixerStateService.GetValue<string>(path);
+    }
 
-			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
-			{
-				_mixerStateService.TryGetValue(path + "/min", out float min);
-				if (min == -1) min = 0;
-				_mixerStateService.TryGetValue(path + "/def", out float def);
+    protected string[]? GetStrings([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+        return _mixerStateService.GetValue<string[]>(path);
+    }
 
-				var result = (int)(max * value);
-				Console.WriteLine($"Get Int in range {propertyName} {result}");
-				return result;
-			}
-			return -1;
+    protected bool GetBoolean([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
 
-		}
+        if (_mixerStateService.TryGetValue<bool>(path, out var boolValue))
+            return boolValue;
 
-		public void SetValueFromInt(int value, [CallerMemberName] string propertyName = "")
-		{
-			var path = _propertyValueNameRoute[propertyName];
+        if (_mixerStateService.TryGetValue<float>(path, out var floatValue))
+            return floatValue > 0.5f;
 
-			if (_mixerStateService.TryGetValue(path + "/max", out float max)) //inclusive, (zero-based)
-			{
-				_mixerStateService.TryGetValue(path + "/min", out float min);
-				if (min == -1) min = 0;
-				_mixerStateService.TryGetValue(path + "/def", out float def);
+        return false;
+    }
 
-				var result = (float)(value / max);
-				Console.WriteLine($"Get Int in range {propertyName} {result}");
-				_mixerStateService.SetValue(path, result);
-			}
-		}
+    protected int GetInt([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
 
-		protected float GetValue([CallerMemberName] string propertyName = "")
-		{
-			var path = _propertyValueNameRoute[propertyName];
-			var value = _mixerStateService.GetValue(path);
-			return value;
-		}
+        if (_mixerStateService.TryGetValue<int>(path, out var intValue))
+            return intValue;
 
-		protected void SetString(string value, [CallerMemberName] string propertyName = "")
-		{
-			_debounceTimerRunning = true;
-			_debounceTimer.Start();
+        if (_mixerStateService.TryGetValue<float>(path, out var floatValue))
+            return (int)floatValue;
 
-			if (_propertyStringNameRoute.TryGetValue(propertyName, out var pathName))
-				_mixerStateService.SetString(pathName, value);
-		}
+        return 0;
+    }
 
-		protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
-		{
-			_debounceTimerRunning = true;
-			_debounceTimer.Start();
-			var floatValue = value ? 1.0f : 0.0f;
-			if (_propertyValueNameRoute.TryGetValue(propertyName, out var pathName))
-				_mixerStateService.SetValue(pathName, floatValue);
-		}
+    protected TEnum GetEnum<TEnum>([CallerMemberName] string propertyName = "")
+        where TEnum : struct, Enum
+    {
+        var path = GetPath(propertyName);
 
-		protected void SetValue(float value, [CallerMemberName] string propertyName = "")
-		{
-			_debounceTimerRunning = true;
-			_debounceTimer.Start();
-			if (_propertyValueNameRoute.TryGetValue(propertyName, out var pathName))
-				_mixerStateService.SetValue(pathName, value);
-		}
-	}
+        if (_mixerStateService.TryGetValue<TEnum>(path, out var enumValue))
+            return enumValue;
+
+        if (_mixerStateService.TryGetValue<int>(path, out var intValue) &&
+            Enum.IsDefined(typeof(TEnum), intValue))
+        {
+            return (TEnum)Enum.ToObject(typeof(TEnum), intValue);
+        }
+
+        if (_mixerStateService.TryGetValue<float>(path, out var floatValue))
+        {
+            var enumInt = (int)floatValue;
+            if (Enum.IsDefined(typeof(TEnum), enumInt))
+                return (TEnum)Enum.ToObject(typeof(TEnum), enumInt);
+        }
+
+        return default;
+    }
+
+    public List<string> GetValueList(string propertyName)
+    {
+        var result = new List<string>();
+
+        if (TryGetRange(propertyName, out var range))
+        {
+            for (var i = (int)range.Min; i <= range.Max; i++)
+                result.Add((i + 1).ToString());
+        }
+
+        return result;
+    }
+
+    public bool TryGetRange(string propertyName, out Range range)
+    {
+        var path = _propertyToPath[propertyName];
+
+        range = new Range();
+
+        if (_mixerStateService.TryGetValue<float>($"{path}/max", out var max))
+        {
+            range.Max = max;
+            _mixerStateService.TryGetValue<float>($"{path}/min", out var min);
+            _mixerStateService.TryGetValue<float>($"{path}/def", out var def);
+
+            range.Min = min;
+            range.Default = def;
+            return true;
+        }
+
+        return false;
+    }
+
+    protected int GetIntInRange([CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+
+        if (_mixerStateService.TryGetValue<float>($"{path}/max", out var max))
+        {
+            _mixerStateService.TryGetValue<float>($"{path}/min", out var min);
+
+            if (min == -1)
+                min = 0;
+
+            _mixerStateService.TryGetValue<float>($"{path}/def", out _);
+            var value = _mixerStateService.GetValue<float>(path);
+
+            return (int)(max * value);
+        }
+
+        return -1;
+    }
+
+    public void SetValueFromInt(int value, [CallerMemberName] string propertyName = "")
+    {
+        var path = GetPath(propertyName);
+
+        if (_mixerStateService.TryGetValue<float>($"{path}/max", out var max))
+        {
+            if (max <= 0)
+                return;
+
+            var result = value / max;
+            BeginDebounce();
+            _mixerStateService.SetValue(path, result);
+        }
+    }
+
+    protected void Set(string path, object? value)
+    {
+        BeginDebounce();
+        _mixerStateService.SetValue(path, value);
+    }
+
+    protected void SetString(string value, [CallerMemberName] string propertyName = "")
+    {
+        if (_propertyToPath.TryGetValue(propertyName, out var path))
+            Set(path, value);
+    }
+
+    protected void SetBoolean(bool value, [CallerMemberName] string propertyName = "")
+    {
+        if (_propertyToPath.TryGetValue(propertyName, out var path))
+            Set(path, value);
+    }
+
+    protected void SetValue(float value, [CallerMemberName] string propertyName = "")
+    {
+        if (_propertyToPath.TryGetValue(propertyName, out var path))
+            Set(path, value);
+    }
+
+    protected void SetInt(int value, [CallerMemberName] string propertyName = "")
+    {
+        if (_propertyToPath.TryGetValue(propertyName, out var path))
+            Set(path, value);
+    }
+
+    protected void SetEnum<TEnum>(TEnum value, [CallerMemberName] string propertyName = "")
+        where TEnum : struct, Enum
+    {
+        if (_propertyToPath.TryGetValue(propertyName, out var path))
+            Set(path, Convert.ToInt32(value));
+    }
+
+    private void BeginDebounce()
+    {
+        _debounceTimerRunning = true;
+        _debounceTimer.Start();
+    }
 }

@@ -33,18 +33,18 @@ namespace MixingStation.Api.Models.Channels
 		public bool dawpostdsp { get => GetBoolean(); set => SetBoolean(value); }
 
 
-		public float FXA { get => GetValue(); set => SetValue(value); }
-		public float FXB { get => GetValue(); set => SetValue(value); }
-		public float FXC { get => GetValue(); set => SetValue(value); }
-		public float FXD { get => GetValue(); set => SetValue(value); }
-		public float FXE { get => GetValue(); set => SetValue(value); }
-		public float FXF { get => GetValue(); set => SetValue(value); }
-		public float FXG { get => GetValue(); set => SetValue(value); }
-		public float FXH { get => GetValue(); set => SetValue(value); }
+		public float FXA { get => GetFloat(); set => SetValue(value); }
+		public float FXB { get => GetFloat(); set => SetValue(value); }
+		public float FXC { get => GetFloat(); set => SetValue(value); }
+		public float FXD { get => GetFloat(); set => SetValue(value); }
+		public float FXE { get => GetFloat(); set => SetValue(value); }
+		public float FXF { get => GetFloat(); set => SetValue(value); }
+		public float FXG { get => GetFloat(); set => SetValue(value); }
+		public float FXH { get => GetFloat(); set => SetValue(value); }
 
-		public float inputsrc { get => GetValue(); set => SetValue(value); }
+		public float inputsrc { get => GetFloat(); set => SetValue(value); }
 		public List<string> inputsrc_values => new List<string>(Enum.GetNames(typeof(LineInputSource)).ToList());
-		public float inputsrc_preview { get => GetValue(); set => SetValue(value); }
-		public float delay { get => GetValue(); set => SetValue(value); }
+		public float inputsrc_preview { get => GetFloat(); set => SetValue(value); }
+		public float delay { get => GetFloat(); set => SetValue(value); }
 	}
 }
